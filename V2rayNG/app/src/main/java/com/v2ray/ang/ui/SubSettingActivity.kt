@@ -6,17 +6,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import com.v2ray.ang.util.showBlur
+import com.v2ray.ang.util.showDeleteConfirmDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.MaterialToolbar
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.contracts.BaseAdapterListener
 import com.v2ray.ang.databinding.ActivitySubSettingBinding
 import com.v2ray.ang.databinding.ItemQrcodeBinding
-import com.v2ray.ang.extension.toast
+import com.v2ray.ang.extension.alert
+import com.v2ray.ang.extension.alertSuccess
+import com.v2ray.ang.extension.alertError
 import com.v2ray.ang.handler.AngConfigManager
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.helper.SimpleItemTouchHelperCallback
@@ -24,31 +30,31 @@ import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.QRCodeDecoder
 import com.v2ray.ang.util.Utils
 import com.v2ray.ang.viewmodel.SubscriptionsViewModel
+import com.v2ray.ang.ui.bottomsheet.ShareSubBottomSheet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SubSettingActivity : BaseActivity() {
+class SubSettingActivity : BaseActivity(), ShareSubBottomSheet.OnShareSubOptionClickListener {
     private val binding by lazy { ActivitySubSettingBinding.inflate(layoutInflater) }
     private val ownerActivity: SubSettingActivity
         get() = this
     private val viewModel: SubscriptionsViewModel by viewModels()
     private lateinit var adapter: SubSettingRecyclerAdapter
     private var mItemTouchHelper: ItemTouchHelper? = null
-    private val share_method: Array<out String> by lazy {
-        resources.getStringArray(R.array.share_sub_method)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(binding.root)
-        setContentViewWithToolbar(binding.root, showHomeAsUp = true, title = getString(R.string.title_sub_setting))
+        
+        setContentView(binding.root)
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setupToolbar(toolbar, showHomeAsUp = true, title = getString(R.string.title_sub_setting))
 
         adapter = SubSettingRecyclerAdapter(viewModel, ActivityAdapterListener())
 
         binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        addCustomDividerToRecyclerView(binding.recyclerView, this, R.drawable.custom_divider)
         binding.recyclerView.adapter = adapter
 
         mItemTouchHelper = ItemTouchHelper(SimpleItemTouchHelperCallback(adapter))
@@ -70,42 +76,71 @@ class SubSettingActivity : BaseActivity() {
             startActivity(Intent(this, SubEditActivity::class.java))
             true
         }
-
         R.id.sub_update -> {
             showLoading()
-
             lifecycleScope.launch(Dispatchers.IO) {
                 val result = AngConfigManager.updateConfigViaSubAll()
                 delay(500L)
                 launch(Dispatchers.Main) {
                     if (result.successCount + result.failureCount + result.skipCount == 0) {
-                        toast(R.string.title_update_subscription_no_subscription)
+                        alert(
+                            getString(R.string.title_update_subscription_no_subscription),
+                            title = getString(R.string.title_sub_update)
+                        )
                     } else if (result.successCount > 0 && result.failureCount + result.skipCount == 0) {
-                        toast(getString(R.string.title_update_config_count, result.configCount))
+                        alertSuccess(
+                            getString(R.string.title_update_config_count, result.configCount),
+                            title = getString(R.string.title_sub_update)
+                        )
                     } else {
-                        toast(
+                        alert(
                             getString(
                                 R.string.title_update_subscription_result,
                                 result.configCount, result.successCount, result.failureCount, result.skipCount
-                            )
+                            ),
+                            title = getString(R.string.title_sub_update)
                         )
                     }
                     hideLoading()
                     refreshData()
                 }
             }
-
             true
         }
-
         else -> super.onOptionsItemSelected(item)
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun refreshData() {
         viewModel.reload()
         adapter.notifyDataSetChanged()
+    }
+
+    override fun onShareSubOptionClicked(optionId: Int, url: String) {
+        try {
+            when (optionId) {
+                R.id.share_qrcode -> {
+                    val ivBinding = ItemQrcodeBinding.inflate(LayoutInflater.from(this))
+                    ivBinding.ivQcode.setImageBitmap(
+                        QRCodeDecoder.createQRCode(url)
+                    )
+                    AlertDialog.Builder(this).setView(ivBinding.root).showBlur()
+                }
+                R.id.share_clipboard -> {
+                    Utils.setClipboard(this, url)
+                    alertSuccess(
+                        getString(R.string.menu_item_export_proxy_app),
+                        title = getString(R.string.title_alerter_success)
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            LogUtil.e(AppConfig.TAG, "Share subscription failed", e)
+            alertError(
+                getString(R.string.menu_item_export_proxy_app),
+                title = getString(R.string.title_alerter_error)
+            )
+        }
     }
 
     private inner class ActivityAdapterListener : BaseAdapterListener {
@@ -118,14 +153,10 @@ class SubSettingActivity : BaseActivity() {
 
         override fun onRemove(guid: String, position: Int) {
             if (MmkvManager.decodeSettingsBool(AppConfig.PREF_CONFIRM_REMOVE)) {
-                AlertDialog.Builder(ownerActivity)
-                    .setMessage(R.string.del_config_comfirm)
-                    .setPositiveButton(android.R.string.ok) { _, _ ->
-                        viewModel.remove(guid)
-                        refreshData()
-                    }
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .show()
+                showDeleteConfirmDialog(context = ownerActivity, messageRes = R.string.del_sub_dialog_comfirm_message) {
+                    viewModel.remove(guid)
+                    refreshData()
+                }
             } else {
                 viewModel.remove(guid)
                 refreshData()
@@ -133,32 +164,8 @@ class SubSettingActivity : BaseActivity() {
         }
 
         override fun onShare(url: String) {
-            AlertDialog.Builder(ownerActivity)
-                .setItems(share_method.asList().toTypedArray()) { _, i ->
-                    try {
-                        when (i) {
-                            0 -> {
-                                val ivBinding =
-                                    ItemQrcodeBinding.inflate(LayoutInflater.from(ownerActivity))
-                                ivBinding.ivQcode.setImageBitmap(
-                                    QRCodeDecoder.createQRCode(
-                                        url
-
-                                    )
-                                )
-                                AlertDialog.Builder(ownerActivity).setView(ivBinding.root).show()
-                            }
-
-                            1 -> {
-                                Utils.setClipboard(ownerActivity, url)
-                            }
-
-                            else -> ownerActivity.toast("else")
-                        }
-                    } catch (e: Exception) {
-                        LogUtil.e(AppConfig.TAG, "Share subscription failed", e)
-                    }
-                }.show()
+            val bottomSheet = ShareSubBottomSheet.newInstance(url)
+            bottomSheet.show(supportFragmentManager, ShareSubBottomSheet.TAG)
         }
 
         override fun onRefreshData() {

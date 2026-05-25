@@ -46,7 +46,9 @@ class AppSelectorAdapter(
                 item.appName
             }
             binding.packageName.text = item.packageName
-            binding.checkBox.isChecked = selectedPackages.contains(item.packageName)
+            
+            binding.switchButton.isChecked = selectedPackages.contains(item.packageName)
+            
             itemView.setOnClickListener(this)
         }
 
@@ -57,8 +59,8 @@ class AppSelectorAdapter(
             } else {
                 selectedPackages.add(packageName)
             }
-            binding.checkBox.isChecked = selectedPackages.contains(packageName)
+            
+            binding.switchButton.isChecked = selectedPackages.contains(packageName)
         }
     }
 }
-

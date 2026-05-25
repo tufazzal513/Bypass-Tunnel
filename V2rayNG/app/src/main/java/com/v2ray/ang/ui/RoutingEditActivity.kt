@@ -5,34 +5,46 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
+import com.v2ray.ang.util.showDeleteConfirmDialog
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.appbar.MaterialToolbar
 import com.v2ray.ang.AppConfig.BUILTIN_OUTBOUND_TAGS
 import com.v2ray.ang.AppConfig.TAG_PROXY
 import com.v2ray.ang.R
 import com.v2ray.ang.databinding.ActivityRoutingEditBinding
 import com.v2ray.ang.dto.entities.RulesetItem
 import com.v2ray.ang.extension.nullIfBlank
-import com.v2ray.ang.extension.toast
+import com.v2ray.ang.extension.alertError
 import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.handler.SettingsManager
 import com.v2ray.ang.util.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.v2ray.ang.util.SoftInputAssist
 
 class RoutingEditActivity : BaseActivity() {
     private val binding by lazy { ActivityRoutingEditBinding.inflate(layoutInflater) }
     private val position by lazy { intent.getIntExtra("position", -1) }
+    
     private val processPickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
             val selectedPackages = AppPickerActivity.getSelectedPackages(result.data)
-            binding.etProcess.text = Utils.getEditable(selectedPackages.joinToString(","))
+            binding.etProcess.setText(Utils.getEditable(selectedPackages.joinToString(",")))
         }
     }
+    
+    private lateinit var softInputAssist: SoftInputAssist
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentViewWithToolbar(binding.root, showHomeAsUp = true, title = getString(R.string.routing_settings_rule_title))
+        
+        setContentView(binding.root)
+        
+        softInputAssist = SoftInputAssist(this)
+        
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setupToolbar(toolbar, showHomeAsUp = true, title = getString(R.string.routing_settings_rule_title))
 
         setupOutboundTagInput()
         setupProcessPicker()
@@ -46,12 +58,12 @@ class RoutingEditActivity : BaseActivity() {
 
         SettingsManager.canUseProcessRouting().let { canUse ->
             binding.etProcess.isEnabled = canUse
-            binding.btnProcessPicker.isEnabled = canUse
+            binding.tilProcess.isEndIconVisible = canUse
         }
     }
 
     private fun setupProcessPicker() {
-        binding.btnProcessPicker.setOnClickListener {
+        binding.tilProcess.setEndIconOnClickListener {
             processPickerLauncher.launch(
                 AppPickerActivity.createIntent(
                     context = this,
@@ -64,17 +76,16 @@ class RoutingEditActivity : BaseActivity() {
 
     private fun getSelectedProcessPackages(): List<String> {
         return binding.etProcess.text
-            .toString()
-            .split(",")
-            .map { it.trim() }
-            .filter { it.isNotEmpty() }
-            .distinct()
+            ?.toString()
+            ?.split(",")
+            ?.map { it.trim() }
+            ?.filter { it.isNotEmpty() }
+            ?.distinct() ?: emptyList()
     }
 
     /**
      * Sets up the AutoCompleteTextView for outbound tag:
      * suggestions = built-in tags (proxy/direct/block) + all existing profile remarks.
-     * The dropdown button triggers showing the full list without typing.
      */
     private fun setupOutboundTagInput() {
         val profileRemarks = SettingsManager.getProfileRemarks()
@@ -82,29 +93,24 @@ class RoutingEditActivity : BaseActivity() {
         val suggestions = (BUILTIN_OUTBOUND_TAGS.toList() + profileRemarks).distinct()
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, suggestions)
         binding.spOutboundTag.setAdapter(adapter)
-        // threshold=0 means show all suggestions even before typing; still need focus+request
         binding.spOutboundTag.threshold = 0
-
-        // Dropdown arrow button shows the full suggestion list
-        binding.btnOutboundTagDropdown.setOnClickListener {
-            binding.spOutboundTag.requestFocus()
-            binding.spOutboundTag.showDropDown()
-        }
-        // Also show on field click when it already has focus
+        
+        // Material 3 ExposedDropdownMenu handles the click and dropdown automatically,
+        // we just ensure it shows on click.
         binding.spOutboundTag.setOnClickListener {
             binding.spOutboundTag.showDropDown()
         }
     }
 
     private fun bindingServer(rulesetItem: RulesetItem): Boolean {
-        binding.etRemarks.text = Utils.getEditable(rulesetItem.remarks)
+        binding.etRemarks.setText(Utils.getEditable(rulesetItem.remarks))
         binding.chkLocked.isChecked = rulesetItem.locked == true
-        binding.etDomain.text = Utils.getEditable(rulesetItem.domain?.joinToString(","))
-        binding.etIp.text = Utils.getEditable(rulesetItem.ip?.joinToString(","))
-        binding.etProcess.text = Utils.getEditable(rulesetItem.process?.joinToString(","))
-        binding.etPort.text = Utils.getEditable(rulesetItem.port)
-        binding.etProtocol.text = Utils.getEditable(rulesetItem.protocol?.joinToString(","))
-        binding.etNetwork.text = Utils.getEditable(rulesetItem.network)
+        binding.etDomain.setText(Utils.getEditable(rulesetItem.domain?.joinToString(",")))
+        binding.etIp.setText(Utils.getEditable(rulesetItem.ip?.joinToString(",")))
+        binding.etProcess.setText(Utils.getEditable(rulesetItem.process?.joinToString(",")))
+        binding.etPort.setText(Utils.getEditable(rulesetItem.port))
+        binding.etProtocol.setText(Utils.getEditable(rulesetItem.protocol?.joinToString(",")))
+        binding.etNetwork.setText(Utils.getEditable(rulesetItem.network))
         // Set text directly; filter won't fire because we're not using setText(filter=true)
         binding.spOutboundTag.setText(rulesetItem.outboundTag, false)
         return true
@@ -120,19 +126,22 @@ class RoutingEditActivity : BaseActivity() {
         val rulesetItem = SettingsManager.getRoutingRuleset(position) ?: RulesetItem()
 
         rulesetItem.apply {
-            remarks = binding.etRemarks.text.toString()
+            remarks = binding.etRemarks.text?.toString().orEmpty()
             locked = binding.chkLocked.isChecked
-            domain = binding.etDomain.text.toString().nullIfBlank()?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }
-            ip = binding.etIp.text.toString().nullIfBlank()?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }
-            process = binding.etProcess.text.toString().nullIfBlank()?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }
-            protocol = binding.etProtocol.text.toString().nullIfBlank()?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }
-            port = binding.etPort.text.toString().nullIfBlank()
-            network = binding.etNetwork.text.toString().nullIfBlank()
-            outboundTag = binding.spOutboundTag.text.toString().trim().ifEmpty { TAG_PROXY }
+            domain = binding.etDomain.text?.toString()?.nullIfBlank()?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }
+            ip = binding.etIp.text?.toString()?.nullIfBlank()?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }
+            process = binding.etProcess.text?.toString()?.nullIfBlank()?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }
+            protocol = binding.etProtocol.text?.toString()?.nullIfBlank()?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }
+            port = binding.etPort.text?.toString()?.nullIfBlank()
+            network = binding.etNetwork.text?.toString()?.nullIfBlank()
+            outboundTag = binding.spOutboundTag.text?.toString()?.trim().orEmpty().ifEmpty { TAG_PROXY }
         }
 
         if (rulesetItem.remarks.isNullOrEmpty()) {
-            toast(R.string.sub_setting_remarks)
+            alertError(
+                getString(R.string.sub_setting_remarks),
+                title = getString(R.string.title_alerter_error)
+            )
             return false
         }
 
@@ -145,19 +154,14 @@ class RoutingEditActivity : BaseActivity() {
 
     private fun deleteServer(): Boolean {
         if (position >= 0) {
-            AlertDialog.Builder(this).setMessage(R.string.del_config_comfirm)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        SettingsManager.removeRoutingRuleset(position)
-                        launch(Dispatchers.Main) {
-                            finish()
-                        }
+            showDeleteConfirmDialog(context = this, messageRes = R.string.del_routing_dialog_comfirm_message) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    SettingsManager.removeRoutingRuleset(position)
+                    launch(Dispatchers.Main) {
+                        finish()
                     }
                 }
-                .setNegativeButton(android.R.string.cancel) { _, _ ->
-                    // do nothing
-                }
-                .show()
+            }
         }
         return true
     }
@@ -178,13 +182,31 @@ class RoutingEditActivity : BaseActivity() {
             deleteServer()
             true
         }
-
         R.id.save_config -> {
             saveServer()
             true
         }
-
         else -> super.onOptionsItemSelected(item)
     }
+    
+   override fun onResume() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onResume()
+        }
+        super.onResume()
+    }
 
+    override fun onPause() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onPause()
+        }
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onDestroy()
+        }
+        super.onDestroy()
+    } 
 }

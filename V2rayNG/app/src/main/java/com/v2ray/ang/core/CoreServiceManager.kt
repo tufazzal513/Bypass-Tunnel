@@ -1,5 +1,6 @@
 package com.v2ray.ang.core
 
+import android.app.Activity
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -16,7 +17,9 @@ import com.v2ray.ang.contracts.ServiceControl
 import com.v2ray.ang.dto.OutboundTrafficStat
 import com.v2ray.ang.dto.entities.ProfileItem
 import com.v2ray.ang.enums.EConfigType
-import com.v2ray.ang.extension.isComplexType
+import com.v2ray.ang.extension.alert
+import com.v2ray.ang.extension.alertError
+import com.v2ray.ang.extension.alertSuccess
 import com.v2ray.ang.extension.toast
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.NotificationManager
@@ -58,6 +61,27 @@ object CoreServiceManager {
             }
         }
 
+    private fun showFeedback(context: Context, message: String, type: Int = 0) {
+        if (context is Activity) {
+            when (type) {
+                1 -> context.alertSuccess(
+                    message, 
+                    title = context.getString(R.string.title_alerter_success)
+                )
+                2 -> context.alertError(
+                    message, 
+                    title = context.getString(R.string.title_alerter_error)
+                )
+                else -> context.alert(
+                    message, 
+                    title = context.getString(R.string.title_alerter_info)
+                )
+            }
+        } else {
+            context.toast(message)
+        }
+    }
+
     /**
      * Starts the V2Ray service from a toggle action.
      * @param context The context from which the service is started.
@@ -65,14 +89,14 @@ object CoreServiceManager {
      */
     fun startVServiceFromToggle(context: Context): Boolean {
         if (MmkvManager.getSelectServer().isNullOrEmpty()) {
-            context.toast(R.string.app_tile_first_use)
+            showFeedback(context, context.getString(R.string.app_tile_first_use), 2)
             return false
         }
         try {
             startContextService(context)
         } catch (e: Exception) {
             LogUtil.e(AppConfig.TAG, "StartCore-Manager: ${e.message}", e)
-            context.toast(e.message ?: e.javaClass.simpleName)
+            showFeedback(context, e.message ?: e.javaClass.simpleName, 2)
             return false
         }
         return true
@@ -94,7 +118,7 @@ object CoreServiceManager {
             startContextService(context)
         } catch (e: Exception) {
             LogUtil.e(AppConfig.TAG, "StartCore-Manager: ${e.message}", e)
-            context.toast(e.message ?: e.javaClass.simpleName)
+            showFeedback(context, e.message ?: e.javaClass.simpleName, 2)
         }
     }
 
@@ -103,7 +127,6 @@ object CoreServiceManager {
      * @param context The context from which the service is stopped.
      */
     fun stopVService(context: Context) {
-        //context.toast(R.string.toast_services_stop)
         MessageUtil.sendMsg2Service(context, AppConfig.MSG_STATE_STOP, "")
     }
 
@@ -146,7 +169,9 @@ object CoreServiceManager {
                 error(context.getString(R.string.toast_config_file_invalid))
             }
 
-        if (!config.configType.isComplexType()
+        if (config.configType != EConfigType.CUSTOM
+            && config.configType != EConfigType.POLICYGROUP
+            && config.configType != EConfigType.PROXYCHAIN
             && !Utils.isValidUrl(config.server)
             && !Utils.isPureIpAddress(config.server.orEmpty())
         ) {
@@ -161,9 +186,7 @@ object CoreServiceManager {
 //        if (!result.status) error(result.errorMessage.ifBlank { "Failed to get V2Ray config" })
 
         if (MmkvManager.decodeSettingsBool(AppConfig.PREF_PROXY_SHARING)) {
-            context.toast(R.string.toast_warning_pref_proxysharing_short)
-        } else {
-            context.toast(R.string.toast_services_start)
+            showFeedback(context, context.getString(R.string.toast_warning_pref_proxysharing_short), 0)
         }
 
         val isVpnMode = SettingsManager.isVpnMode()

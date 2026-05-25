@@ -1,98 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/main_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical"
     tools:context=".ui.PerAppProxyActivity">
 
-    <LinearLayout
-        android:id="@+id/header_view"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_spacing_dp16">
+        app:liftOnScroll="true">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:background="?attr/colorBg"
+            style="?attr/collapsingToolbarLayoutLargeStyle"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/collapsingToolbarLayoutLargeSize"
+            app:contentScrim="?attr/colorBg"
+            app:collapsedTitleTextAppearance="?attr/textAppearanceTitleLargeEmphasized"
+            app:collapsedTitleTextColor="?attr/colorOnSurfaceVariant"
+            app:expandedTitleMarginBottom="24dp"
+            app:expandedTitleMarginEnd="24dp"
+            app:expandedTitleMarginStart="24dp"
+            app:expandedTitleMarginTop="96dp"
+            app:expandedTitleTextAppearance="?attr/textAppearanceDisplaySmallEmphasized"
+            app:expandedTitleTextColor="?attr/colorOnSurfaceVariant"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:maxLines="4"
+            app:titleCollapseMode="scale">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="0dp"
+                android:layout_marginLeft="8.0dip"
+                android:layout_marginRight="8.0dip"
+                app:layout_collapseMode="pin" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         <LinearLayout
+            android:background="?attr/colorBg"
+            android:id="@+id/header_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp">
 
-            <LinearLayout
+            <com.google.android.material.chip.ChipGroup
+                android:background="?attr/colorBg"
+                android:id="@+id/chip_group_proxy_mode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                app:singleLine="false"
+                app:chipSpacingHorizontal="8dp">
 
-                <LinearLayout
-                    android:id="@+id/container_per_app_proxy"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_per_app_proxy"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/per_app_proxy_settings_enable" />
 
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switch_per_app_proxy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="2"
-                        android:text="@string/per_app_proxy_settings_enable"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        app:theme="@style/BrandedSwitch" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_bypass_apps"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/switch_bypass_apps_mode" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/container_bypass_apps"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switch_bypass_apps"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/switch_bypass_apps_mode"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        app:theme="@style/BrandedSwitch" />
-
-                    <LinearLayout
-                        android:id="@+id/layout_switch_bypass_apps_tips"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:clickable="true"
-                        android:contentDescription="@string/switch_bypass_apps_mode"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:padding="@dimen/padding_spacing_dp8">
-
-                        <ImageView
-                            android:layout_width="@dimen/image_size_dp24"
-                            android:layout_height="@dimen/image_size_dp24"
-                            android:importantForAccessibility="no"
-                            app:srcCompat="@drawable/ic_about_24dp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-            </LinearLayout>
-
-
+            </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
-    </LinearLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="1"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

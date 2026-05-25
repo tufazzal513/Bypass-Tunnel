@@ -1,26 +1,29 @@
 package com.v2ray.ang.ui
 
+import com.v2ray.ang.util.showDeleteConfirmDialog
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.MaterialToolbar
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.contracts.BaseAdapterListener
 import com.v2ray.ang.databinding.ActivityUserAssetBinding
 import com.v2ray.ang.dto.entities.AssetUrlItem
 import com.v2ray.ang.extension.toast
-import com.v2ray.ang.extension.toastError
-import com.v2ray.ang.extension.toastSuccess
+import com.v2ray.ang.extension.alertError
+import com.v2ray.ang.extension.alertSuccess
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.SettingsManager
+import com.v2ray.ang.ui.bottomsheet.AssetMenuBottomSheet
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.Utils
 import com.v2ray.ang.viewmodel.UserAssetViewModel
@@ -29,7 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class UserAssetActivity : HelperBaseActivity() {
+class UserAssetActivity : HelperBaseActivity(), AssetMenuBottomSheet.OnAssetMenuOptionClickListener {
     private val binding by lazy { ActivityUserAssetBinding.inflate(layoutInflater) }
     private val ownerActivity: UserAssetActivity
         get() = this
@@ -40,18 +43,18 @@ class UserAssetActivity : HelperBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentViewWithToolbar(binding.root, showHomeAsUp = true, title = getString(R.string.title_user_asset_setting))
+        
+        setContentView(binding.root)
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setupToolbar(toolbar, showHomeAsUp = true, title = getString(R.string.title_user_asset_setting))
 
         binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        addCustomDividerToRecyclerView(binding.recyclerView, this, R.drawable.custom_divider)
         adapter = UserAssetAdapter(viewModel, extDir, ActivityAdapterListener())
         binding.recyclerView.adapter = adapter
 
-        binding.tvGeoFilesSourcesSummary.text = getGeoFilesSources()
-        binding.layoutGeoFilesSources.setOnClickListener {
-            setGeoFilesSources()
-        }
+        setupGeoFilesSourcesDropdown()
     }
 
     override fun onResume() {
@@ -64,29 +67,50 @@ class UserAssetActivity : HelperBaseActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    // Use when to streamline the option selection
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.add_file -> showFileChooser().let { true }
-        R.id.add_url -> startActivity(Intent(this, UserAssetUrlActivity::class.java)).let { true }
-        R.id.add_qrcode -> importAssetFromQRcode().let { true }
         R.id.download_file -> downloadGeoFiles().let { true }
+        R.id.action_more_menu -> {
+            val bottomSheet = AssetMenuBottomSheet()
+            bottomSheet.show(supportFragmentManager, AssetMenuBottomSheet.TAG)
+            true
+        }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onAssetMenuOptionClicked(viewId: Int) {
+        when (viewId) {
+            R.id.add_file -> showFileChooser()
+            R.id.add_url -> startActivity(Intent(this, UserAssetUrlActivity::class.java))
+            R.id.add_qrcode -> importAssetFromQRcode()
+        }
     }
 
     private fun getGeoFilesSources(): String {
         return MmkvManager.decodeSettingsString(AppConfig.PREF_GEO_FILES_SOURCES) ?: AppConfig.GEO_FILES_SOURCES.first()
     }
 
-    private fun setGeoFilesSources() {
-        AlertDialog.Builder(this).setItems(AppConfig.GEO_FILES_SOURCES.toTypedArray()) { _, i ->
-            try {
-                val value = AppConfig.GEO_FILES_SOURCES[i]
-                MmkvManager.encodeSettings(AppConfig.PREF_GEO_FILES_SOURCES, value)
-                binding.tvGeoFilesSourcesSummary.text = value
-            } catch (e: Exception) {
-                LogUtil.e(AppConfig.TAG, "Failed to set geo files sources", e)
+    private fun setupGeoFilesSourcesDropdown() {
+        val dropdownAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            AppConfig.GEO_FILES_SOURCES
+        )
+
+        binding.tvGeoFilesSourcesDropdown.apply {
+            setAdapter(dropdownAdapter)
+            setText(getGeoFilesSources(), false)
+
+            setOnItemClickListener { _, _, position, _ ->
+                try {
+                    val value = AppConfig.GEO_FILES_SOURCES[position]
+                    MmkvManager.encodeSettings(AppConfig.PREF_GEO_FILES_SOURCES, value)
+                    
+                    refreshData() 
+                } catch (e: Exception) {
+                    LogUtil.e(AppConfig.TAG, "Failed to set geo files sources", e)
+                }
             }
-        }.show()
+        }
     }
 
     private fun showFileChooser() {
@@ -110,7 +134,10 @@ class UserAssetActivity : HelperBaseActivity() {
                     copyFile(uri)
                 }
             }.onFailure {
-                toastError(R.string.toast_asset_copy_failed)
+                alertError(
+                    getString(R.string.toast_asset_copy_failed),
+                    title = getString(R.string.title_alerter_error)
+                )
                 MmkvManager.removeAssetUrl(assetId)
             }
         }
@@ -121,7 +148,10 @@ class UserAssetActivity : HelperBaseActivity() {
         contentResolver.openInputStream(uri).use { inputStream ->
             targetFile.outputStream().use { fileOut ->
                 inputStream?.copyTo(fileOut)
-                toastSuccess(R.string.toast_success)
+                alertSuccess(
+                    getString(R.string.menu_item_add_file),
+                    title = getString(R.string.title_alerter_success)
+                )
                 refreshData()
             }
         }
@@ -149,14 +179,12 @@ class UserAssetActivity : HelperBaseActivity() {
         return true
     }
 
-
     private fun importAsset(url: String?): Boolean {
         try {
             if (!Utils.isValidUrl(url)) {
                 toast(R.string.toast_invalid_url)
                 return false
             }
-            // Send URL to UserAssetUrlActivity for Processing
             startActivity(
                 Intent(this, UserAssetUrlActivity::class.java)
                     .putExtra(UserAssetUrlActivity.ASSET_URL_QRCODE, url)
@@ -180,9 +208,15 @@ class UserAssetActivity : HelperBaseActivity() {
             val result = viewModel.downloadGeoFiles(extDir, httpPort, proxyUsername, proxyPassword)
             withContext(Dispatchers.Main) {
                 if (result.successCount > 0) {
-                    toast(getString(R.string.title_update_config_count, result.successCount))
+                    alertSuccess(
+                        getString(R.string.title_update_config_count, result.successCount),
+                        title = getString(R.string.title_alerter_success)
+                    )
                 } else {
-                    toast(getString(R.string.toast_failure))
+                    alertError(
+                        getString(R.string.menu_item_download_file),
+                        title = getString(R.string.title_alerter_error)
+                    )
                 }
                 refreshData()
                 hideLoading()
@@ -219,16 +253,11 @@ class UserAssetActivity : HelperBaseActivity() {
                 ?: return
             val file = extDir.listFiles()?.find { it.name == asset.assetUrl.remarks }
 
-            AlertDialog.Builder(ownerActivity).setMessage(R.string.del_config_comfirm)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    file?.delete()
-                    MmkvManager.removeAssetUrl(guid)
-                    initAssets()
-                }
-                .setNegativeButton(android.R.string.cancel) { _, _ ->
-                    // do nothing
-                }
-                .show()
+            showDeleteConfirmDialog(context = ownerActivity, messageRes = R.string.del_file_asset_dialog_comfirm_message) {
+                file?.delete()
+                MmkvManager.removeAssetUrl(guid)
+                initAssets()
+            }
         }
 
         override fun onShare(url: String) {

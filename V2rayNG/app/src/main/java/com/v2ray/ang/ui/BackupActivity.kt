@@ -1,10 +1,12 @@
 package com.v2ray.ang.ui
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.v2ray.ang.util.showBlur
 import com.tencent.mmkv.MMKV
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.AppConfig.WEBDAV_BACKUP_FILE_NAME
@@ -13,8 +15,8 @@ import com.v2ray.ang.R
 import com.v2ray.ang.databinding.ActivityBackupBinding
 import com.v2ray.ang.databinding.DialogWebdavBinding
 import com.v2ray.ang.dto.entities.WebDavConfig
-import com.v2ray.ang.extension.toastError
-import com.v2ray.ang.extension.toastSuccess
+import com.v2ray.ang.extension.alertError
+import com.v2ray.ang.extension.alertSuccess
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.SettingsChangeManager
 import com.v2ray.ang.handler.SettingsManager
@@ -35,22 +37,24 @@ class BackupActivity : HelperBaseActivity() {
         resources.getStringArray(R.array.config_backup_options)
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(binding.root)
-        setContentViewWithToolbar(binding.root, showHomeAsUp = true, title = getString(R.string.title_configuration_backup_restore))
+        
+        setContentView(binding.root)
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setupToolbar(toolbar, showHomeAsUp = true, title = getString(R.string.title_configuration_backup_restore))
 
         binding.layoutBackup.setOnClickListener {
-            AlertDialog.Builder(this)
+            MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.title_configuration_backup)
-                .setItems(config_backup_options) { dialog, which ->
+                .setItems(config_backup_options) { _, which ->
                     when (which) {
                         0 -> backupViaLocal()
                         1 -> backupViaWebDav()
                     }
                 }
-                .show()
+                .showBlur()
         }
 
         binding.layoutShare.setOnClickListener {
@@ -69,20 +73,23 @@ class BackupActivity : HelperBaseActivity() {
                     )
                 )
             } else {
-                toastError(R.string.toast_failure)
+                alertError(
+                    getString(R.string.title_configuration_share), 
+                    title = getString(R.string.title_alerter_error)
+                )
             }
         }
 
         binding.layoutRestore.setOnClickListener {
-            AlertDialog.Builder(this)
+            MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.title_configuration_restore)
-                .setItems(config_backup_options) { dialog, which ->
+                .setItems(config_backup_options) { _, which ->
                     when (which) {
                         0 -> restoreViaLocal()
                         1 -> restoreViaWebDav()
                     }
                 }
-                .show()
+                .showBlur()
         }
 
         binding.layoutWebdavConfigSetting.setOnClickListener {
@@ -108,10 +115,10 @@ class BackupActivity : HelperBaseActivity() {
             return Pair(false, "")
         }
 
-        if (ZipUtil.zipFromFolder(backupDir, outputZipFilePath)) {
-            return Pair(true, outputZipFilePath)
+        return if (ZipUtil.zipFromFolder(backupDir, outputZipFilePath)) {
+            Pair(true, outputZipFilePath)
         } else {
-            return Pair(false, "")
+            Pair(false, "")
         }
     }
 
@@ -144,13 +151,22 @@ class BackupActivity : HelperBaseActivity() {
                     }
                 }
                 if (restoreConfiguration(targetFile)) {
-                    toastSuccess(R.string.toast_success)
+                    alertSuccess(
+                        getString(R.string.title_configuration_restore), 
+                        title = getString(R.string.title_alerter_success)
+                    )
                 } else {
-                    toastError(R.string.toast_failure)
+                    alertError(
+                        getString(R.string.title_configuration_restore), 
+                        title = getString(R.string.title_alerter_error)
+                    )
                 }
             } catch (e: Exception) {
                 LogUtil.e(AppConfig.TAG, "Error during file restore", e)
-                toastError(R.string.toast_failure)
+                alertError(
+                    getString(R.string.title_configuration_restore), 
+                    title = getString(R.string.title_alerter_error)
+                )
             }
         }
     }
@@ -175,13 +191,22 @@ class BackupActivity : HelperBaseActivity() {
                         }
                         // Clean up cache file
                         File(ret.second).delete()
-                        toastSuccess(R.string.toast_success)
+                        alertSuccess(
+                            getString(R.string.title_configuration_backup), 
+                            title = getString(R.string.title_alerter_success)
+                        )
                     } else {
-                        toastError(R.string.toast_failure)
+                        alertError(
+                            getString(R.string.title_configuration_backup), 
+                            title = getString(R.string.title_alerter_error)
+                        )
                     }
                 } catch (e: Exception) {
                     LogUtil.e(AppConfig.TAG, "Failed to backup configuration", e)
-                    toastError(R.string.toast_failure)
+                    alertError(
+                        getString(R.string.title_configuration_backup), 
+                        title = getString(R.string.title_alerter_error)
+                    )
                 }
             }
         }
@@ -194,7 +219,10 @@ class BackupActivity : HelperBaseActivity() {
     private fun backupViaWebDav() {
         val saved = MmkvManager.decodeWebDavConfig()
         if (saved == null || saved.baseUrl.isEmpty()) {
-            toastError(R.string.title_webdav_config_setting_unknown)
+            alertError(
+                getString(R.string.title_webdav_config_setting_unknown), 
+                title = getString(R.string.title_alerter_error)
+            )
             return
         }
 
@@ -206,7 +234,10 @@ class BackupActivity : HelperBaseActivity() {
                 val ret = backupConfigurationToCache()
                 if (!ret.first) {
                     withContext(Dispatchers.Main) {
-                        toastError(R.string.toast_failure)
+                        alertError(
+                            getString(R.string.title_configuration_backup), 
+                            title = getString(R.string.title_alerter_error)
+                        )
                     }
                     return@launch
                 }
@@ -222,12 +253,25 @@ class BackupActivity : HelperBaseActivity() {
                 }
 
                 withContext(Dispatchers.Main) {
-                    if (ok) toastSuccess(R.string.toast_success) else toastError(R.string.toast_failure)
+                    if (ok) {
+                        alertSuccess(
+                            getString(R.string.title_configuration_backup), 
+                            title = getString(R.string.title_alerter_success)
+                        )
+                    } else {
+                        alertError(
+                            getString(R.string.title_configuration_backup), 
+                            title = getString(R.string.title_alerter_error)
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 LogUtil.e(AppConfig.TAG, "WebDAV backup error", e)
                 withContext(Dispatchers.Main) {
-                    toastError(R.string.toast_failure)
+                    alertError(
+                        getString(R.string.title_configuration_backup), 
+                        title = getString(R.string.title_alerter_error)
+                    )
                 }
             } finally {
                 try {
@@ -244,7 +288,10 @@ class BackupActivity : HelperBaseActivity() {
     private fun restoreViaWebDav() {
         val saved = MmkvManager.decodeWebDavConfig()
         if (saved == null || saved.baseUrl.isEmpty()) {
-            toastError(R.string.title_webdav_config_setting_unknown)
+            alertError(
+                getString(R.string.title_webdav_config_setting_unknown), 
+                title = getString(R.string.title_alerter_error)
+            )
             return
         }
 
@@ -258,7 +305,10 @@ class BackupActivity : HelperBaseActivity() {
                 val ok = WebDavManager.downloadFile(WEBDAV_BACKUP_FILE_NAME, target)
                 if (!ok) {
                     withContext(Dispatchers.Main) {
-                        toastError(R.string.toast_failure)
+                        alertError(
+                            getString(R.string.title_configuration_restore), 
+                            title = getString(R.string.title_alerter_error)
+                        )
                     }
                     return@launch
                 }
@@ -266,14 +316,25 @@ class BackupActivity : HelperBaseActivity() {
                 val restored = restoreConfiguration(target)
                 withContext(Dispatchers.Main) {
                     if (restored) {
-                        toastSuccess(R.string.toast_success)
+                        alertSuccess(
+                            getString(R.string.title_configuration_restore), 
+                            title = getString(R.string.title_alerter_success)
+                        )
                     } else {
-                        toastError(R.string.toast_failure)
+                        alertError(
+                            getString(R.string.title_configuration_restore), 
+                            title = getString(R.string.title_alerter_error)
+                        )
                     }
                 }
             } catch (e: Exception) {
                 LogUtil.e(AppConfig.TAG, "WebDAV download error", e)
-                withContext(Dispatchers.Main) { toastError(R.string.toast_failure) }
+                withContext(Dispatchers.Main) { 
+                    alertError(
+                        getString(R.string.title_configuration_restore), 
+                        title = getString(R.string.title_alerter_error)
+                    ) 
+                }
             } finally {
                 try {
                     target?.delete()
@@ -296,7 +357,7 @@ class BackupActivity : HelperBaseActivity() {
             dialogBinding.etWebdavRemotePath.setText(cfg.remoteBasePath ?: "/")
         }
 
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle(R.string.title_webdav_config_setting)
             .setView(dialogBinding.root)
             .setPositiveButton(R.string.menu_item_save_config) { _, _ ->
@@ -306,9 +367,13 @@ class BackupActivity : HelperBaseActivity() {
                 val remotePath = dialogBinding.etWebdavRemotePath.text.toString().trim().ifEmpty { AppConfig.WEBDAV_BACKUP_DIR }
                 val cfg = WebDavConfig(baseUrl = url, username = user, password = pass, remoteBasePath = remotePath)
                 MmkvManager.encodeWebDavConfig(cfg)
-                toastSuccess(R.string.toast_success)
+                
+                alertSuccess(
+                    getString(R.string.title_webdav_config_setting), 
+                    title = getString(R.string.title_alerter_success)
+                )
             }
             .setNegativeButton(android.R.string.cancel, null)
-            .show()
+            .showBlur()
     }
 }

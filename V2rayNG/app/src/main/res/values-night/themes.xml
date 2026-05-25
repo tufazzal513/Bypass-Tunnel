@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Night theme: inherit the shared AppThemeBase and only override night-specific items -->
-    <style name="AppThemeDayNight" parent="AppThemeBase">
-        <!-- Night mode specific overrides -->
+   <style name="AppThemeBase" parent="Theme.Material3Expressive.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.App.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.App.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.App.LargeComponent</item>
+        <item name="android:colorBackground">?colorBg</item>        
+        <item name="android:windowBackground">?colorBg</item>
+        <item name="colorBg">?colorSurface</item>
+        <item name="colorCard">?colorSurfaceContainerLow</item>       
+        <item name="bottomSheetDialogTheme">@style/AppThemeBottomSheetDialog</item>
+        <item name="materialAlertDialogTheme">@style/AppThemeAlertDialog</item>
+        <item name="alertDialogTheme">@style/AppThemeAlertDialog</item>
+        <item name="android:scrollbarSize">0.0dip</item>
+        <item name="android:listDivider">@null</item>
+        <item name="android:colorEdgeEffect">@null</item>
+        <item name="elevation">0.0dip</item>
+        <item name="preferenceTheme">@style/AppThemePreference</item>
+        <item name="android:homeAsUpIndicator">@drawable/uwu_back_arrow</item>
     </style>
-
+    
 </resources>

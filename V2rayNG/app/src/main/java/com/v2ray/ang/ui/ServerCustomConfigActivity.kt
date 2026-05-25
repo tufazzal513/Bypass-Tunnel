@@ -4,22 +4,24 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AlertDialog
+import com.v2ray.ang.util.showDeleteConfirmDialog
 import com.blacksquircle.ui.editorkit.utils.EditorTheme
 import com.blacksquircle.ui.language.json.JsonLanguage
+import com.google.android.material.appbar.MaterialToolbar
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.databinding.ActivityServerCustomConfigBinding
 import com.v2ray.ang.dto.entities.ProfileItem
 import com.v2ray.ang.enums.EConfigType
 import com.v2ray.ang.extension.toast
+import com.v2ray.ang.extension.alertError
 import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.fmt.CustomFmt
 import com.v2ray.ang.handler.AngConfigManager
 import com.v2ray.ang.handler.MmkvManager
-import com.v2ray.ang.handler.SettingsChangeManager
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.Utils
+import com.v2ray.ang.util.SoftInputAssist
 
 class ServerCustomConfigActivity : BaseActivity() {
     private val binding by lazy { ActivityServerCustomConfigBinding.inflate(layoutInflater) }
@@ -30,11 +32,19 @@ class ServerCustomConfigActivity : BaseActivity() {
                 && editGuid.isNotEmpty()
                 && editGuid == MmkvManager.getSelectServer()
     }
+    
+    private lateinit var softInputAssist: SoftInputAssist
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(binding.root)
-        setContentViewWithToolbar(binding.root, showHomeAsUp = true, title = EConfigType.CUSTOM.toString())
+        
+        setContentView(binding.root)
+        
+        softInputAssist = SoftInputAssist(this)
+        
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setupToolbar(toolbar, showHomeAsUp = true, title = EConfigType.CUSTOM.toString())
 
         if (!Utils.getDarkModeStatus(this)) {
             binding.editor.colorScheme = EditorTheme.INTELLIJ_LIGHT
@@ -73,7 +83,10 @@ class ServerCustomConfigActivity : BaseActivity() {
      */
     private fun saveServer(): Boolean {
         if (TextUtils.isEmpty(binding.etRemarks.text.toString())) {
-            toast(R.string.server_lab_remarks)
+            alertError(
+                getString(R.string.server_lab_remarks),
+                title = getString(R.string.title_alerter_error)
+            )
             return false
         }
 
@@ -95,37 +108,37 @@ class ServerCustomConfigActivity : BaseActivity() {
 
         MmkvManager.encodeServerConfig(editGuid, config)
         MmkvManager.encodeServerRaw(editGuid, binding.editor.text.toString())
-        if (isRunning) {
-            SettingsChangeManager.makeRestartService()
-        }
         toastSuccess(R.string.toast_success)
         finish()
         return true
     }
 
     /**
-     * save server config
+     * delete server config
      */
     private fun deleteServer(): Boolean {
         if (editGuid.isNotEmpty()) {
-            AlertDialog.Builder(this).setMessage(R.string.del_config_comfirm)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    MmkvManager.removeServer(editGuid)
-                    finish()
-                }
-                .setNegativeButton(android.R.string.cancel) { _, _ ->
-                    // do nothing
-                }
-                .show()
+            showDeleteConfirmDialog(context = this, messageRes = R.string.del_config_dialog_comfirm_message) {
+                MmkvManager.removeServer(editGuid)
+                finish()
+            }
         }
         return true
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.action_server, menu)
-
         val delButton = menu.findItem(R.id.del_config)
-        delButton?.isVisible = editGuid.isNotEmpty() && !isRunning
+        val saveButton = menu.findItem(R.id.save_config)
+
+        if (editGuid.isNotEmpty()) {
+            if (isRunning) {
+                delButton?.isVisible = false
+                saveButton?.isVisible = false
+            }
+        } else {
+            delButton?.isVisible = false
+        }
 
         return super.onCreateOptionsMenu(menu)
     }
@@ -143,4 +156,25 @@ class ServerCustomConfigActivity : BaseActivity() {
 
         else -> super.onOptionsItemSelected(item)
     }
+    
+    override fun onResume() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onResume()
+        }
+        super.onResume()
+    }
+
+    override fun onPause() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onPause()
+        }
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onDestroy()
+        }
+        super.onDestroy()
+    } 
 }

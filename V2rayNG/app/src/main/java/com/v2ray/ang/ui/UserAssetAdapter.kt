@@ -2,8 +2,8 @@ package com.v2ray.ang.ui
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.v2ray.ang.R
 import com.v2ray.ang.contracts.BaseAdapterListener
@@ -37,35 +37,31 @@ class UserAssetAdapter(
         val item = viewModel.getAsset(position) ?: return
         val file = extDir.listFiles()?.find { it.name == item.assetUrl.remarks }
 
-        holder.itemUserAssetBinding.assetName.text = item.assetUrl.remarks
+        with(holder.binding) {
+            assetName.text = item.assetUrl.remarks
 
-        if (file != null) {
-            val dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM)
-            holder.itemUserAssetBinding.assetProperties.text =
-                "${file.length().toTrafficString()}  •  ${dateFormat.format(Date(file.lastModified()))}"
-        } else {
-            holder.itemUserAssetBinding.assetProperties.text =
-                holder.itemUserAssetBinding.root.context.getString(R.string.msg_file_not_found)
-        }
-
-        if (item.assetUrl.locked == true) {
-            holder.itemUserAssetBinding.layoutEdit.visibility = View.GONE
-        } else {
-            holder.itemUserAssetBinding.layoutEdit.visibility = if (item.assetUrl.url == "file") {
-                View.GONE
+            if (file != null) {
+                val dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM)
+                assetProperties.text = "${file.length().toTrafficString()}  •  ${dateFormat.format(Date(file.lastModified()))}"
             } else {
-                View.VISIBLE
+                assetProperties.text = root.context.getString(R.string.msg_file_not_found)
             }
-        }
 
-        holder.itemUserAssetBinding.layoutEdit.setOnClickListener {
-            adapterListener?.onEdit(item.guid, position)
-        }
-        holder.itemUserAssetBinding.layoutRemove.setOnClickListener {
-            adapterListener?.onRemove(item.guid, position)
+            layoutEdit.isVisible = item.assetUrl.locked != true && item.assetUrl.url != "file"
+
+            layoutEdit.setOnClickListener {
+                adapterListener?.onEdit(item.guid, position)
+            }
+
+            layoutRemove.setOnClickListener {
+                adapterListener?.onRemove(item.guid, position)
+            }
+
+            layoutCard.setOnClickListener {
+            }
         }
     }
 
-    class UserAssetViewHolder(val itemUserAssetBinding: ItemRecyclerUserAssetBinding) :
-        RecyclerView.ViewHolder(itemUserAssetBinding.root)
+    class UserAssetViewHolder(val binding: ItemRecyclerUserAssetBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

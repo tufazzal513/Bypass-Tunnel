@@ -6,7 +6,6 @@ import com.v2ray.ang.dto.CoreConfigContext
 import com.v2ray.ang.dto.entities.ProfileItem
 import com.v2ray.ang.enums.CoreResolvedType
 import com.v2ray.ang.enums.EConfigType
-import com.v2ray.ang.extension.isComplexType
 import com.v2ray.ang.extension.isNotNullEmpty
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.SettingsManager
@@ -164,7 +163,9 @@ object CoreConfigContextBuilder {
                 }
                 .filter { it.server.isNotNullEmpty() }
                 .filter { !Utils.isPureIpAddress(it.server!!) || Utils.isValidUrl(it.server!!) }
-                .filter { !it.configType.isComplexType() }
+                .filter { it.configType != EConfigType.CUSTOM }
+                .filter { it.configType != EConfigType.POLICYGROUP }
+                .filter { it.configType != EConfigType.PROXYCHAIN }
                 .toList()
         } catch (e: Exception) {
             LogUtil.e(AppConfig.TAG, "Failed to resolve policy group profiles for '${config.remarks}'", e)
@@ -183,7 +184,9 @@ object CoreConfigContextBuilder {
                 .mapNotNull { remark -> SettingsManager.getServerViaRemarks(remark) }
                 .filter { it.server.isNotNullEmpty() }
                 .filter { !Utils.isPureIpAddress(it.server!!) || Utils.isValidUrl(it.server!!) }
-                .filter { !it.configType.isComplexType() }
+                .filter { it.configType != EConfigType.CUSTOM }
+                .filter { it.configType != EConfigType.POLICYGROUP }
+                .filter { it.configType != EConfigType.PROXYCHAIN }
                 .toList()
                 .reversed()
         } catch (e: Exception) {

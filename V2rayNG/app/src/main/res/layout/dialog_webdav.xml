@@ -1,44 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/padding_spacing_dp16">
+        android:padding="16dp">
 
-        <EditText
-            android:id="@+id/et_webdav_url"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:hint="@string/title_webdav_url"
-            android:inputType="textUri"
-            android:layout_marginTop="@dimen/padding_spacing_dp8" />
+            app:startIconDrawable="@drawable/ic_share_24dp"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
-        <EditText
-            android:id="@+id/et_webdav_user"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_webdav_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textUri" />
+            
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:hint="@string/title_webdav_user"
-            android:layout_marginTop="@dimen/padding_spacing_dp8" />
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
-        <EditText
-            android:id="@+id/et_webdav_pass"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_webdav_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:hint="@string/title_webdav_pass"
-            android:inputType="textPassword"
-            android:layout_marginTop="@dimen/padding_spacing_dp8" />
+            app:endIconMode="password_toggle"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
-        <EditText
-            android:id="@+id/et_webdav_remote_path"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_webdav_pass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:hint="@string/title_webdav_remote_path"
-            android:layout_marginTop="@dimen/padding_spacing_dp8" />
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_webdav_remote_path"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

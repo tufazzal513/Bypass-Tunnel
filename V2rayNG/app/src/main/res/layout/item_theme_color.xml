@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Satu item warna di dalam GridLayout dialog tema.
+    Berisi lingkaran berwarna + centang (checkmark) jika terpilih.
+    Background diset secara programatis di ThemeColorDialog.kt.
+-->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_columnWeight="1"
+    android:padding="6dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/iv_color_circle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:elevation="0dp"
+        android:contentDescription="@null" />
+
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_action_done"
+        android:tint="?android:textColorPrimaryInverse"
+        android:elevation="0dp"
+        android:visibility="gone"
+        android:contentDescription="@null" />
+
+</FrameLayout>

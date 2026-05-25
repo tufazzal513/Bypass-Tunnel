@@ -4,17 +4,19 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AlertDialog
+import com.v2ray.ang.util.showDeleteConfirmDialog
+import com.google.android.material.appbar.MaterialToolbar
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.databinding.ActivityUserAssetUrlBinding
 import com.v2ray.ang.dto.entities.AssetUrlItem
-import com.v2ray.ang.extension.toast
+import com.v2ray.ang.extension.alertError
 import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.Utils
 import java.io.File
+import com.v2ray.ang.util.SoftInputAssist
 
 class UserAssetUrlActivity : BaseActivity() {
     // Receive QRcode URL from UserAssetActivity
@@ -29,32 +31,40 @@ class UserAssetUrlActivity : BaseActivity() {
 
     private val extDir by lazy { File(Utils.userAssetPath(this)) }
     private val editAssetId by lazy { intent.getStringExtra("assetId").orEmpty() }
+    
+    private lateinit var softInputAssist: SoftInputAssist
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(binding.root)
-        setContentViewWithToolbar(binding.root, showHomeAsUp = true, title = getString(R.string.title_user_asset_add_url))
+        
+        setContentView(binding.root)
+        
+        softInputAssist = SoftInputAssist(this)
+        
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setupToolbar(toolbar, showHomeAsUp = true, title = getString(R.string.title_user_asset_add_url))
 
         val assetItem = MmkvManager.decodeAsset(editAssetId)
         val assetUrlQrcode = intent.getStringExtra(ASSET_URL_QRCODE)
-        val assetNameQrcode = File(assetUrlQrcode.toString()).name
+        val assetNameQrcode = assetUrlQrcode?.let { File(it).name }
+        
         when {
             assetItem != null -> bindingAsset(assetItem)
             assetUrlQrcode != null -> {
                 binding.etRemarks.setText(assetNameQrcode)
                 binding.etUrl.setText(assetUrlQrcode)
             }
-
             else -> clearAsset()
         }
     }
 
     /**
-     * bingding seleced asset config
+     * binding selected asset config
      */
     private fun bindingAsset(assetItem: AssetUrlItem): Boolean {
-        binding.etRemarks.text = Utils.getEditable(assetItem.remarks)
-        binding.etUrl.text = Utils.getEditable(assetItem.url)
+        binding.etRemarks.setText(Utils.getEditable(assetItem.remarks))
+        binding.etUrl.setText(Utils.getEditable(assetItem.url))
         return true
     }
 
@@ -73,6 +83,7 @@ class UserAssetUrlActivity : BaseActivity() {
     private fun saveServer(): Boolean {
         var assetItem = MmkvManager.decodeAsset(editAssetId)
         var assetId = editAssetId
+        
         if (assetItem != null) {
             // remove file associated with the asset
             val file = extDir.resolve(assetItem.remarks)
@@ -88,23 +99,31 @@ class UserAssetUrlActivity : BaseActivity() {
             assetItem = AssetUrlItem()
         }
 
-        assetItem.remarks = binding.etRemarks.text.toString()
-        assetItem.url = binding.etUrl.text.toString()
+        assetItem.remarks = binding.etRemarks.text?.toString().orEmpty()
+        assetItem.url = binding.etUrl.text?.toString().orEmpty()
 
         // check remarks unique
         val assetList = MmkvManager.decodeAssetUrls()
         if (assetList.any { it.assetUrl.remarks == assetItem.remarks && it.guid != assetId }) {
-            toast(R.string.msg_remark_is_duplicate)
+            alertError(
+                getString(R.string.msg_remark_is_duplicate),
+                title = getString(R.string.title_alerter_error)
+            )
             return false
         }
 
-
         if (TextUtils.isEmpty(assetItem.remarks)) {
-            toast(R.string.sub_setting_remarks)
+            alertError(
+                getString(R.string.sub_setting_remarks),
+                title = getString(R.string.title_alerter_error)
+            )
             return false
         }
         if (TextUtils.isEmpty(assetItem.url)) {
-            toast(R.string.title_url)
+            alertError(
+                getString(R.string.title_url),
+                title = getString(R.string.title_alerter_error)
+            )
             return false
         }
 
@@ -115,19 +134,14 @@ class UserAssetUrlActivity : BaseActivity() {
     }
 
     /**
-     * save server config
+     * delete server config
      */
     private fun deleteServer(): Boolean {
         if (editAssetId.isNotEmpty()) {
-            AlertDialog.Builder(this).setMessage(R.string.del_config_comfirm)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    MmkvManager.removeAssetUrl(editAssetId)
-                    finish()
-                }
-                .setNegativeButton(android.R.string.cancel) { _, _ ->
-                    // do nothing
-                }
-                .show()
+            showDeleteConfirmDialog(context = this, messageRes = R.string.del_file_asset_dialog_comfirm_message) {
+                MmkvManager.removeAssetUrl(editAssetId)
+                finish()
+            }
         }
         return true
     }
@@ -157,4 +171,25 @@ class UserAssetUrlActivity : BaseActivity() {
 
         else -> super.onOptionsItemSelected(item)
     }
+    
+    override fun onResume() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onResume()
+        }
+        super.onResume()
+    }
+
+    override fun onPause() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onPause()
+        }
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onDestroy()
+        }
+        super.onDestroy()
+    } 
 }

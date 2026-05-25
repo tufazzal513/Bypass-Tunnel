@@ -1,11 +1,14 @@
 package com.v2ray.ang.ui
 
 import android.os.Bundle
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.v2ray.ang.util.showBlur
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.BuildConfig
 import com.v2ray.ang.R
-import com.v2ray.ang.core.CoreNativeManager
 import com.v2ray.ang.databinding.ActivityAboutBinding
+import com.v2ray.ang.core.CoreNativeManager
 import com.v2ray.ang.util.Utils
 
 class AboutActivity : BaseActivity() {
@@ -13,8 +16,11 @@ class AboutActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(binding.root)
-        setContentViewWithToolbar(binding.root, showHomeAsUp = true, title = getString(R.string.title_about))
+        
+        setContentView(binding.root)
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setupToolbar(toolbar, showHomeAsUp = true, title = getString(R.string.title_about))
 
         binding.layoutSoureCcode.setOnClickListener {
             Utils.openUri(this, AppConfig.APP_URL)
@@ -27,11 +33,11 @@ class AboutActivity : BaseActivity() {
         binding.layoutOssLicenses.setOnClickListener {
             val webView = android.webkit.WebView(this)
             webView.loadUrl("file:///android_asset/open_source_licenses.html")
-            android.app.AlertDialog.Builder(this)
+            MaterialAlertDialogBuilder(this)
                 .setTitle("Open source licenses")
                 .setView(webView)
                 .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-                .show()
+                .showBlur()
         }
 
         binding.layoutTgChannel.setOnClickListener {

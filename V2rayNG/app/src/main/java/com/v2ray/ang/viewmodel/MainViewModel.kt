@@ -14,14 +14,11 @@ import com.v2ray.ang.AngApplication
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.dto.GroupMapItem
-import com.v2ray.ang.dto.SubscriptionUpdateResult
-import com.v2ray.ang.dto.TestServiceMessage
 import com.v2ray.ang.dto.entities.ServersCache
 import com.v2ray.ang.dto.entities.SubscriptionCache
-import com.v2ray.ang.extension.isComplexType
+import com.v2ray.ang.dto.SubscriptionUpdateResult
+import com.v2ray.ang.dto.TestServiceMessage
 import com.v2ray.ang.extension.matchesPattern
-import com.v2ray.ang.extension.toastError
-import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.handler.AngConfigManager
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.SettingsManager
@@ -43,9 +40,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var subscriptionId: String = MmkvManager.decodeSettingsString(AppConfig.CACHE_SUBSCRIPTION_ID, "").orEmpty()
     var keywordFilter = ""
     val serversCache = mutableListOf<ServersCache>()
+    
     val isRunning by lazy { MutableLiveData<Boolean>() }
     val updateListAction by lazy { MutableLiveData<Int>() }
     val updateTestResultAction by lazy { MutableLiveData<String>() }
+    
+    // LiveData baru untuk mengirim sinyal alert ke UI (Pair<StatusSuccess, Pesan>)
+    val alertAction by lazy { MutableLiveData<Pair<Boolean, String>>() }
+    
     private val tcpingTestScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     /**
@@ -297,28 +299,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * Removes duplicate servers.
-     * Excludes servers with complex types (Custom, PolicyGroup, or ProxyChain) from duplicate comparison.
      * @return The number of removed servers.
      */
     fun removeDuplicateServer(): Int {
         val serversCacheCopy = serversCache.toList().toMutableList()
         val deleteServer = mutableListOf<String>()
-
         serversCacheCopy.forEachIndexed { index, sc ->
             val profile = sc.profile
-            // Skip if this profile has a complex config type
-            if (profile.configType.isComplexType()) {
-                return@forEachIndexed
-            }
-
             serversCacheCopy.forEachIndexed { index2, sc2 ->
                 if (index2 > index) {
                     val profile2 = sc2.profile
-                    // Skip if the second profile has a complex config type
-                    if (profile2.configType.isComplexType()) {
-                        return@forEachIndexed
-                    }
-
                     if (profile == profile2 && !deleteServer.contains(sc2.guid)) {
                         deleteServer.add(sc2.guid)
                     }
@@ -464,17 +454,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
 
                 AppConfig.MSG_STATE_START_SUCCESS -> {
-                    getApplication<AngApplication>().toastSuccess(R.string.toast_services_success)
+                    val app = getApplication<AngApplication>()
+                    alertAction.value = Pair(true, app.getString(R.string.toast_services_success))
                     isRunning.value = true
                 }
 
                 AppConfig.MSG_STATE_START_FAILURE -> {
+                    val app = getApplication<AngApplication>()
                     val errorMessage = intent.getStringExtra("content")
-                    if (!errorMessage.isNullOrBlank()) {
-                        getApplication<AngApplication>().toastError(errorMessage)
+                    val msg = if (!errorMessage.isNullOrBlank()) {
+                        errorMessage
                     } else {
-                        getApplication<AngApplication>().toastError(R.string.toast_services_failure)
+                        app.getString(R.string.toast_services_failure)
                     }
+                    
+                    alertAction.value = Pair(false, msg)
                     isRunning.value = false
                 }
 

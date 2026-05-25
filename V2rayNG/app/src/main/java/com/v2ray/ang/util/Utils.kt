@@ -549,7 +549,7 @@ object Utils {
      *
      * @return True if the package is Google Play, false otherwise.
      */
-    fun isGoogleFlavor(): Boolean = BuildConfig.FLAVOR == "playstore"
+    fun isGoogleFlavor(): Boolean = true
 
     /**
      * Converts an InetAddress to its long representation

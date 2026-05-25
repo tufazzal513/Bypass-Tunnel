@@ -100,7 +100,6 @@ class AppPickerActivity : BaseActivity() {
 
     private fun setupRecyclerView() {
         binding.recyclerView.adapter = adapter
-        addCustomDividerToRecyclerView(binding.recyclerView, this, R.drawable.custom_divider)
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")

@@ -2,18 +2,19 @@ package com.v2ray.ang.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import com.v2ray.ang.util.showBlur
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.appbar.MaterialToolbar
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.BuildConfig
 import com.v2ray.ang.R
-import com.v2ray.ang.core.CoreNativeManager
 import com.v2ray.ang.databinding.ActivityCheckUpdateBinding
 import com.v2ray.ang.dto.CheckUpdateResult
-import com.v2ray.ang.extension.toast
-import com.v2ray.ang.extension.toastError
-import com.v2ray.ang.extension.toastSuccess
+import com.v2ray.ang.extension.alertError
+import com.v2ray.ang.extension.alertSuccess
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.UpdateCheckerManager
+import com.v2ray.ang.core.CoreNativeManager
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.Utils
 import kotlinx.coroutines.launch
@@ -24,8 +25,11 @@ class CheckUpdateActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(binding.root)
-        setContentViewWithToolbar(binding.root, showHomeAsUp = true, title = getString(R.string.update_check_for_update))
+        
+        setContentView(binding.root)
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setupToolbar(toolbar, showHomeAsUp = true, title = getString(R.string.update_check_for_update))
 
         binding.layoutCheckUpdate.setOnClickListener {
             checkForUpdates(binding.checkPreRelease.isChecked)
@@ -44,7 +48,6 @@ class CheckUpdateActivity : BaseActivity() {
     }
 
     private fun checkForUpdates(includePreRelease: Boolean) {
-        toast(R.string.update_checking_for_update)
         showLoading()
 
         lifecycleScope.launch {
@@ -53,11 +56,17 @@ class CheckUpdateActivity : BaseActivity() {
                 if (result.hasUpdate) {
                     showUpdateDialog(result)
                 } else {
-                    toastSuccess(R.string.update_already_latest_version)
+                    alertSuccess(
+                        getString(R.string.update_already_latest_version),
+                        title = getString(R.string.title_alerter_success)
+                    )
                 }
             } catch (e: Exception) {
                 LogUtil.e(AppConfig.TAG, "Failed to check for updates: ${e.message}")
-                toastError(e.message ?: getString(R.string.toast_failure))
+                alertError(
+                    e.message ?: getString(R.string.update_check_for_update),
+                    title = getString(R.string.title_alerter_error)
+                )
             } finally {
                 hideLoading()
             }
@@ -74,6 +83,6 @@ class CheckUpdateActivity : BaseActivity() {
                 }
             }
             .setNegativeButton(android.R.string.cancel, null)
-            .show()
+            .showBlur()
     }
 }

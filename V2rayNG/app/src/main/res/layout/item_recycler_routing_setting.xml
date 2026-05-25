@@ -4,110 +4,107 @@
     android:id="@+id/item_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="4dp"
     android:gravity="center_vertical">
 
-    <LinearLayout
-        android:id="@+id/info_container"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/layout_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:gravity="center"
-        android:nextFocusRight="@+id/layout_edit"
-        android:orientation="horizontal"
-        android:padding="@dimen/padding_spacing_dp8">
+        app:cardBackgroundColor="?attr/colorCard"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp">
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/info_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="@dimen/padding_spacing_dp8">
+            android:padding="12dp">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/remarks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginEnd="6dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="17sp"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toStartOf="@id/img_locked"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/remarks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            <ImageView
+                android:id="@+id/img_locked"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="12dp"
+                android:importantForAccessibility="no"
+                app:layout_constraintBottom_toBottomOf="@id/remarks"
+                app:layout_constraintEnd_toStartOf="@id/layout_edit"
+                app:layout_constraintStart_toEndOf="@id/remarks"
+                app:layout_constraintTop_toTopOf="@id/remarks"
+                app:srcCompat="@drawable/ic_lock_24dp"
+                app:tint="?attr/colorOnSurfaceVariant" />
 
-                <ImageView
-                    android:id="@+id/img_locked"
-                    android:layout_width="@dimen/padding_spacing_dp16"
-                    android:layout_height="@dimen/padding_spacing_dp16"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/padding_spacing_dp16"
-                    android:importantForAccessibility="no"
-                    app:srcCompat="@drawable/ic_lock_24dp" />
-
-            </LinearLayout>
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/layout_edit"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:contentDescription="@string/menu_item_edit_config"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_edit_24dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:focusable="true"
+                app:tint="?attr/colorOnSurfaceVariant" />
 
             <TextView
                 android:id="@+id/domainIp"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_spacing_dp8"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:ellipsize="end"
                 android:lines="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintEnd_toStartOf="@id/chk_enable"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/remarks" />
 
             <TextView
                 android:id="@+id/outboundTag"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_spacing_dp8"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:ellipsize="end"
                 android:lines="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintEnd_toStartOf="@id/chk_enable"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/domainIp" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/padding_spacing_dp8">
-
-            <LinearLayout
-                android:id="@+id/layout_edit"
+            <com.google.android.material.materialswitch.MaterialSwitch
+                app:thumbIcon="@drawable/mtrl_ic_check"
+                android:id="@+id/chk_enable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:contentDescription="@string/menu_item_edit_config"
-                android:focusable="true"
-                android:gravity="center"
-                android:nextFocusLeft="@+id/info_container"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_spacing_dp8">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_edit" />
 
-                <ImageView
-                    android:layout_width="@dimen/image_size_dp24"
-                    android:layout_height="@dimen/image_size_dp24"
-                    android:importantForAccessibility="no"
-                    app:srcCompat="@drawable/ic_edit_24dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_spacing_dp8"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/chk_enable"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:theme="@style/BrandedSwitch" />
-            </LinearLayout>
-        </LinearLayout>
-
-    </LinearLayout>
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>

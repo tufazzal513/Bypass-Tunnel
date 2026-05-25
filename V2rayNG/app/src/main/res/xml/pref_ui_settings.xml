@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <com.v2ray.ang.ui.preference.CustomBannerPreference
+        android:key="pref_navigate_check_update"
+        android:layout="@layout/uwu_banner_theme"
+        android:title="@string/update_check_for_update"
+        android:summary="@string/uwu_update_summary"
+        app:icon="@drawable/ic_check_update_24dp" />    
+
+    <PreferenceCategory android:title="@string/title_ui_general">
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_baseline_speed_24"
+            app:layout="@layout/uwu_top_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
+            android:key="pref_speed_enabled"
+            android:summary="@string/summary_pref_speed_enabled"
+            android:title="@string/title_pref_speed_enabled" />
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_delete_24dp"
+            app:layout="@layout/uwu_mid_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
+            android:defaultValue="true"
+            android:key="pref_confirm_remove"
+            android:summary="@string/summary_pref_confirm_remove"
+            android:title="@string/title_pref_confirm_remove" />
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_action_qr"
+            app:layout="@layout/uwu_mid_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
+            android:key="pref_start_scan_immediate"
+            android:summary="@string/summary_pref_start_scan_immediate"
+            android:title="@string/title_pref_start_scan_immediate" />
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_group"
+            app:layout="@layout/uwu_mid_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
+            android:key="pref_group_all_display"
+            android:summary="@string/summary_pref_group_all_display"
+            android:title="@string/title_pref_group_all_display" />
+
+        <ListPreference
+            android:icon="@drawable/ic_translate"
+            app:layout="@layout/uwu_bot"
+            android:defaultValue="auto"
+            android:entries="@array/language_select"
+            android:entryValues="@array/language_select_value"
+            android:key="pref_language"
+            android:summary="%s"
+            android:title="@string/title_language" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/title_ui_theme">
+
+        <Preference
+            android:icon="@drawable/ic_baseline_color_lens_24"
+            app:layout="@layout/uwu_top"
+            android:key="pref_app_theme"
+            android:title="@string/title_pref_app_theme"
+            android:summary="@string/summary_pref_app_theme" />
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_baseline_color_lens_24"
+            app:layout="@layout/uwu_mid_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
+            android:defaultValue="false"
+            android:key="pref_dynamic_color"
+            android:title="@string/title_pref_dynamic_color"
+            android:summary="@string/summary_pref_dynamic_color" />
+
+        <ListPreference
+            android:icon="@drawable/ic_weather_night"
+            app:layout="@layout/uwu_mid"
+            android:defaultValue="0"
+            android:entries="@array/ui_mode_night"
+            android:entryValues="@array/ui_mode_night_value"
+            android:key="pref_ui_mode_night"
+            android:summary="%s"
+            android:title="@string/title_pref_ui_mode_night" />
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_weather_night"
+            app:layout="@layout/uwu_bot_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
+            android:defaultValue="false"
+            android:key="pref_true_black"
+            android:title="@string/title_pref_true_black"
+            android:summary="@string/summary_pref_true_black" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/title_ui_appearance">
+
+        <ListPreference
+            android:icon="@drawable/ic_shape_outline"
+            app:layout="@layout/uwu_top"
+            android:defaultValue="uwu_shape_cookie"
+            android:entries="@array/icon_shape_entries"
+            android:entryValues="@array/icon_shape_values"
+            android:key="pref_icon_shape"
+            android:summary="%s"
+            android:title="@string/title_pref_icon_shape" />
+
+        <com.v2ray.ang.ui.dialog.DpiSliderDialog
+            android:icon="@drawable/ic_cellphone_screenshot"
+            app:layout="@layout/uwu_mid"
+            app:key="pref_custom_dpi"
+            app:title="@string/pref_custom_dpi" />
+
+         <androidx.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_baseline_blur_on_24"
+            app:layout="@layout/uwu_mid_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
+            android:defaultValue="false"
+            android:key="pref_enable_blur"
+            android:title="@string/title_pref_enable_blur"
+            android:summary="@string/summary_pref_enable_blur" />
+
+        <Preference
+            android:icon="@drawable/ic_cards_variant"
+            app:layout="@layout/uwu_bot"
+            android:key="pref_indicator_style"
+            android:title="@string/pref_indicator_style_title"
+            android:summary="@string/pref_indicator_style_summary" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

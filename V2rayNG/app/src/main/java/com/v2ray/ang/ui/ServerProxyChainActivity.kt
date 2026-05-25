@@ -4,23 +4,25 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AlertDialog
+import com.v2ray.ang.util.showDeleteConfirmDialog
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.MaterialToolbar
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.contracts.BaseAdapterListener
 import com.v2ray.ang.databinding.ActivityServerProxyChainBinding
 import com.v2ray.ang.dto.entities.ProfileItem
 import com.v2ray.ang.enums.EConfigType
-import com.v2ray.ang.extension.isComplexType
 import com.v2ray.ang.extension.toast
+import com.v2ray.ang.extension.alertError
 import com.v2ray.ang.extension.toastSuccess
-import com.v2ray.ang.handler.MmkvManager
-import com.v2ray.ang.handler.SettingsChangeManager
-import com.v2ray.ang.handler.SettingsManager
 import com.v2ray.ang.helper.SimpleItemTouchHelperCallback
+import com.v2ray.ang.handler.MmkvManager
+import com.v2ray.ang.handler.SettingsManager
 import com.v2ray.ang.util.Utils
+import com.v2ray.ang.handler.SettingsChangeManager
+import com.v2ray.ang.util.SoftInputAssist
 
 class ServerProxyChainActivity : BaseActivity() {
     private val binding by lazy { ActivityServerProxyChainBinding.inflate(layoutInflater) }
@@ -36,10 +38,19 @@ class ServerProxyChainActivity : BaseActivity() {
     private lateinit var memberAdapter: ServerProxyChainMemberAdapter
 
     private var allRemarks: List<String> = emptyList()
+    
+    private lateinit var softInputAssist: SoftInputAssist
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentViewWithToolbar(binding.root, showHomeAsUp = true, title = EConfigType.PROXYCHAIN.toString())
+        
+        setContentView(binding.root)
+        
+        softInputAssist = SoftInputAssist(this)
+        
+
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setupToolbar(toolbar, showHomeAsUp = true, title = EConfigType.PROXYCHAIN.toString())
 
         loadAvailableRemarks()
         setupRecycler()
@@ -94,7 +105,10 @@ class ServerProxyChainActivity : BaseActivity() {
 
     private fun saveServer(): Boolean {
         if (TextUtils.isEmpty(binding.etRemarks.text.toString())) {
-            toast(R.string.server_lab_remarks)
+            alertError(
+                getString(R.string.server_lab_remarks),
+                title = getString(R.string.title_alerter_error)
+            )
             return false
         }
 
@@ -110,7 +124,10 @@ class ServerProxyChainActivity : BaseActivity() {
 
         val invalidMembers = chainMembers.filter { member ->
             val profile = SettingsManager.getServerViaRemarks(member)
-            profile == null || profile.configType.isComplexType()
+            profile == null
+                    || profile.configType == EConfigType.CUSTOM
+                    || profile.configType == EConfigType.POLICYGROUP
+                    || profile.configType == EConfigType.PROXYCHAIN
         }
         if (invalidMembers.isNotEmpty()) {
             toast(getString(R.string.server_proxy_chain_members_invalid, invalidMembers.joinToString(", ")))
@@ -139,15 +156,10 @@ class ServerProxyChainActivity : BaseActivity() {
         if (editGuid.isNotEmpty()) {
             if (editGuid != MmkvManager.getSelectServer()) {
                 if (MmkvManager.decodeSettingsBool(AppConfig.PREF_CONFIRM_REMOVE)) {
-                    AlertDialog.Builder(this).setMessage(R.string.del_config_comfirm)
-                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                            MmkvManager.removeServer(editGuid)
-                            finish()
-                        }
-                        .setNegativeButton(android.R.string.cancel) { _, _ ->
-                            // do nothing
-                        }
-                        .show()
+                    showDeleteConfirmDialog(context = this, messageRes = R.string.del_config_dialog_comfirm_message) {
+                        MmkvManager.removeServer(editGuid)
+                        finish()
+                    }
                 } else {
                     MmkvManager.removeServer(editGuid)
                     finish()
@@ -212,6 +224,25 @@ class ServerProxyChainActivity : BaseActivity() {
 
         else -> super.onOptionsItemSelected(item)
     }
+    
+    override fun onResume() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onResume()
+        }
+        super.onResume()
+    }
+
+    override fun onPause() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onPause()
+        }
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        if (::softInputAssist.isInitialized) {
+            softInputAssist.onDestroy()
+        }
+        super.onDestroy()
+    } 
 }
-
-

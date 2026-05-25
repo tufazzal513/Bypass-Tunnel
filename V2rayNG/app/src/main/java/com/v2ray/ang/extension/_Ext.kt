@@ -6,10 +6,15 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
-import com.v2ray.ang.AngApplication
-import com.v2ray.ang.enums.EConfigType
+import android.app.Activity
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.annotation.DrawableRes
+import com.tapadoo.alerter.Alerter
 import es.dmoral.toasty.Toasty
+import android.widget.Toast
+import com.v2ray.ang.R
+import com.v2ray.ang.AngApplication
 import java.io.Serializable
 import java.net.URI
 import java.util.Locale
@@ -18,12 +23,53 @@ val Context.v2RayApplication: AngApplication?
     get() = applicationContext as? AngApplication
 
 /**
+ * Internal helper to show Alerter with custom layout.
+ *
+ * @param activity The activity to show the alert in.
+ * @param title The title text to display.
+ * @param message The message text to display.
+ * @param iconRes Drawable resource ID for the icon.
+ * @param backgroundColor Background color int for the alert.
+ * @param duration Duration in milliseconds.
+ */
+private fun showAlerter(
+    activity: Activity,
+    title: CharSequence,
+    message: CharSequence,
+    @DrawableRes iconRes: Int,
+    backgroundColor: Int,
+    duration: Long
+) {
+    Alerter.create(activity, R.layout.layout_alerter_custom)
+        .setBackgroundColorInt(backgroundColor)
+        .setDuration(duration)
+        .also { alerter ->
+            alerter.getLayoutContainer()?.apply {
+                findViewById<ImageView>(R.id.iv_alerter_icon)
+                    ?.setImageResource(iconRes)
+                findViewById<TextView>(R.id.tv_alerter_title)
+                    ?.text = title
+                findViewById<TextView>(R.id.tv_alerter_message)
+                    ?.text = message
+            }
+        }
+        .show()
+}
+
+/**
  * Shows a toast message with the given resource ID.
  *
  * @param message The resource ID of the message to show.
  */
 fun Context.toast(message: Int) {
     Toasty.normal(this, message).show()
+}
+
+fun Context.alert(message: Int, title: CharSequence = "") {
+    (this as? Activity)?.let {
+        showAlerter(it, title, getString(message),
+            R.drawable.ic_about_24dp, 0xFF323232.toInt(), 3000L)
+    }
 }
 
 /**
@@ -35,6 +81,13 @@ fun Context.toast(message: CharSequence) {
     Toasty.normal(this, message).show()
 }
 
+fun Context.alert(message: CharSequence, title: CharSequence = "") {
+    (this as? Activity)?.let {
+        showAlerter(it, title, message,
+            R.drawable.ic_about_24dp, 0xFF323232.toInt(), 3000L)
+    }
+}
+
 /**
  * Shows a toast message with the given resource ID.
  *
@@ -42,6 +95,13 @@ fun Context.toast(message: CharSequence) {
  */
 fun Context.toastSuccess(message: Int) {
     Toasty.success(this, message, Toast.LENGTH_SHORT, true).show()
+}
+
+fun Context.alertSuccess(message: Int, title: CharSequence = "") {
+    (this as? Activity)?.let {
+        showAlerter(it, title, getString(message),
+            R.drawable.ic_check, 0xFF388E3C.toInt(), 2000L)
+    }
 }
 
 /**
@@ -53,6 +113,13 @@ fun Context.toastSuccess(message: CharSequence) {
     Toasty.success(this, message, Toast.LENGTH_SHORT, true).show()
 }
 
+fun Context.alertSuccess(message: CharSequence, title: CharSequence = "") {
+    (this as? Activity)?.let {
+        showAlerter(it, title, message,
+            R.drawable.ic_check, 0xFF388E3C.toInt(), 2000L)
+    }
+}
+
 /**
  * Shows a toast message with the given resource ID.
  *
@@ -62,6 +129,13 @@ fun Context.toastError(message: Int) {
     Toasty.error(this, message, Toast.LENGTH_SHORT, true).show()
 }
 
+fun Context.alertError(message: Int, title: CharSequence = "") {
+    (this as? Activity)?.let {
+        showAlerter(it, title, getString(message),
+            R.drawable.ic_uncheck, 0xFFD32F2F.toInt(), 2000L)
+    }
+}
+
 /**
  * Shows a toast message with the given text.
  *
@@ -69,6 +143,13 @@ fun Context.toastError(message: Int) {
  */
 fun Context.toastError(message: CharSequence) {
     Toasty.error(this, message, Toast.LENGTH_SHORT, true).show()
+}
+
+fun Context.alertError(message: CharSequence, title: CharSequence = "") {
+    (this as? Activity)?.let {
+        showAlerter(it, title, message,
+            R.drawable.ic_uncheck, 0xFFD32F2F.toInt(), 2000L)
+    }
 }
 
 const val THRESHOLD = 1000L
@@ -201,22 +282,4 @@ fun String.matchesPattern(regex: Regex?, keyword: String?, ignoreCase: Boolean =
     }
     return regex?.containsMatchIn(this)
         ?: this.contains(keyword, ignoreCase = ignoreCase)
-}
-
-/**
- * Checks if the config type is a group type (PolicyGroup or ProxyChain).
- *
- * @return True if the config type is PolicyGroup or ProxyChain, false otherwise.
- */
-fun EConfigType.isGroupType(): Boolean {
-    return this == EConfigType.POLICYGROUP || this == EConfigType.PROXYCHAIN
-}
-
-/**
- * Checks if the config type is a complex type (Custom, PolicyGroup, or ProxyChain).
- *
- * @return True if the config type is Custom, PolicyGroup, or ProxyChain, false otherwise.
- */
-fun EConfigType.isComplexType(): Boolean {
-    return this == EConfigType.CUSTOM || this == EConfigType.POLICYGROUP || this == EConfigType.PROXYCHAIN
 }

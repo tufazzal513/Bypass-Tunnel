@@ -12,10 +12,10 @@ import com.v2ray.ang.AppConfig.GEOIP_PRIVATE
 import com.v2ray.ang.AppConfig.GEOSITE_PRIVATE
 import com.v2ray.ang.AppConfig.TAG_DIRECT
 import com.v2ray.ang.AppConfig.VPN
-import com.v2ray.ang.dto.V2rayConfig
 import com.v2ray.ang.dto.entities.ProfileItem
 import com.v2ray.ang.dto.entities.RulesetItem
 import com.v2ray.ang.dto.entities.SubscriptionItem
+import com.v2ray.ang.dto.V2rayConfig
 import com.v2ray.ang.enums.EConfigType
 import com.v2ray.ang.enums.Language
 import com.v2ray.ang.enums.RoutingType
@@ -245,7 +245,7 @@ object SettingsManager {
             .mapNotNull { guid -> decodeServerConfig(guid) }
             .firstOrNull { it.remarks == remarks }
     }
-
+    
     /**
      * Collects non-empty profile remarks while excluding specific config types.
      */
@@ -277,7 +277,7 @@ object SettingsManager {
         }
 
         val defaultSub = SubscriptionItem(
-            remarks = "Default",
+            remarks = "Bawaan",
         )
         encodeSubscription(DEFAULT_SUBSCRIPTION_ID, defaultSub)
     }
@@ -436,6 +436,7 @@ object SettingsManager {
             Language.ARABIC -> Locale.forLanguageTag("ar")
             Language.BANGLA -> Locale.forLanguageTag("bn")
             Language.BAKHTIARI -> Locale.forLanguageTag("bqi-IR")
+            Language.INDONESIAN -> Locale.forLanguageTag("id")
         }
     }
 
@@ -456,7 +457,7 @@ object SettingsManager {
      * the corresponding configuration containing IPv4 and IPv6 addresses.
      *
      * @return The selected VpnInterfaceAddressConfig instance, or the default configuration
-     *         if no valid selection is found or if the stored index is invalid.
+     * if no valid selection is found or if the stored index is invalid.
      */
     fun getCurrentVpnInterfaceAddressConfig(): VpnInterfaceAddressConfig {
         val selectedIndex = MmkvManager.decodeSettingsString(AppConfig.PREF_VPN_INTERFACE_ADDRESS_CONFIG_INDEX, "0")?.toInt()
@@ -488,7 +489,7 @@ object SettingsManager {
     }
 
     /**
-     *  Check if process routing can be used.
+     * Check if process routing can be used.
      */
     fun canUseProcessRouting(): Boolean {
         // Android 10+
@@ -618,7 +619,7 @@ object SettingsManager {
     private fun ensureDefaultSubscription() {
         if (decodeSubscription(DEFAULT_SUBSCRIPTION_ID) == null) {
             val defaultSub = SubscriptionItem(
-                remarks = "Default",
+                remarks = "Bawaan",
             )
             encodeSubscription(DEFAULT_SUBSCRIPTION_ID, defaultSub)
 

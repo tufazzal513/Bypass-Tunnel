@@ -1,10 +1,10 @@
 package com.v2ray.ang.ui
 
 import android.graphics.Color
+import android.widget.ArrayAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.v2ray.ang.contracts.BaseAdapterListener
 import com.v2ray.ang.databinding.ItemRecyclerProxyChainMemberBinding
@@ -31,7 +31,6 @@ class ServerProxyChainMemberAdapter(
     }
 
     override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {
-        val adapterPos = holder.bindingAdapterPosition.takeIf { it != RecyclerView.NO_POSITION } ?: position
         val value = members[position]
         holder.binding.tvMemberIndex.text = (position + 1).toString()
 
@@ -42,28 +41,33 @@ class ServerProxyChainMemberAdapter(
         )
         holder.binding.spMemberRemark.setAdapter(dropdownAdapter)
         holder.binding.spMemberRemark.threshold = 0
+        
         holder.binding.spMemberRemark.setText(value, false)
 
         holder.binding.spMemberRemark.setOnItemClickListener { _, _, selectedIndex, _ ->
-            if (adapterPos in members.indices) {
-                members[adapterPos] = suggestions[selectedIndex].trim()
+            val adapterPos = holder.bindingAdapterPosition
+            if (adapterPos != RecyclerView.NO_POSITION && adapterPos in members.indices) {
+                val selectedItem = dropdownAdapter.getItem(selectedIndex)?.toString() ?: ""
+                members[adapterPos] = selectedItem.trim()
                 adapterListener?.onRefreshData()
             }
         }
+
         holder.binding.spMemberRemark.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) return@OnFocusChangeListener
             val text = holder.binding.spMemberRemark.text?.toString().orEmpty().trim()
-            if (adapterPos in members.indices && members[adapterPos] != text) {
+            val adapterPos = holder.bindingAdapterPosition
+            
+            if (adapterPos != RecyclerView.NO_POSITION && adapterPos in members.indices && members[adapterPos] != text) {
                 members[adapterPos] = text
                 adapterListener?.onRefreshData()
             }
         }
-        holder.binding.spMemberRemark.setOnClickListener { holder.binding.spMemberRemark.showDropDown() }
-        holder.binding.btnMemberDropdown.setOnClickListener {
+
+        holder.itemView.setOnClickListener {
             holder.binding.spMemberRemark.requestFocus()
             holder.binding.spMemberRemark.showDropDown()
         }
-        holder.itemView.setOnClickListener { holder.binding.spMemberRemark.showDropDown() }
 
         holder.binding.layoutRemove.setOnClickListener {
             val removePos = holder.bindingAdapterPosition
@@ -107,8 +111,9 @@ class ServerProxyChainMemberAdapter(
         if (fromPosition == toPosition) return true
         Collections.swap(members, fromPosition, toPosition)
         notifyItemMoved(fromPosition, toPosition)
-        notifyItemChanged(fromPosition)
-        notifyItemChanged(toPosition)
+        val minPos = minOf(fromPosition, toPosition)
+        val maxPos = maxOf(fromPosition, toPosition)
+        notifyItemRangeChanged(minPos, maxPos - minPos + 1)
         return true
     }
 
@@ -133,4 +138,3 @@ class ServerProxyChainMemberAdapter(
         }
     }
 }
-

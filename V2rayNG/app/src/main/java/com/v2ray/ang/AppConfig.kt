@@ -1,6 +1,5 @@
 package com.v2ray.ang
 
-
 object AppConfig {
 
     /** The application's package name. */
@@ -49,9 +48,26 @@ object AppConfig {
     const val PREF_CONFIRM_REMOVE = "pref_confirm_remove"
     const val PREF_START_SCAN_IMMEDIATE = "pref_start_scan_immediate"
     const val PREF_DOUBLE_COLUMN_DISPLAY = "pref_double_column_display"
+    const val PREF_APP_THEME = "pref_app_theme"
+    const val PREF_DYNAMIC_COLOR = "pref_dynamic_color"
+    const val PREF_TRUE_BLACK = "pref_true_black"
+    const val PREF_CUSTOM_COLOR = "pref_custom_color"
+    const val PREF_USE_CUSTOM_COLOR = "pref_use_custom_color"
+    const val PREF_ENABLE_BLUR = "pref_enable_blur"
+    const val PREF_ICON_SHAPE = "pref_icon_shape"
+    const val PREF_ICON_SHAPE_DEFAULT = "uwu_shape_cookie"
+    const val PREF_INDICATOR_STYLE = "pref_indicator_style"
     const val PREF_GROUP_ALL_DISPLAY = "pref_group_all_display"
+    const val PREF_NAVIGATE_UI_SETTINGS = "pref_navigate_ui_settings"
+    const val PREF_NAVIGATE_CHECK_UPDATE = "pref_navigate_check_update"
+    const val PREF_NAVIGATE_VPN_SETTINGS = "pref_navigate_vpn_settings"
+    const val PREF_NAVIGATE_CORE_SETTINGS = "pref_navigate_core_settings"
+    const val PREF_NAVIGATE_MUX_SETTINGS = "pref_navigate_mux_settings"
+    const val PREF_NAVIGATE_FRAGMENT_SETTINGS = "pref_navigate_fragment_settings"
+    const val PREF_NAVIGATE_ADVANCED_SETTINGS = "pref_navigate_advanced_settings"
     const val PREF_LANGUAGE = "pref_language"
     const val PREF_UI_MODE_NIGHT = "pref_ui_mode_night"
+    const val PREF_CUSTOM_DPI = "pref_custom_dpi"
     const val PREF_IPV6_ENABLED = "pref_ipv6_enabled"
     const val PREF_PREFER_IPV6 = "pref_prefer_ipv6"
     const val PREF_PROXY_SHARING = "pref_proxy_sharing_enabled"
@@ -90,6 +106,7 @@ object AppConfig {
     const val BROADCAST_ACTION_SERVICE = "$ANG_PACKAGE.action.service"
     const val BROADCAST_ACTION_ACTIVITY = "$ANG_PACKAGE.action.activity"
     const val BROADCAST_ACTION_WIDGET_CLICK = "$ANG_PACKAGE.action.widget.click"
+    const val BROADCAST_ACTION_ICON_SHAPE_CHANGED = "$ANG_PACKAGE.action.icon_shape_changed"
 
     /** Tasker extras. */
     const val TASKER_EXTRA_BUNDLE = "com.twofortyfouram.locale.intent.extra.BUNDLE"
@@ -117,13 +134,13 @@ object AppConfig {
     const val GITHUB_RAW_URL = "https://raw.githubusercontent.com"
     const val GITHUB_DOWNLOAD_URL = "$GITHUB_URL/%s/releases/latest/download"
     const val ANDROID_PACKAGE_NAME_LIST_URL = "$GITHUB_RAW_URL/2dust/androidpackagenamelist/master/proxy.txt"
-    const val APP_URL = "$GITHUB_URL/2dust/v2rayNG"
-    const val APP_API_URL = "https://api.github.com/repos/2dust/v2rayNG/releases"
+    const val APP_URL = "$GITHUB_URL/HatsuneMikuUwU/MikuRay"
+    const val APP_API_URL = "https://api.github.com/repos/HatsuneMikuUwU/MikuRay/releases"
     const val APP_ISSUES_URL = "$APP_URL/issues"
     const val APP_WIKI_MODE = "$APP_URL/wiki/Mode"
-    const val APP_PRIVACY_POLICY = "$GITHUB_RAW_URL/2dust/v2rayNG/master/CR.md"
+    const val APP_PRIVACY_POLICY = "$GITHUB_RAW_URL/HatsuneMikuUwU/MikuRay/master/CR.md"
     const val APP_PROMOTION_URL = "aHR0cHM6Ly85LjIzNDQ1Ni54eXovYWJjLmh0bWw="
-    const val TG_CHANNEL_URL = "https://t.me/github_2dust"
+    const val TG_CHANNEL_URL = "https://t.me/uwuowoumuchannel"
     const val DELAY_TEST_URL = "https://www.gstatic.com/generate_204"
     const val DELAY_TEST_URL2 = "https://www.google.com/generate_204"
 
@@ -174,7 +191,7 @@ object AppConfig {
 
     /** Notification channel IDs and names. */
     const val RAY_NG_CHANNEL_ID = "RAY_NG_M_CH_ID"
-    const val RAY_NG_CHANNEL_NAME = "v2rayNG Background Service"
+    const val RAY_NG_CHANNEL_NAME = "MikuRay Background Service"
 
     /** Protocols Scheme **/
     const val VMESS = "vmess://"

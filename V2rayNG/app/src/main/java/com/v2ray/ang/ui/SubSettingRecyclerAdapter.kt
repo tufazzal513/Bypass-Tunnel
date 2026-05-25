@@ -2,6 +2,7 @@ package com.v2ray.ang.ui
 
 import android.graphics.Color
 import android.text.TextUtils
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,15 +46,15 @@ class SubSettingRecyclerAdapter(
         }
 
         if (TextUtils.isEmpty(subItem.url)) {
-            holder.itemSubSettingBinding.layoutUrl.visibility = View.GONE
+            holder.itemSubSettingBinding.tvUrl.visibility = View.GONE
             holder.itemSubSettingBinding.layoutShare.visibility = View.INVISIBLE
             holder.itemSubSettingBinding.chkEnable.visibility = View.INVISIBLE
-            holder.itemSubSettingBinding.layoutLastUpdated.visibility = View.INVISIBLE
+            holder.itemSubSettingBinding.tvLastUpdated.visibility = View.INVISIBLE
         } else {
-            holder.itemSubSettingBinding.layoutUrl.visibility = View.VISIBLE
+            holder.itemSubSettingBinding.tvUrl.visibility = View.VISIBLE
             holder.itemSubSettingBinding.layoutShare.visibility = View.VISIBLE
             holder.itemSubSettingBinding.chkEnable.visibility = View.VISIBLE
-            holder.itemSubSettingBinding.layoutLastUpdated.visibility = View.VISIBLE
+            holder.itemSubSettingBinding.tvLastUpdated.visibility = View.VISIBLE
             holder.itemSubSettingBinding.layoutShare.setOnClickListener {
                 adapterListener?.onShare(subItem.url)
             }
@@ -75,7 +76,7 @@ class SubSettingRecyclerAdapter(
 
     open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun onItemSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY)
+            itemView.setBackgroundColor(Color.TRANSPARENT)
         }
 
         fun onItemClear() {

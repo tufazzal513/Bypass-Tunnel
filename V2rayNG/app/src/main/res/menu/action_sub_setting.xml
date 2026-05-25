@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/add_config"
-        android:icon="@drawable/ic_add_24dp"
+        android:icon="@drawable/ic_action_note_add"
         android:title="@string/menu_item_add_config"
         app:showAsAction="ifRoom" />
     <item

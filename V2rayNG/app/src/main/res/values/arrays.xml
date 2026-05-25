@@ -141,27 +141,14 @@
         <item>auto</item>
         <item>English</item>
         <item>中文简体</item>
-        <item>中文繁體</item>
-        <item>Tiếng Việt</item>
-        <item>Русский</item>
-        <item>فارسی</item>
-        <item>عربي</item>
-        <item>বাংলা</item>
-        <item>لۊری بختیاری</item>
+        <item>Bahasa Indonesia</item>
     </string-array>
-
 
     <string-array name="language_select_value" translatable="false">
         <item>auto</item>
         <item>en</item>
         <item>zh-rCN</item>
-        <item>zh-rTW</item>
-        <item>vi</item>
-        <item>ru</item>
-        <item>fa</item>
-        <item>ar</item>
-        <item>bn</item>
-        <item>bqi-rIR</item>
+        <item>id</item>
     </string-array>
 
     <string-array name="mux_xudp_quic_value" translatable="false">
@@ -221,5 +208,41 @@
         <item>2</item>
     </string-array>
 
+    <string-array name="icon_shape_entries" translatable="false">
+        <item>Cookie</item>
+        <item>Clover</item>
+        <item>Circle</item>
+        <item>Diamond</item>
+        <item>Pentagon</item>
+        <item>Hexagon</item>
+        <item>Octagon</item>
+        <item>Rounded Square</item>
+        <item>Squircle</item>
+    </string-array>
+
+    <string-array name="icon_shape_values" translatable="false">
+        <item>uwu_shape_cookie</item>
+        <item>uwu_shape_clover</item>
+        <item>uwu_shape_circle</item>
+        <item>uwu_shape_diamond</item>
+        <item>uwu_shape_pentagon</item>
+        <item>uwu_shape_hexagon</item>
+        <item>uwu_shape_octagon</item>
+        <item>uwu_shape_rounded_square</item>
+        <item>uwu_shape_squircle</item>
+    </string-array>
+    
+    <string-array name="uwu_random_text">
+        <item>@string/uwu_random_text_1</item>
+        <item>@string/uwu_random_text_2</item>
+        <item>@string/uwu_random_text_3</item>
+        <item>@string/uwu_random_text_4</item>
+        <item>@string/uwu_random_text_5</item>
+        <item>@string/uwu_random_text_6</item>
+        <item>@string/uwu_random_text_7</item>
+        <item>@string/uwu_random_text_8</item>
+        <item>@string/uwu_random_text_9</item>
+        <item>@string/uwu_random_text_10</item>
+    </string-array>
 
 </resources>

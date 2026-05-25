@@ -30,7 +30,6 @@
     <string name="menu_item_import_config_clipboard">从剪贴板导入</string>
     <string name="menu_item_import_config_local">从本地导入</string>
     <string name="menu_item_import_config_policy_group">添加 [策略组]</string>
-    <string name="menu_item_import_config_proxy_chain">添加 [链式代理]</string>
     <string name="menu_item_import_config_manually_vmess">添加 [VMess]</string>
     <string name="menu_item_import_config_manually_vless">添加 [VLESS]</string>
     <string name="menu_item_import_config_manually_ss">添加 [Shadowsocks]</string>
@@ -39,6 +38,7 @@
     <string name="menu_item_import_config_manually_trojan">添加 [Trojan]</string>
     <string name="menu_item_import_config_manually_wireguard">添加 [Wireguard]</string>
     <string name="menu_item_import_config_manually_hysteria2">添加 [Hysteria2]</string>
+    <string name="menu_item_import_config_proxy_chain">添加 [链式代理]</string>
     <string name="del_config_comfirm">确认删除？</string>
     <string name="del_invalid_config_comfirm">删除前请先测试！确认删除？</string>
     <string name="server_lab_remarks">别名 (remarks)</string>
@@ -118,8 +118,6 @@
     <string name="server_lab_final_mask">FinalMask 原始 JSON 格式: { FinalMaskObject }</string>
     <string name="server_lab_ech_config_list">EchConfigList</string>
     <string name="server_lab_pinned_ca256">证书指纹 (SHA-256)</string>
-    <string name="server_lab_browser_dialer">启用浏览器转发</string>
-    <string name="server_lab_browser_dialer_tip">仅支持 xhttp (packet-up) 和 ws。与优选域名冲突，utls, alpn, ech 等 TLS 设置将被忽略</string>
 
     <!-- UserAssetActivity -->
     <string name="toast_asset_copy_failed">失败, 请使用文件管理器</string>
@@ -157,9 +155,9 @@
     <string name="summary_pref_is_booted">开机时自动连接选择的服务器，可能会不成功</string>
 
     <string name="title_pref_auto_remove_invalid_after_test">测试后自动删除无效配置</string>
-    <string name="summary_pref_auto_remove_invalid_after_test">测试结果可能不准确且已删除的配置无法恢复</string>
+    <string name="summary_pref_auto_remove_invalid_after_test">测试结果可能不准确；已删除的配置无法恢复。</string>
     <string name="title_pref_auto_sort_after_test">测试后自动排序</string>
-    <string name="summary_pref_auto_sort_after_test">测试结果可能不准确</string>
+    <string name="summary_pref_auto_sort_after_test">测试结果可能不准确；</string>
 
     <string name="title_mux_settings">Mux 多路复用 设置</string>
     <string name="title_pref_mux_enabled">启用 Mux 多路复用</string>
@@ -210,7 +208,6 @@
 
     <string name="title_pref_delay_test_url">真连接延迟测试网址 </string>
     <string name="summary_pref_delay_test_url">Url</string>
-    <string name="title_pref_real_ping_concurrency">真连接延迟测试并发数量</string>
 
     <string name="title_pref_ip_api_url">当前连接信息测试网址</string>
     <string name="summary_pref_ip_api_url">URL</string>
@@ -277,7 +274,7 @@
     <string name="title_mode_help">点此查看更多帮助</string>
     <string name="title_language">语言</string>
     <string name="title_ui_settings">用户界面设置</string>
-    <string name="title_pref_ui_mode_night">深色模式</string>
+    <string name="title_pref_ui_mode_night">界面颜色设置</string>
     <string name="title_pref_use_hev_tunnel">启用 Hev TUN 功能</string>
     <string name="summary_pref_use_hev_tunnel">选择启用后 TUN 将使用 hev-socks5-tunnel 否则使用 xray-core</string>
     <string name="title_pref_hev_tunnel_loglevel">HevTun 日志级别</string>
@@ -286,13 +283,13 @@
     <string name="title_logcat">Logcat</string>
     <string name="logcat_copy">复制</string>
     <string name="logcat_clear">清除</string>
-    <string name="logcat_share">分享日志</string>
     <string name="title_service_restart">服务重启</string>
     <string name="title_del_all_config">删除配置</string>
     <string name="title_del_duplicate_config">删除重复配置</string>
     <string name="title_del_invalid_config">删除无效配置</string>
     <string name="title_export_all">导出配置至剪贴板</string>
-    <string name="title_sub_setting">订阅分组设置</string>
+    <string name="title_sub_setting">订阅</string>
+    <string name="status">状态</string>
     <string name="sub_setting_remarks">备注</string>
     <string name="sub_setting_url">可选地址 (url)</string>
     <string name="sub_setting_user_agent">User Agent</string>
@@ -381,12 +378,6 @@
     <string name="title_policy_group_type">策略组类型</string>
     <string name="title_policy_group_subscription_id">来自订阅分组</string>
     <string name="title_policy_group_subscription_filter">别名正则过滤</string>
-    <string name="server_proxy_chain_members">代理链成员</string>
-    <string name="server_proxy_chain_pick_members">点此选择成员</string>
-    <string name="server_proxy_chain_member_unselected">请选择成员</string>
-    <string name="server_proxy_chain_members_unselected">请为链路中的每一行选择成员</string>
-    <string name="server_proxy_chain_members_insufficient">成员数量不足</string>
-    <string name="server_proxy_chain_members_invalid">无效的链路成员: %1$s</string>
 
     <!-- BackupActivity -->
     <string name="title_configuration_backup_restore">备份 &amp; 还原</string>
@@ -460,5 +451,121 @@
         <item>本地</item>
         <item>WebDAV</item>
     </string-array>
+    
+    <!-- New string from new UI-->
+    <string name="import_configuration">导入配置</string>
+    <string name="add_server_manually">手动添加服务器</string>
+    <string name="protocol_policy_group">策略组</string>
+    <string name="protocol_proxy_chain">代理链</string>
+    <string name="quick_actions_and_testing">快捷操作与测试</string>
+    <string name="management">管理</string>
+    <string name="action_export">导出</string>
+    <string name="action_duplicates">重复项</string>
+    <string name="action_clean_invalid">清理无效</string>
+    <string name="action_delete_all">删除全部</string>
+    <string name="app_settings">应用设置</string>
+    <string name="tools_and_info">工具与信息</string>
+    <string name="desc_logcat">查看连接和应用错误日志</string>
+    <string name="desc_check_update">检查并安装最新版本</string>
+    <string name="desc_backup_restore">导出或导入您的配置</string>
+    <string name="desc_about">版本信息和开源许可证</string>
+    <string name="share_configuration">分享配置</string>
+    <string name="share_qrcode">二维码</string>
+    <string name="export_to_clipboard">导出到剪贴板</string>
+    <string name="export_full_config_to_clipboard">导出完整配置到剪贴板</string>
+    <string name="ruleset_management">规则集管理</string>
+    <string name="server_proxy_chain_members">代理链成员</string>
+    <string name="server_proxy_chain_pick_members">点此选择成员</string>
+    <string name="server_proxy_chain_member_unselected">请选择成员</string>
+    <string name="server_proxy_chain_members_unselected">请为链路中的每一行选择成员</string>
+    <string name="server_proxy_chain_members_insufficient">成员数量不足</string>
+    <string name="server_proxy_chain_members_invalid">无效的链路成员: %1$s</string>
+    <string name="title_pref_real_ping_concurrency">真连接延迟测试并发数量</string>
+    <string name="title_pref_app_theme">应用颜色主题</string>
+    <string name="summary_pref_app_theme">选择应用的强调色调色板</string>    
+    <string name="pref_theme_color_title">主题颜色</string>
+    <string name="title_pref_dynamic_color">动态配色 (Material You)</string>
+    <string name="summary_pref_dynamic_color">使用基于壁纸的配色 (Android 12+)。这将覆盖已选的颜色主题</string>
+    <string name="summary_pref_dynamic_color_unavailable">需要 Android 12 或更高版本</string>
+    <string name="title_pref_true_black">纯黑 (AMOLED)</string>
+    <string name="summary_pref_true_black">将背景设置为纯黑色，以在 AMOLED 屏幕上节省电量。仅在深色模式下生效</string>
+    <string name="pref_true_black_only_in_night_mode">仅在深色模式下可用</string>
+    <string name="title_pref_icon_shape">图标形状</string>
+    <string name="summary_pref_icon_shape">选择配置文件图标的形状样式</string>
+    <string name="pref_custom_dpi">自定义应用DPI</string>
+    <string name="reset">重置</string>
+    <string name="pref_custom_color_title">自定义主题颜色</string>
+    <string name="pref_custom_color_reset">重置为预设</string>
+    <string name="indicator_style_title">选择指示器样式</string>
+    <string name="pref_indicator_style_title">服务器指示器样式</string>
+    <string name="pref_indicator_style_summary">选择活动服务器指示器的显示方式</string>
+    <string name="summary_navigate_ui_settings">显示、主题、语言和外观</string>
+    <string name="summary_navigate_vpn_settings">IPv6、DNS、HEV 隧道、MTU 和接口</string>
+    <string name="summary_navigate_core_settings">代理端口、DNS、流量探测和日志级别</string>
+    <string name="summary_navigate_mux_settings">多路复用和 XUDP 并发数</string>
+    <string name="summary_navigate_fragment_settings">数据包分片长度和间隔</string>
+    <string name="summary_navigate_advanced_settings">开机启动、测试、延迟、模式和 API 地址</string>
+    <string name="title_ui_general">通用</string>
+    <string name="title_ui_theme">主题</string>
+    <string name="title_ui_appearance">外观</string>
+    <string name="transport_layer_security">传输层安全</string>
+    <string name="del_config_dialog_comfirm_message">确定要删除吗？一旦删除，配置将永久丢失且无法找回。</string>
+    <string name="del_sub_dialog_comfirm_message">确定要删除此订阅吗？一旦删除，数据将永久丢失且无法找回。</string>
+    <string name="del_routing_dialog_comfirm_message">确定要删除此路由设置吗？一旦删除，数据将永久丢失且无法找回。</string>
+    <string name="del_file_asset_dialog_comfirm_message">确定要删除此资产文件吗？一旦删除，数据将永久丢失且无法找回。</string>
+    <string name="del_button_dialog_comfirm">删除</string>
+    <string name="menu_item_search_main">在找什么吗？</string>
+    
+    <string name="uwu_banner_settings_title">你好呀……</string>
+    <string name="uwu_banner_settings_summary">"欢迎来到设置菜单,
+请选择任何你
+需要的和必须
+的功能选项"</string>
+    <string name="uwu_maintainer_title">本应用由以下团队维护</string>
+    <string name="uwu_maintainer_summary">HatsuneMikuUwU 开发团队</string>
+    <string name="uwu_name_title">应用名称</string>
+    <string name="uwu_version_name_title">版本名称</string>
+    <string name="uwu_version_code_title">版本代码</string>
+    <string name="uwu_package_name_title">包名</string>
+    <string name="uwu_mikubox_author_title">作者</string>
+    <string name="uwu_build_date_title">构建日期</string>
+    <string name="uwu_update_summary">来更新 MikuRay 吧，主人！</string>
+    <string name="uwu_about_version_title">关于应用</string>
+    <string name="uwu_about_version_summary">点击此处或箭头图标, 了解应用更多信息.</string>
+    
+    <!-- miku-->
+    <string name="uwu_miku_gender_title">性别</string>
+    <string name="uwu_miku_gender_summary">女性</string>
+    <string name="uwu_miku_birthday_title">生日</string>
+    <string name="uwu_miku_birthday_summary">8 月 31 日</string>
+    <string name="uwu_miku_age_title">年龄</string>
+    <string name="uwu_miku_age_summary">16</string>
+    <string name="uwu_miku_voice_title">声源</string>
+    <string name="uwu_miku_voice_summary">藤田咲</string>
+    <string name="uwu_miku_weight_title">体重</string>
+    <string name="uwu_miku_weight_summary">42 公斤</string>
+    <string name="uwu_miku_height_title">身高</string>
+    <string name="uwu_miku_height_summary">158 厘米</string>
+    <string name="uwu_about_miku_title">谁是 Hatsune Miku？</string>
+    <string name="uwu_about_miku_summary">初音未来(Hatsune Miku) 是 Crypton Future Media 发布的基于 Vocaloid 制作的虚拟歌手, 代号CV01. 以青绿色的长双马尾和清亮嗓音著称, 人设为16岁少女, 是全球知名虚拟偶像, 广泛活跃于音乐、演唱会及动画, 深受粉丝们喜爱.</string>
+    
+    <string name="uwu_random_text_1">适合唱歌的好天气！</string>
+    <string name="uwu_random_text_2">今天也要开心哦，Master！</string>
+    <string name="uwu_random_text_3">"一起加油吧！39！"</string>
+    <string name="uwu_random_text_4">是在找大葱吗？</string>
+    <string name="uwu_random_text_5">"专心点！Ready, go！" </string>
+    <string name="uwu_random_text_6">把你Miku Miku掉哦！</string>
+    <string name="uwu_random_text_7">欢迎回来，Master！</string>
+    <string name="uwu_random_text_8">感受旋律吧..！</string>
+    <string name="uwu_random_text_9">冲向最高音！</string>
+    <string name="uwu_random_text_10">在给Miku写歌词吗？</string>
+
+    <!-- Alerter notification titles -->
+    <string name="title_alerter_info">提示</string>
+    <string name="title_alerter_success">成功</string>
+    <string name="title_alerter_error">错误</string>
+ 
+    <string name="title_pref_enable_blur">开启模糊</string>
+    <string name="summary_pref_enable_blur">开启窗口背景模糊效果</string>
 
 </resources>

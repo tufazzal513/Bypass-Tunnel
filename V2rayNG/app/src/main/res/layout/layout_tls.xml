@@ -1,244 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/padding_spacing_dp16"
-    android:orientation="vertical">
-
-    <LinearLayout
-        android:id="@+id/lay_stream_security"
-        android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    	
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_title_tls"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_spacing_dp16"
+        android:text="@string/transport_layer_security"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textColor="?attr/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        android:orientation="vertical">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/lay_stream_security"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_stream_security"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_tls">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/server_lab_stream_security" />
-
-        <Spinner
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/sp_stream_security"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_spacing_dp8"
-            android:layout_marginBottom="@dimen/padding_spacing_dp8"
-            android:entries="@array/streamsecurityxs"
-            android:nextFocusDown="@+id/et_sni" />
+            android:inputType="none"
+            android:nextFocusDown="@+id/et_sni"
+            app:simpleItems="@array/streamsecurityxs" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lay_sni"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_spacing_dp16"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_sni"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_stream_security">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/server_lab_sni" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_sni"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:nextFocusDown="@+id/sp_stream_fingerprint" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lay_stream_fingerprint"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_spacing_dp16"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_stream_fingerprint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_sni">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/server_lab_stream_fingerprint" />
-
-        <Spinner
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/sp_stream_fingerprint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_spacing_dp8"
-            android:layout_marginBottom="@dimen/padding_spacing_dp8"
-            android:entries="@array/streamsecurity_utls"
-            android:nextFocusDown="@+id/sp_stream_alpn" />
+            android:inputType="none"
+            android:nextFocusDown="@+id/sp_stream_alpn"
+            app:simpleItems="@array/streamsecurity_utls" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lay_stream_alpn"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_spacing_dp16"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_stream_alpn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_stream_fingerprint">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/server_lab_stream_alpn" />
-
-        <Spinner
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/sp_stream_alpn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_spacing_dp8"
-            android:layout_marginBottom="@dimen/padding_spacing_dp8"
-            android:entries="@array/streamsecurity_alpn"
-            android:nextFocusDown="@+id/sp_allow_insecure" />
+            android:inputType="none"
+            android:nextFocusDown="@+id/sp_allow_insecure"
+            app:simpleItems="@array/streamsecurity_alpn" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lay_allow_insecure"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_allow_insecure"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_stream_alpn">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/server_lab_allow_insecure" />
-
-        <Spinner
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/sp_allow_insecure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_spacing_dp8"
-            android:layout_marginBottom="@dimen/padding_spacing_dp8"
-            android:entries="@array/allowinsecures"
-            android:nextFocusDown="@+id/et_ech_config_list"/>
-    </LinearLayout>
+            android:inputType="none"
+            android:nextFocusDown="@+id/et_ech_config_list"
+            app:simpleItems="@array/allowinsecures" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lay_ech_config_list"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_spacing_dp16"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_ech_config_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_allow_insecure">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/server_lab_ech_config_list" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_ech_config_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:nextFocusDown="@+id/et_pinned_ca256" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lay_pinned_ca256"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_spacing_dp16"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_pinned_ca256"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_ech_config_list">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/server_lab_pinned_ca256" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_pinned_ca256"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:nextFocusDown="@+id/et_public_key" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lay_public_key"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_spacing_dp16"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_public_key"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_pinned_ca256">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/server_lab_public_key" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_public_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:nextFocusDown="@+id/et_short_id" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lay_short_id"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_spacing_dp16"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_short_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_public_key">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/server_lab_short_id" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_short_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:nextFocusDown="@+id/et_spider_x" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lay_spider_x"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_spacing_dp16"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_spider_x"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_short_id">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/server_lab_spider_x" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_spider_x"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:nextFocusDown="@+id/et_mldsa65_verify" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lay_mldsa65_verify"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_spacing_dp16"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_mldsa65_verify"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_spider_x"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/server_lab_mldsa65_verify" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_mldsa65_verify"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
