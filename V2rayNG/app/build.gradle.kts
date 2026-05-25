@@ -153,6 +153,10 @@ dependencies {
     implementation(libs.quickie.foss)
     implementation(libs.core)
 
+    // Image loading & cropping (Profile banner)
+    implementation(libs.glide)
+    implementation(libs.ucrop)
+
     // AndroidX Lifecycle and Architecture Components
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.lifecycle.livedata.ktx)

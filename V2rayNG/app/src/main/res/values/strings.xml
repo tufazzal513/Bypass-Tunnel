@@ -583,6 +583,21 @@ you need."</string>
     <string name="uwu_random_text_8">Let the music in..!</string>
     <string name="uwu_random_text_9">Reach the highest note!</string>
     <string name="uwu_random_text_10">Writing lyrics for me?</string>
+    
+    <!-- Header banner: username display -->
+    <string name="uwu_profile_banner_title">master</string>
+    <string name="uwu_profile_banner_title_custom">Hi, %1$s</string>
+
+    <!-- Profile banner settings -->
+    <string name="banner_profile_category">Profile</string>
+    <string name="profile_name_custom_title">Header name</string>
+    <string name="profile_name_custom_dialog">Change display name</string>
+    <string name="banner_profile_custom_title">Change profile banner</string>
+    <string name="banner_profile_custom_summary">Choose a custom image for the profile header</string>
+    <string name="title_profile_banner_shape">Profile image shape</string>
+    <string name="delete_custom_banner_profile">Delete custom profile banner</string>
+    <string name="delete_custom_banner_profile_summary">Revert to default profile banner</string>
+    <string name="custom_banner_profile_set">Profile banner updated successfully.</string>
 
     <!-- Alerter notification titles -->
     <string name="title_alerter_info">Info</string>

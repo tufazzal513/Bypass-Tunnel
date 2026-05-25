@@ -1,23 +1,36 @@
 package com.v2ray.ang.ui.preference.activity
 
+import android.app.Activity
+import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
+import com.v2ray.ang.extension.toast
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.helper.MmkvPreferenceDataStore
+import com.v2ray.ang.ui.BaseActivity
+import com.v2ray.ang.ui.CheckUpdateActivity
 import com.v2ray.ang.ui.bottomsheet.IndicatorStyleBottomSheet
 import com.v2ray.ang.ui.dialog.DpiSliderDialog
 import com.v2ray.ang.ui.dialog.ThemeColorDialog
-import com.v2ray.ang.util.ThemeManager
-import com.v2ray.ang.ui.BaseActivity
-import com.v2ray.ang.ui.CheckUpdateActivity
 import com.v2ray.ang.ui.preference.CustomBannerPreference
+import com.v2ray.ang.util.ThemeManager
+import com.v2ray.ang.util.showBlur
+import com.yalantis.ucrop.UCrop
+import java.io.File
+import java.io.IOException
 
 class UiSettingsActivity : BaseActivity() {
 
@@ -47,11 +60,36 @@ class UiSettingsActivity : BaseActivity() {
         private val indicatorStyle by lazy { findPreference<Preference>(AppConfig.PREF_INDICATOR_STYLE) }
         private val navigateCheckUpdate by lazy { findPreference<CustomBannerPreference>(AppConfig.PREF_NAVIGATE_CHECK_UPDATE) }
 
+        private val pickProfileImage =
+            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                if (uri != null) startCropProfileActivity(uri)
+            }
+
+        private val cropProfileImage =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                    val cacheUri = UCrop.getOutput(result.data!!) ?: return@registerForActivityResult
+                    try {
+                        val oldUri = MmkvManager.decodeSettingsString(AppConfig.PREF_PROFILE_BANNER_URI)
+                        deleteOldFile(oldUri)
+                        val savedUri = saveToCache(cacheUri, "profile_banner_")
+                        MmkvManager.encodeSettings(AppConfig.PREF_PROFILE_BANNER_URI, savedUri.toString())
+                        broadcastProfileChanged()
+                        requireContext().toast(R.string.custom_banner_profile_set)
+                    } catch (e: Exception) {
+                        requireContext().toast(R.string.custom_banner_profile_set) // fallback
+                    }
+                } else if (result.resultCode == UCrop.RESULT_ERROR) {
+                    val err = UCrop.getError(result.data!!)
+                    err?.printStackTrace()
+                }
+            }
+
         override fun onCreatePreferences(bundle: Bundle?, s: String?) {
             preferenceManager.preferenceDataStore = MmkvPreferenceDataStore()
             addPreferencesFromResource(R.xml.pref_ui_settings)
             initPreferenceSummaries()
-            
+
             navigateCheckUpdate?.setOnPreferenceClickListener {
                 startActivity(android.content.Intent(requireContext(), CheckUpdateActivity::class.java))
                 true
@@ -78,20 +116,13 @@ class UiSettingsActivity : BaseActivity() {
             trueBlack?.apply {
                 val isNightModeActive = ThemeManager.isDarkMode(requireActivity())
                 isEnabled = isNightModeActive
-                summary = if (!isNightModeActive) {
-                    getString(R.string.pref_true_black_only_in_night_mode)
-                } else {
-                    getString(R.string.summary_pref_true_black)
-                }
-                setOnPreferenceChangeListener { _, _ ->
-                    activity?.recreate()
-                    true
-                }
+                summary = if (!isNightModeActive) getString(R.string.pref_true_black_only_in_night_mode)
+                          else getString(R.string.summary_pref_true_black)
+                setOnPreferenceChangeListener { _, _ -> activity?.recreate(); true }
             }
 
             enableBlur?.setOnPreferenceChangeListener { _, newValue ->
-                val enabled = newValue as Boolean
-                MmkvManager.encodeSettings(AppConfig.PREF_ENABLE_BLUR, enabled)
+                MmkvManager.encodeSettings(AppConfig.PREF_ENABLE_BLUR, newValue as Boolean)
                 true
             }
 
@@ -101,9 +132,7 @@ class UiSettingsActivity : BaseActivity() {
                     val idx = lp.findIndexOfValue(valueStr)
                     lp.summary = if (idx >= 0) lp.entries[idx] else valueStr
                 }
-                val newMode = valueStr.toInt()
-                val nowNight = isNightModeAfterChange(newMode)
-                updateTrueBlackState(nowNight)
+                updateTrueBlackState(isNightModeAfterChange(valueStr.toInt()))
                 true
             }
 
@@ -120,6 +149,126 @@ class UiSettingsActivity : BaseActivity() {
                 )
                 true
             }
+
+            setupProfilePreferences()
+        }
+
+        private fun setupProfilePreferences() {
+            findPreference<EditTextPreference>(AppConfig.PREF_CUSTOM_PROFILE_NAME)?.apply {
+                val currentName = MmkvManager.decodeSettingsString(AppConfig.PREF_CUSTOM_PROFILE_NAME) ?: ""
+                text = currentName
+                summary = currentName.ifEmpty { getString(R.string.uwu_profile_banner_title) }
+                setOnBindEditTextListener { editText ->
+                    editText.inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS
+                    editText.setSingleLine()
+                }
+                setOnPreferenceChangeListener { _, newValue ->
+                    val newName = newValue.toString()
+                    MmkvManager.encodeSettings(AppConfig.PREF_CUSTOM_PROFILE_NAME, newName)
+                    summary = newName.ifEmpty { getString(R.string.uwu_profile_banner_title) }
+                    true
+                }
+            }
+
+            findPreference<Preference>(AppConfig.PREF_ACTION_CHANGE_PROFILE_BANNER)?.setOnPreferenceClickListener {
+                pickProfileImage.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+                true
+            }
+
+            findPreference<ListPreference>(AppConfig.PREF_PROFILE_BANNER_SHAPE)?.apply {
+                val savedShape = MmkvManager.decodeSettingsString(AppConfig.PREF_PROFILE_BANNER_SHAPE)
+                    ?: AppConfig.PREF_PROFILE_BANNER_SHAPE_DEFAULT
+                value = savedShape
+                summary = "%s"
+                setOnPreferenceChangeListener { _, newValue ->
+                    MmkvManager.encodeSettings(AppConfig.PREF_PROFILE_BANNER_SHAPE, newValue.toString())
+                    broadcastProfileChanged()
+                    true
+                }
+            }
+
+            findPreference<Preference>(AppConfig.PREF_ACTION_DELETE_PROFILE_BANNER)?.setOnPreferenceClickListener {
+                val savedUri = MmkvManager.decodeSettingsString(AppConfig.PREF_PROFILE_BANNER_URI)
+                if (!savedUri.isNullOrEmpty()) {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.delete_custom_banner_profile)
+                        .setMessage(R.string.delete_custom_banner_profile_summary)
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
+                            deleteOldFile(savedUri)
+                            MmkvManager.encodeSettings(AppConfig.PREF_PROFILE_BANNER_URI, "")
+                            broadcastProfileChanged()
+                            requireContext().toast(R.string.custom_banner_profile_set)
+                        }
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .showBlur()
+                } else {
+                    requireContext().toast(R.string.delete_custom_banner_profile_summary)
+                }
+                true
+            }
+        }
+
+        private fun startCropProfileActivity(sourceUri: Uri) {
+            val destFile = File(requireContext().cacheDir, "cropped_profile_banner_temp.jpg")
+            val destUri = Uri.fromFile(destFile)
+
+            val uCrop = UCrop.of(sourceUri, destUri)
+                .withAspectRatio(1f, 1f)
+                .withMaxResultSize(512, 512)
+
+            try {
+                val options = UCrop.Options().apply {
+                    setDimmedLayerColor(Color.parseColor("#CC000000"))
+                    setCircleDimmedLayer(true)
+                    setShowCropGrid(true)
+                    setFreeStyleCropEnabled(false)
+                }
+                uCrop.withOptions(options)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            cropProfileImage.launch(uCrop.getIntent(requireContext()))
+        }
+
+        @Throws(IOException::class)
+        private fun saveToCache(sourceCacheUri: Uri, fileNamePrefix: String): Uri {
+            val ctx = requireContext()
+            val destFile = File(ctx.cacheDir, "${fileNamePrefix}${System.currentTimeMillis()}.jpg")
+
+            ctx.contentResolver.openInputStream(sourceCacheUri)?.use { input ->
+                destFile.outputStream().use { output -> input.copyTo(output) }
+            }
+
+            try {
+                if (sourceCacheUri.scheme == "file") {
+                    val tempFile = File(sourceCacheUri.path!!)
+                    if (tempFile.exists() && tempFile.absolutePath.contains(ctx.cacheDir.absolutePath)) {
+                        tempFile.delete()
+                    }
+                }
+            } catch (_: Exception) {}
+
+            return Uri.fromFile(destFile)
+        }
+
+        private fun deleteOldFile(uriString: String?) {
+            if (uriString.isNullOrEmpty()) return
+            try {
+                val uri = Uri.parse(uriString)
+                if (uri.scheme == "file") {
+                    File(uri.path!!).takeIf { it.exists() }?.delete()
+                } else {
+                    try { requireContext().contentResolver.delete(uri, null, null) } catch (_: Exception) {}
+                }
+            } catch (_: Exception) {}
+        }
+
+        private fun broadcastProfileChanged() {
+            requireContext().sendBroadcast(
+                android.content.Intent(AppConfig.BROADCAST_ACTION_PROFILE_BANNER_CHANGED)
+            )
         }
 
         private fun initPreferenceSummaries() {
@@ -136,7 +285,7 @@ class UiSettingsActivity : BaseActivity() {
                                 true
                             }
                         }
-                        else -> { /* no summary auto-update needed */ }
+                        else -> {}
                     }
                 }
             }
@@ -160,23 +309,18 @@ class UiSettingsActivity : BaseActivity() {
 
         private fun updateTrueBlackState(isNight: Boolean) {
             trueBlack?.isEnabled = isNight
-            trueBlack?.summary = if (!isNight) {
-                getString(R.string.pref_true_black_only_in_night_mode)
-            } else {
-                getString(R.string.summary_pref_true_black)
-            }
+            trueBlack?.summary = if (!isNight) getString(R.string.pref_true_black_only_in_night_mode)
+                                  else getString(R.string.summary_pref_true_black)
             if (!isNight && trueBlack?.isChecked == true) {
                 trueBlack?.isChecked = false
                 MmkvManager.encodeSettings(AppConfig.PREF_TRUE_BLACK, false)
             }
         }
 
-        private fun isNightModeAfterChange(mode: Int): Boolean {
-            return when (mode) {
-                1 -> true
-                2 -> false
-                else -> ThemeManager.isDarkMode(requireActivity())
-            }
+        private fun isNightModeAfterChange(mode: Int): Boolean = when (mode) {
+            1    -> true
+            2    -> false
+            else -> ThemeManager.isDarkMode(requireActivity())
         }
     }
 }

@@ -107,6 +107,7 @@ class DynamicShapeImageView @JvmOverloads constructor(
         "uwu_shape_octagon"        -> R.raw.uwu_shape_octagon
         "uwu_shape_rounded_square" -> R.raw.uwu_shape_rounded_square
         "uwu_shape_squircle"       -> R.raw.uwu_shape_squircle
+        "uwu_shape_heart"       -> R.raw.uwu_shape_heart
         else                       -> R.raw.uwu_shape_cookie
     }
 }

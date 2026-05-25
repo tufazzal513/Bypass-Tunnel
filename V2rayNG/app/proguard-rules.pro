@@ -2,6 +2,7 @@
 -allowaccessmodification
 
 -keep class com.v2ray.ang.** { *;}
+-keep class com.yalantis.ucrop.UCropActivity { *; }
 
 # Clean Kotlin
 -assumenosideeffects class kotlin.jvm.internal.Intrinsics {

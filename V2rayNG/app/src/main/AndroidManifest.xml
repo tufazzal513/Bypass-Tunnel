@@ -113,7 +113,10 @@
             android:exported="false" />
         <activity
             android:name=".ui.preference.activity.AdvancedSettingsActivity"
-            android:exported="false" />
+            android:exported="false" />           
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:exported="false" />      
         <activity
             android:name=".ui.PerAppProxyActivity"
             android:exported="false" />

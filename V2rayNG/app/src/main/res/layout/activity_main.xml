@@ -100,23 +100,25 @@
                             android:marqueeRepeatLimit="marquee_forever"
                             uwu_runnable="false" />
 
-                        <TextView
+                        <com.neko.marquee.text.UserNameTextView
                             android:id="@+id/tv_username"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="MikuDayo"
                             android:textAppearance="?textAppearanceTitleMedium"
                             android:textStyle="bold"
-                            android:textColor="?colorOnSurface" />
+                            android:textColor="?colorOnSurface"
+                            android:singleLine="true"
+                            android:ellipsize="marquee"
+                            android:marqueeRepeatLimit="marquee_forever"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true" />
                     </LinearLayout>
 
-                    <com.neko.shapeimageview.CookieImageView
+                    <com.neko.widget.ProfileBannerImageView
                         android:id="@+id/iv_profile"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:src="@drawable/uwu_banner_profile"
+                        app:elevation="0dp"
                         app:siBorderColor="?colorPrimary"
                         app:siBorderWidth="3dp" />
                 </LinearLayout>

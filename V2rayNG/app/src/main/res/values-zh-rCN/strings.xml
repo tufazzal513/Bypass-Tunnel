@@ -559,6 +559,20 @@
     <string name="uwu_random_text_8">感受旋律吧..！</string>
     <string name="uwu_random_text_9">冲向最高音！</string>
     <string name="uwu_random_text_10">在给Miku写歌词吗？</string>
+    
+    <!-- Header banner: username display -->
+    <string name="uwu_profile_banner_title_custom">嗨, %1$s</string>
+    
+    <!-- Profile banner settings -->
+   <string name="banner_profile_category">个人资料</string>
+   <string name="profile_name_custom_title">头部名称</string>
+   <string name="profile_name_custom_dialog">更改显示名称</string>
+   <string name="banner_profile_custom_title">更改个人资料横幅</string>
+   <string name="banner_profile_custom_summary">为个人资料头部选择自定义图片</string>
+   <string name="title_profile_banner_shape">头像形状</string>
+   <string name="delete_custom_banner_profile">删除自定义横幅</string>
+   <string name="delete_custom_banner_profile_summary">恢复为默认横幅</string>
+   <string name="custom_banner_profile_set">个人资料横幅更新成功。</string>
 
     <!-- Alerter notification titles -->
     <string name="title_alerter_info">提示</string>

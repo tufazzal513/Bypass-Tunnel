@@ -96,6 +96,14 @@ object AppConfig {
     const val PREF_AUTO_SORT_AFTER_TEST = "pref_auto_sort_after_test"
     const val PREF_REAL_PING_CONCURRENCY = "pref_real_ping_concurrency"
 
+    // Profile banner & username
+    const val PREF_CUSTOM_PROFILE_NAME = "custom_profile_name"
+    const val PREF_PROFILE_BANNER_URI = "profile_banner_uri"
+    const val PREF_PROFILE_BANNER_SHAPE = "profile_banner_shape"
+    const val PREF_PROFILE_BANNER_SHAPE_DEFAULT = "uwu_shape_cookie"
+    const val PREF_ACTION_CHANGE_PROFILE_BANNER = "action_change_profile_banner_image"
+    const val PREF_ACTION_DELETE_PROFILE_BANNER = "action_delete_profile_banner_image"
+
     /** Cache keys. */
     const val CACHE_SUBSCRIPTION_ID = "cache_subscription_id"
 
@@ -107,6 +115,7 @@ object AppConfig {
     const val BROADCAST_ACTION_ACTIVITY = "$ANG_PACKAGE.action.activity"
     const val BROADCAST_ACTION_WIDGET_CLICK = "$ANG_PACKAGE.action.widget.click"
     const val BROADCAST_ACTION_ICON_SHAPE_CHANGED = "$ANG_PACKAGE.action.icon_shape_changed"
+    const val BROADCAST_ACTION_PROFILE_BANNER_CHANGED = "$ANG_PACKAGE.action.profile_banner_changed"
 
     /** Tasker extras. */
     const val TASKER_EXTRA_BUNDLE = "com.twofortyfouram.locale.intent.extra.BUNDLE"

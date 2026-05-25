@@ -131,4 +131,42 @@
 
     </PreferenceCategory>
 
+
+    <PreferenceCategory android:title="@string/banner_profile_category">
+
+        <EditTextPreference
+            android:icon="@drawable/ic_edit_24dp"
+            app:layout="@layout/uwu_top"
+            android:key="custom_profile_name"
+            android:title="@string/profile_name_custom_title"
+            android:dialogTitle="@string/profile_name_custom_dialog"
+            android:inputType="textCapWords"
+            android:singleLine="true" />
+
+        <Preference
+            android:icon="@drawable/ic_image_24dp"
+            app:layout="@layout/uwu_mid"
+            android:key="action_change_profile_banner_image"
+            android:title="@string/banner_profile_custom_title"
+            android:summary="@string/banner_profile_custom_summary" />
+
+        <ListPreference
+            android:icon="@drawable/ic_shape_outline"
+            app:layout="@layout/uwu_mid"
+            android:key="profile_banner_shape"
+            android:title="@string/title_profile_banner_shape"
+            android:entries="@array/icon_shape_entries"
+            android:entryValues="@array/icon_shape_values"
+            android:defaultValue="uwu_shape_cookie"
+            android:summary="%s" />
+
+        <Preference
+            android:icon="@drawable/ic_delete_24dp"
+            app:layout="@layout/uwu_bot"
+            android:key="action_delete_profile_banner_image"
+            android:title="@string/delete_custom_banner_profile"
+            android:summary="@string/delete_custom_banner_profile_summary" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

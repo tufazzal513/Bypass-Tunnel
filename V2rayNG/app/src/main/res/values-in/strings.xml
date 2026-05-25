@@ -561,6 +561,20 @@ yang kamu butuhin."</string>
     <string name="uwu_random_text_8">Rasain melodinya..!</string>
     <string name="uwu_random_text_9">Tembus nada tertingginya!</string>
     <string name="uwu_random_text_10">Lagi nulis lirik buat Miku?</string>
+    
+    <!-- Header banner: username display -->
+    <string name="uwu_profile_banner_title_custom">Hai, %1$s</string>
+    
+    <!-- Profile banner settings -->
+    <string name="banner_profile_category">Profil</string>
+    <string name="profile_name_custom_title">Nama header</string>
+    <string name="profile_name_custom_dialog">Ganti nama tampilan</string>
+    <string name="banner_profile_custom_title">Ganti banner profil</string>
+    <string name="banner_profile_custom_summary">Pilih gambar sendiri buat header profil</string>
+    <string name="title_profile_banner_shape">Bentuk foto profil</string>
+    <string name="delete_custom_banner_profile">Hapus banner profil kustom</string>
+    <string name="delete_custom_banner_profile_summary">Balikin ke banner bawaan</string>
+    <string name="custom_banner_profile_set">Sip, banner profil berhasil di-update!</string>
 
     <!-- Alerter notification titles -->
     <string name="title_alerter_info">Info</string>
