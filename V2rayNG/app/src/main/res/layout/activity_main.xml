@@ -203,137 +203,166 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <LinearLayout
-            android:id="@+id/layout_tab_wrapper"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginEnd="12dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp">
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:contentPadding="5dp"
-                app:cardBackgroundColor="?colorCard"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
-
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tab_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="@android:color/transparent"
-                    app:tabIndicator="@drawable/uwu_tabs_rounded_indicator"
-                    app:tabIndicatorAnimationMode="elastic"
-                    app:tabIndicatorColor="?colorPrimary"
-                    app:tabIndicatorFullWidth="true"
-                    app:tabIndicatorHeight="40dp"
-                    app:tabMode="scrollable"
-                    app:tabPaddingEnd="24dp"
-                    app:tabPaddingStart="24dp"
-                    app:tabRippleColor="@android:color/transparent"
-                    app:tabSelectedTextAppearance="?textAppearanceTitleSmall"
-                    app:tabSelectedTextColor="?colorSurface"
-                    app:tabTextAppearance="?textAppearanceTitleSmall"
-                    app:tabTextColor="?colorOnSurfaceVariant" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_add_sub"
-                style="@style/Widget.Material3Expressive.Button.IconButton.Filled"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:minWidth="55dp"
-                android:minHeight="55dp"
-                app:backgroundTint="?colorPrimary"
-                app:icon="@drawable/ic_add_circle_fill_24px"
-                app:iconGravity="textStart"
-                app:iconPadding="0.0dip"
-                app:iconTint="?colorOnPrimary" />
-
-        </LinearLayout>
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:nextFocusRight="@+id/fab"
-            android:scrollbars="vertical" />
-    </LinearLayout>
-
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottom_app_bar"
-        style="@style/Widget.Material3.BottomAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        app:backgroundTint="?colorPrimary"
-        app:fabAlignmentMode="center"
-        app:fabAnchorMode="cradle"
-        app:fabAnimationMode="slide"
-        app:fabCradleMargin="8dp"
-        app:fabCradleRoundedCornerRadius="8dp"
-        app:fabCradleVerticalOffset="10dp"
-        app:hideOnScroll="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tv_state_title"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/layout_tab_wrapper"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="@string/status"
-                android:textAppearance="?textAppearanceTitleMedium"
-                android:textColor="?android:textColorPrimaryInverse"
-                android:textSize="17sp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginEnd="12dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp">
 
-            <com.neko.marquee.text.AutoMarqueeTextView
-                android:id="@+id/tv_test_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:singleLine="true"
-                android:text="@string/connection_test_pending"
-                android:textAppearance="?textAppearanceTitleMedium"
-                android:textColor="?android:textColorPrimaryInverse"
-                android:textSize="14sp" />
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:contentPadding="5dp"
+                    app:cardBackgroundColor="?colorCard"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tab_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@android:color/transparent"
+                        app:tabIndicator="@drawable/uwu_tabs_rounded_indicator"
+                        app:tabIndicatorAnimationMode="elastic"
+                        app:tabIndicatorColor="?colorPrimary"
+                        app:tabIndicatorFullWidth="true"
+                        app:tabIndicatorHeight="40dp"
+                        app:tabMode="scrollable"
+                        app:tabPaddingEnd="24dp"
+                        app:tabPaddingStart="24dp"
+                        app:tabRippleColor="@android:color/transparent"
+                        app:tabSelectedTextAppearance="?textAppearanceTitleSmall"
+                        app:tabSelectedTextColor="?colorSurface"
+                        app:tabTextAppearance="?textAppearanceTitleSmall"
+                        app:tabTextColor="?colorOnSurfaceVariant" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_sub"
+                    style="@style/Widget.Material3Expressive.Button.IconButton.Filled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:minWidth="55dp"
+                    android:minHeight="55dp"
+                    app:backgroundTint="?colorPrimary"
+                    app:icon="@drawable/ic_add_circle_fill_24px"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0.0dip"
+                    app:iconTint="?colorOnPrimary" />
+
+            </LinearLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:nextFocusRight="@+id/fab"
+                android:scrollbars="vertical" />
         </LinearLayout>
-    </com.google.android.material.bottomappbar.BottomAppBar>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_play_24dp"
-        app:backgroundTint="?colorPrimary"
-        app:layout_anchor="@+id/bottom_app_bar"
-        app:layout_anchorGravity="top"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Large"
-        app:tint="?colorOnPrimary" />
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_bottom_status"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
+            	
+            <com.qmdeve.blurview.widget.BlurView
+                android:id="@+id/blur_bottom_status"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:blurRadius="20dp"
+                app:cornerRadius="20dp"
+                app:overlayColor="@color/uwu_tint_blur" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:id="@+id/status_text_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/fab"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:id="@+id/tv_ip_state"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textAppearance="?textAppearanceTitleSmall"
+                        android:textColor="?colorOnSurfaceVariant"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_test_state"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:text="@string/connection_test_pending"
+                        android:textAppearance="?textAppearanceTitleMedium"
+                        android:textColor="?colorOnSurface"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
+                <!-- FAB when blur is enabled -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:elevation="0dp"
+                    app:elevation="0dp"
+                    android:outlineProvider="none"
+                    android:src="@drawable/ic_play_24dp"
+                    app:materialThemeOverlay="@style/ThemeOverlay.Material3Expressive.FloatingActionButton.Primary"
+                    style="?floatingActionButtonStyle" />
+
+                <!-- FAB when blur is disabled -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_no_blur"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:elevation="0dp"
+                    app:elevation="0dp"
+                    android:outlineProvider="none"
+                    android:src="@drawable/ic_play_24dp"
+                    android:visibility="gone"
+                    app:materialThemeOverlay="@style/ThemeOverlay.Material3Expressive.FloatingActionButton.PrimaryContainer"
+                    style="?floatingActionButtonStyle" />
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
         
      </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

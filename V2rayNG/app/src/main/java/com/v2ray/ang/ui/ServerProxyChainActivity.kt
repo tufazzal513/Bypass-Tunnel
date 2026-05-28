@@ -14,6 +14,7 @@ import com.v2ray.ang.contracts.BaseAdapterListener
 import com.v2ray.ang.databinding.ActivityServerProxyChainBinding
 import com.v2ray.ang.dto.entities.ProfileItem
 import com.v2ray.ang.enums.EConfigType
+import com.v2ray.ang.extension.isComplexType
 import com.v2ray.ang.extension.toast
 import com.v2ray.ang.extension.alertError
 import com.v2ray.ang.extension.toastSuccess
@@ -124,10 +125,7 @@ class ServerProxyChainActivity : BaseActivity() {
 
         val invalidMembers = chainMembers.filter { member ->
             val profile = SettingsManager.getServerViaRemarks(member)
-            profile == null
-                    || profile.configType == EConfigType.CUSTOM
-                    || profile.configType == EConfigType.POLICYGROUP
-                    || profile.configType == EConfigType.PROXYCHAIN
+            profile == null || profile.configType.isComplexType()
         }
         if (invalidMembers.isNotEmpty()) {
             toast(getString(R.string.server_proxy_chain_members_invalid, invalidMembers.joinToString(", ")))

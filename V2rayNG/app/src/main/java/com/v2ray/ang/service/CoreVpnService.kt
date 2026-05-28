@@ -26,6 +26,7 @@ import com.v2ray.ang.handler.NotificationManager
 import com.v2ray.ang.handler.SettingsManager
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.MyContextWrapper
+import com.v2ray.ang.util.SoundPlayer
 import com.v2ray.ang.util.Utils
 import java.lang.ref.SoftReference
 
@@ -201,6 +202,9 @@ class CoreVpnService : VpnService(), ServiceControl {
         try {
             mInterface = builder.establish()!!
             isRunning = true
+            if (MmkvManager.decodeSettingsBool(AppConfig.PREF_SOUND_ON_CONNECT, true)) {
+                SoundPlayer.playConnect(this)
+            }
             return true
         } catch (e: Exception) {
             LogUtil.e(AppConfig.TAG, "Failed to establish VPN interface", e)
@@ -346,11 +350,10 @@ class CoreVpnService : VpnService(), ServiceControl {
     }
 
     private fun stopAllService(isForced: Boolean = true) {
-//        val configName = defaultDPreference.getPrefString(PREF_CURR_CONFIG_GUID, "")
-//        val emptyInfo = VpnNetworkInfo()
-//        val info = loadVpnNetworkInfo(configName, emptyInfo)!! + (lastNetworkInfo ?: emptyInfo)
-//        saveVpnNetworkInfo(configName, info)
         isRunning = false
+        if (MmkvManager.decodeSettingsBool(AppConfig.PREF_SOUND_ON_CONNECT, true)) {
+            SoundPlayer.playDisconnect(this)
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
                 connectivity.unregisterNetworkCallback(defaultNetworkCallback)

@@ -291,6 +291,7 @@
     <string name="title_pref_hev_tunnel_rw_timeout">Hev Tun read/write timeout (seconds) (tcp,udp default 300,60)</string>
 
     <string name="title_logcat">Logcat</string>
+    <string name="logcat_share">Share log</string>
     <string name="logcat_copy">Copy</string>
     <string name="logcat_clear">Clear</string>
     <string name="title_service_restart">Service restart</string>
@@ -356,16 +357,16 @@
     <string name="routing_settings_outbound_tag_hint" translatable="false">proxy / direct / block / &lt;remarks&gt;</string>
     <string name="routing_settings_outbound_tag">outboundTag</string>
 
-    <string name="connection_test_pending">Check Connectivity</string>
+    <string name="connection_test_pending">Check Connection</string>
     <string name="connection_test_testing">Testing…</string>
     <string name="connection_test_testing_count">Testing %d configs…</string>
-    <string name="connection_test_available">Success: Connection took %dms</string>
-    <string name="connection_test_error">Fail to detect internet connection: %s</string>
-    <string name="connection_test_fail">Internet Unavailable</string>
+    <string name="connection_test_available">Success connected: %dms</string>
+    <string name="connection_test_error">Error: %s</string>
+    <string name="connection_test_fail">No Internet</string>
     <string name="connection_test_error_status_code">Error code: #%d</string>
-    <string name="connection_connected">Connected, tap to check connection</string>
-    <string name="connection_not_connected">Not connected</string>
-    <string name="connection_runing_task_left">Number of running test tasks: %s</string>
+    <string name="connection_connected">Connected. Tap to test</string>
+    <string name="connection_not_connected">Disconnected</string>
+    <string name="connection_runing_task_left">Running tests: %s</string>
 
     <string name="import_subscription_success">Subscription imported Successfully</string>
     <string name="import_subscription_failure">Import subscription failed</string>
@@ -539,6 +540,11 @@
     <string name="del_file_asset_dialog_comfirm_message">Are you sure you want to delete this asset file? Once deleted, the data is gone forever and can\'t be recovered.</string>
     <string name="del_button_dialog_comfirm">Delete</string>
     <string name="menu_item_search_main">Looking for something?</string>
+    <string name="title_vpn_sound_settings">Sound</string>
+    <string name="title_pref_sound_on_connect">Connection Sound</string>
+    <string name="summary_pref_sound_on_connect">Play a sound when connected or disconnected</string>
+    <string name="ip_unknown">IP: unknown</string>
+    <string name="ip_connected">IP: %1$s</string>
     
     <string name="uwu_banner_settings_title">Hello there...</string>
     <string name="uwu_banner_settings_summary">"Welcome to the settings
@@ -616,5 +622,7 @@ you need."</string>
     
     <string name="title_pref_enable_blur">Enable Blur</string>
     <string name="summary_pref_enable_blur">Enable background blur effect on windows</string>
+    <string name="title_pref_blur_bottom_status">Blur Status Bottom Card</string>
+    <string name="summary_pref_blur_bottom_status">Enable blur effect on the status  bottom card</string>
 
 </resources>

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.v2ray.ang.R
 import com.v2ray.ang.enums.EConfigType
+import com.v2ray.ang.extension.isComplexType
 
 class ShareConfigBottomSheet : BaseBottomSheetFragment() {
 
@@ -41,7 +42,6 @@ class ShareConfigBottomSheet : BaseBottomSheetFragment() {
         return inflater.inflate(R.layout.uwu_bottom_sheet_share_config, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -57,9 +57,8 @@ class ShareConfigBottomSheet : BaseBottomSheetFragment() {
         
         view.findViewById<View>(R.id.share_full_clipboard)?.setOnClickListener(clickListener)
 
-        val isCustomConfig = configType == EConfigType.PROXYCHAIN.value ||
-                             configType == EConfigType.POLICYGROUP.value ||
-                             configType == EConfigType.CUSTOM.value
+        val typeEnum = EConfigType.fromInt(configType)
+        val isCustomConfig = typeEnum?.isComplexType() == true
         
         if (isCustomConfig) {
             shareClipboardView?.visibility = View.GONE

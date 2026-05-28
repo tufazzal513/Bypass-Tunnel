@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import com.tapadoo.alerter.Alerter
+import com.v2ray.ang.enums.EConfigType
 import es.dmoral.toasty.Toasty
 import android.widget.Toast
 import com.v2ray.ang.R
@@ -282,4 +283,22 @@ fun String.matchesPattern(regex: Regex?, keyword: String?, ignoreCase: Boolean =
     }
     return regex?.containsMatchIn(this)
         ?: this.contains(keyword, ignoreCase = ignoreCase)
+}
+
+/**
+ * Checks if the config type is a group type (PolicyGroup or ProxyChain).
+ *
+ * @return True if the config type is PolicyGroup or ProxyChain, false otherwise.
+ */
+fun EConfigType.isGroupType(): Boolean {
+    return this == EConfigType.POLICYGROUP || this == EConfigType.PROXYCHAIN
+}
+
+/**
+ * Checks if the config type is a complex type (Custom, PolicyGroup, or ProxyChain).
+ *
+ * @return True if the config type is Custom, PolicyGroup, or ProxyChain, false otherwise.
+ */
+fun EConfigType.isComplexType(): Boolean {
+    return this == EConfigType.CUSTOM || this == EConfigType.POLICYGROUP || this == EConfigType.PROXYCHAIN
 }

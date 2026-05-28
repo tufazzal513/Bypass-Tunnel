@@ -54,6 +54,7 @@ class UiSettingsActivity : BaseActivity() {
         private val dynamicColor by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_DYNAMIC_COLOR) }
         private val trueBlack by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_TRUE_BLACK) }
         private val enableBlur by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_ENABLE_BLUR) }
+        private val blurBottomStatus by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_BLUR_BOTTOM_STATUS) }
         private val nightTheme by lazy { findPreference<ListPreference>(AppConfig.PREF_UI_MODE_NIGHT) }
         private val iconShape by lazy { findPreference<ListPreference>(AppConfig.PREF_ICON_SHAPE) }
         private val customDpi by lazy { findPreference<DpiSliderDialog>(AppConfig.PREF_CUSTOM_DPI) }
@@ -148,6 +149,11 @@ class UiSettingsActivity : BaseActivity() {
 
             enableBlur?.setOnPreferenceChangeListener { _, newValue ->
                 MmkvManager.encodeSettings(AppConfig.PREF_ENABLE_BLUR, newValue as Boolean)
+                true
+            }
+
+            blurBottomStatus?.setOnPreferenceChangeListener { _, newValue ->
+                MmkvManager.encodeSettings(AppConfig.PREF_BLUR_BOTTOM_STATUS, newValue as Boolean)
                 true
             }
 

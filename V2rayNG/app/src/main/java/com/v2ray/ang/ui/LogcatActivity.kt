@@ -1,10 +1,17 @@
 package com.v2ray.ang.ui
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.core.content.FileProvider
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,6 +56,55 @@ class LogcatActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
         return true
     }
 
+    private fun shareLogcat() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val logText = viewModel.getAll().joinToString("\n")
+
+            val result = try {
+                val shareDir = File(cacheDir, "shared_logs").apply {
+                    mkdirs()
+                }
+
+                shareDir.listFiles()?.forEach { it.delete() }
+
+                val timestamp = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(Date())
+                val logFile = File(shareDir, "v2rayNG_logcat_$timestamp.txt")
+                logFile.writeText(logText, Charsets.UTF_8)
+
+                val uri = FileProvider.getUriForFile(
+                    this@LogcatActivity,
+                    "${packageName}.cache",
+                    logFile
+                )
+
+                uri to logFile.name
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    toast(e.localizedMessage ?: e.toString())
+                }
+                return@launch
+            }
+
+            withContext(Dispatchers.Main) {
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_STREAM, result.first)
+                    putExtra(Intent.EXTRA_SUBJECT, result.second)
+                    putExtra(Intent.EXTRA_TITLE, result.second)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    clipData = ClipData.newUri(contentResolver, result.second, result.first)
+                }
+
+                startActivity(
+                    Intent.createChooser(
+                        shareIntent,
+                        getString(R.string.logcat_share)
+                    )
+                )
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_logcat, menu)
 
@@ -82,6 +138,11 @@ class LogcatActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener {
                 getString(R.string.logcat_copy),
                 title = getString(R.string.title_alerter_success)
             )
+            true
+        }
+
+        R.id.share_all -> {
+            shareLogcat()
             true
         }
 

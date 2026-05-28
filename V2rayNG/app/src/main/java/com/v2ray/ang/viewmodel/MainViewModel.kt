@@ -18,6 +18,7 @@ import com.v2ray.ang.dto.entities.ServersCache
 import com.v2ray.ang.dto.entities.SubscriptionCache
 import com.v2ray.ang.dto.SubscriptionUpdateResult
 import com.v2ray.ang.dto.TestServiceMessage
+import com.v2ray.ang.extension.isComplexType
 import com.v2ray.ang.extension.matchesPattern
 import com.v2ray.ang.handler.AngConfigManager
 import com.v2ray.ang.handler.MmkvManager
@@ -44,14 +45,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val isRunning by lazy { MutableLiveData<Boolean>() }
     val updateListAction by lazy { MutableLiveData<Int>() }
     val updateTestResultAction by lazy { MutableLiveData<String>() }
-    
-    // LiveData baru untuk mengirim sinyal alert ke UI (Pair<StatusSuccess, Pesan>)
+    val updateIpResultAction by lazy { MutableLiveData<String>() }
     val alertAction by lazy { MutableLiveData<Pair<Boolean, String>>() }
-    
     private val tcpingTestScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     /**
-     * Refer to the official documentation for [registerReceiver](https://developer.android.com/reference/androidx/core/content/ContextCompat#registerReceiver(android.content.Context,android.content.BroadcastReceiver,android.content.IntentFilter,int):
+     * Refer to the official documentation for [registerReceiver](https://developer.android.com/reference/androidx/core/content/ContextCompat#registerReceiver(android.content.Context,android.content.BroadcastReceiver,android.content.IntentFilter,int):\
      * `registerReceiver(Context, BroadcastReceiver, IntentFilter, int)`.
      */
     fun startListenBroadcast() {
@@ -299,16 +298,28 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * Removes duplicate servers.
+     * Excludes servers with complex types (Custom, PolicyGroup, or ProxyChain) from duplicate comparison.
      * @return The number of removed servers.
      */
     fun removeDuplicateServer(): Int {
         val serversCacheCopy = serversCache.toList().toMutableList()
         val deleteServer = mutableListOf<String>()
+
         serversCacheCopy.forEachIndexed { index, sc ->
             val profile = sc.profile
+            // Skip if this profile has a complex config type
+            if (profile.configType.isComplexType()) {
+                return@forEachIndexed
+            }
+
             serversCacheCopy.forEachIndexed { index2, sc2 ->
                 if (index2 > index) {
                     val profile2 = sc2.profile
+                    // Skip if the second profile has a complex config type
+                    if (profile2.configType.isComplexType()) {
+                        return@forEachIndexed
+                    }
+
                     if (profile == profile2 && !deleteServer.contains(sc2.guid)) {
                         deleteServer.add(sc2.guid)
                     }
@@ -477,7 +488,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
 
                 AppConfig.MSG_MEASURE_DELAY_SUCCESS -> {
-                    updateTestResultAction.value = intent.getStringExtra("content")
+                    val content = intent.getStringExtra("content").orEmpty()
+                    val parts = content.split("\n", limit = 2)
+                    updateTestResultAction.value = parts[0]
+                    updateIpResultAction.value = if (parts.size > 1) parts[1] else null
                 }
 
                 AppConfig.MSG_MEASURE_CONFIG_SUCCESS -> {

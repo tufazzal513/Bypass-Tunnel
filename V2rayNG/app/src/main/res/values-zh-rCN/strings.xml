@@ -283,6 +283,7 @@
     <string name="title_logcat">Logcat</string>
     <string name="logcat_copy">复制</string>
     <string name="logcat_clear">清除</string>
+    <string name="logcat_share">分享日志</string>
     <string name="title_service_restart">服务重启</string>
     <string name="title_del_all_config">删除配置</string>
     <string name="title_del_duplicate_config">删除重复配置</string>
@@ -347,16 +348,16 @@
     <string name="routing_settings_network_tip">[udp|tcp]</string>
     <string name="routing_settings_outbound_tag">outboundTag</string>
 
-    <string name="connection_test_pending">"检查网络连接"</string>
-    <string name="connection_test_testing">"测试中…"</string>
-    <string name="connection_test_testing_count">测试 %d 个配置中…</string>
-    <string name="connection_test_available">"连接成功：延时 %d 毫秒"</string>
-    <string name="connection_test_error">"失败：%s"</string>
-    <string name="connection_test_fail">"无互联网连接"</string>
-    <string name="connection_test_error_status_code">"状态码无效（#%d）"</string>
-    <string name="connection_connected">"已连接，点击测试连接"</string>
-    <string name="connection_not_connected">"未连接"</string>
-    <string name="connection_runing_task_left">运行中的测试任务数：%s</string>
+    <string name="connection_test_pending">检查连接</string>
+    <string name="connection_test_testing">测试中…</string>
+    <string name="connection_test_testing_count">正在测试 %d 个配置…</string>
+    <string name="connection_test_available">连接成功：%dms</string>
+    <string name="connection_test_error">错误：%s</string>
+    <string name="connection_test_fail">无网络</string>
+    <string name="connection_test_error_status_code">错误代码：#%d</string>
+    <string name="connection_connected">已连接。点击测试</string>
+    <string name="connection_not_connected">未连接</string>
+    <string name="connection_runing_task_left">运行测试：%s</string>
 
     <string name="import_subscription_success">订阅导入成功</string>
     <string name="import_subscription_failure">导入订阅失败</string>
@@ -515,6 +516,10 @@
     <string name="del_file_asset_dialog_comfirm_message">确定要删除此资产文件吗？一旦删除，数据将永久丢失且无法找回。</string>
     <string name="del_button_dialog_comfirm">删除</string>
     <string name="menu_item_search_main">在找什么吗？</string>
+    <string name="title_vpn_sound_settings">声音</string>
+    <string name="title_pref_sound_on_connect">连接提示音</string>
+    <string name="summary_pref_sound_on_connect">连接或断开时播放声音</string>
+    <string name="ip_unknown">IP: 未知</string>
     
     <string name="uwu_banner_settings_title">你好呀……</string>
     <string name="uwu_banner_settings_summary">"欢迎来到设置菜单,
@@ -591,5 +596,7 @@
  
     <string name="title_pref_enable_blur">开启模糊</string>
     <string name="summary_pref_enable_blur">开启窗口背景模糊效果</string>
+    <string name="title_pref_blur_bottom_status">底部状态卡片模糊</string>
+    <string name="summary_pref_blur_bottom_status">开启底部状态卡片的模糊效果</string>
 
 </resources>

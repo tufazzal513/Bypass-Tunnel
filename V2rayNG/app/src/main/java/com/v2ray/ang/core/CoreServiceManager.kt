@@ -20,6 +20,7 @@ import com.v2ray.ang.enums.EConfigType
 import com.v2ray.ang.extension.alert
 import com.v2ray.ang.extension.alertError
 import com.v2ray.ang.extension.alertSuccess
+import com.v2ray.ang.extension.isComplexType
 import com.v2ray.ang.extension.toast
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.NotificationManager
@@ -169,9 +170,7 @@ object CoreServiceManager {
                 error(context.getString(R.string.toast_config_file_invalid))
             }
 
-        if (config.configType != EConfigType.CUSTOM
-            && config.configType != EConfigType.POLICYGROUP
-            && config.configType != EConfigType.PROXYCHAIN
+        if (!config.configType.isComplexType()
             && !Utils.isValidUrl(config.server)
             && !Utils.isPureIpAddress(config.server.orEmpty())
         ) {

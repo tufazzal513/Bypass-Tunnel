@@ -46,6 +46,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private var currentDpi: Int = 0
     private var currentShowBannerHome: Boolean = true
     private var currentBannerUri: String = ""
+    private var currentBlurBottomStatus: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         currentThemeKey = MmkvManager.decodeSettingsString(AppConfig.PREF_APP_THEME) ?: "8"
@@ -56,6 +57,7 @@ abstract class BaseActivity : AppCompatActivity() {
         currentDpi = MmkvManager.decodeSettingsInt(AppConfig.PREF_CUSTOM_DPI, 0)
         currentShowBannerHome = MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_HOME_BANNER, true)
         currentBannerUri = MmkvManager.decodeSettingsString(AppConfig.PREF_CUSTOM_HOME_BANNER_URI) ?: ""
+        currentBlurBottomStatus = MmkvManager.decodeSettingsBool(AppConfig.PREF_BLUR_BOTTOM_STATUS, false)
 
         ThemeManager.applyTheme(this)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -85,6 +87,7 @@ abstract class BaseActivity : AppCompatActivity() {
         val newDpi = MmkvManager.decodeSettingsInt(AppConfig.PREF_CUSTOM_DPI, 0)
         val newShowBannerHome = MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_HOME_BANNER, true)
         val newBannerUri = MmkvManager.decodeSettingsString(AppConfig.PREF_CUSTOM_HOME_BANNER_URI) ?: ""
+        val newBlurBottomStatus = MmkvManager.decodeSettingsBool(AppConfig.PREF_BLUR_BOTTOM_STATUS, false)
 
         if (currentThemeKey != newThemeKey ||
             currentDynamicColor != newDynamicColor ||
@@ -93,7 +96,8 @@ abstract class BaseActivity : AppCompatActivity() {
             currentCustomColor != newCustomColor ||
             currentDpi != newDpi ||
             currentShowBannerHome != newShowBannerHome ||
-            currentBannerUri != newBannerUri
+            currentBannerUri != newBannerUri ||
+            currentBlurBottomStatus != newBlurBottomStatus
         ) {
             currentThemeKey = newThemeKey
             currentDynamicColor = newDynamicColor
@@ -103,6 +107,7 @@ abstract class BaseActivity : AppCompatActivity() {
             currentDpi = newDpi
             currentShowBannerHome = newShowBannerHome
             currentBannerUri = newBannerUri
+            currentBlurBottomStatus = newBlurBottomStatus
 
             recreate()
         }

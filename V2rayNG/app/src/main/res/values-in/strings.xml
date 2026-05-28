@@ -283,6 +283,7 @@
     <string name="title_pref_hev_tunnel_rw_timeout">Batas waktu (timeout) baca/tulis Hev Tun (detik) (tcp,udp bawaan 300,60)</string>
 
     <string name="title_logcat">Logcat</string>
+    <string name="logcat_share">Bagikan log</string>
     <string name="logcat_copy">Salin</string>
     <string name="logcat_clear">Bersihin</string>
     <string name="title_service_restart">Restart Servis</string>
@@ -347,16 +348,16 @@
     <string name="routing_settings_outbound_tag_hint" translatable="false">proxy / direct / block / &lt;remarks&gt;</string>
     <string name="routing_settings_outbound_tag">outboundTag</string>
 
-    <string name="connection_test_pending">Cek Koneksi Dulu</string>
-    <string name="connection_test_testing">Lagi ngetes nih...</string>
-    <string name="connection_test_testing_count">Ngetes %d konfig...</string>
-    <string name="connection_test_available">Mantul: Konek cuman makan waktu %dms</string>
-    <string name="connection_test_error">Gagal ngecek koneksi internet gegara: %s</string>
-    <string name="connection_test_fail">Internet Lagi Bapuk / Mati</string>
+    <string name="connection_test_pending">Cek Koneksi</string>
+    <string name="connection_test_testing">Lagi ngecek…</string>
+    <string name="connection_test_testing_count">Ngecek %d konfig…</string>
+    <string name="connection_test_available">Sukses konek: %dms</string>
+    <string name="connection_test_error">Error: %s</string>
+    <string name="connection_test_fail">Gak ada internet</string>
     <string name="connection_test_error_status_code">Kode error: #%d</string>
-    <string name="connection_connected">Udah Konek, pencet buat ngecek speed</string>
-    <string name="connection_not_connected">Belum nyambung tuh</string>
-    <string name="connection_runing_task_left">Sisa tes yang lagi jalan: %s</string>
+    <string name="connection_connected">Udah konek. Tap buat tes</string>
+    <string name="connection_not_connected">Gak konek</string>
+    <string name="connection_runing_task_left">Tes berjalan: %s</string>
 
     <string name="import_subscription_success">Asik, Langganan Berhasil Masuk</string>
     <string name="import_subscription_failure">Yah, Impor Langganan Gagal</string>
@@ -517,6 +518,10 @@
     <string name="del_file_asset_dialog_comfirm_message">Yakin mau hapus file aset ini? Kalau udah dihapus, datanya bakal hilang permanen dan nggak bisa dibalikin lagi lho.</string>
     <string name="del_button_dialog_comfirm">Hapus</string>
     <string name="menu_item_search_main">Lagi nyari sesuatu?</string>
+    <string name="title_vpn_sound_settings">Suara</string>
+    <string name="title_pref_sound_on_connect">Bunyi Koneksi</string>
+    <string name="summary_pref_sound_on_connect">Bunyi pas nyambung atau putus koneksi</string>
+    <string name="ip_unknown">IP: Nggak ke-detect</string>
 
      <string name="uwu_banner_settings_title">Halo disana…</string>
     <string name="uwu_banner_settings_summary">"Met dateng di menu
@@ -593,6 +598,7 @@ yang kamu butuhin."</string>
     
     <string name="title_pref_enable_blur">Aktifin Blur</string>
     <string name="summary_pref_enable_blur">Nyalain efek blur di background window</string>
-
+    <string name="title_pref_blur_bottom_status">Blur Card Status Bawah</string>
+    <string name="summary_pref_blur_bottom_status">Aktifin efek blur di card status bagian bawah</string>
 
 </resources>

@@ -15,10 +15,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.v2ray.ang.util.BlurBottomStatusController
 import com.v2ray.ang.util.showBlur
 import com.v2ray.ang.util.showDeleteConfirmDialog
-import com.google.android.material.shape.CornerFamily
-import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.tabs.TabLayoutMediator
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
@@ -90,13 +89,13 @@ class MainActivity : HelperBaseActivity(),
 
         window.statusBarColor = android.graphics.Color.TRANSPARENT
 
-        setupBottomAppBar()
         setupViewPager()
         setupListeners()
         setupInlineSearchView()
         setupGroupTab()
         setupViewModel()
         setupBannerHome()
+        BlurBottomStatusController.applyState(this, binding)
 
         SubscriptionUpdater.sync()
         mainViewModel.reloadServerList()
@@ -117,11 +116,11 @@ class MainActivity : HelperBaseActivity(),
                 top   = 0, 
                 left  = maxOf(systemBars.left,  displayCutout.left),
                 right = maxOf(systemBars.right, displayCutout.right),
-                bottom = 0
+                bottom = maxOf(systemBars.bottom, displayCutout.bottom)
             )
             
             val bottomInset = maxOf(systemBars.bottom, displayCutout.bottom)
-            binding.bottomAppBar.updatePadding(bottom = bottomInset)
+            binding.cardBottomStatus.updatePadding(bottom = bottomInset)
 
             val headerContent = view.findViewById<android.view.View>(R.id.header_content)
             headerContent?.updatePadding(top = systemBars.top)
@@ -192,17 +191,6 @@ class MainActivity : HelperBaseActivity(),
         }
     }
 
-    private fun setupBottomAppBar() {
-        val bottomBarBackground = binding.bottomAppBar.background as MaterialShapeDrawable
-        bottomBarBackground.shapeAppearanceModel = bottomBarBackground.shapeAppearanceModel.toBuilder()
-            .setTopRightCorner(CornerFamily.ROUNDED, 48f)
-            .setTopLeftCorner(CornerFamily.ROUNDED, 48f)
-            .build()
-
-        androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
-            .isAppearanceLightNavigationBars = false
-    }
-
     private fun setupViewPager() {
         groupPagerAdapter = GroupPagerAdapter(this, emptyList())
         binding.viewPager.apply {
@@ -213,7 +201,9 @@ class MainActivity : HelperBaseActivity(),
 
     private fun setupListeners() {
         binding.fab.setOnClickListener { handleFabAction() }
-        binding.bottomAppBar.setOnClickListener { handleLayoutTestClick() }
+        binding.fabNoBlur.setOnClickListener { handleFabAction() }
+        
+        binding.cardBottomStatus.setOnClickListener { handleLayoutTestClick() }
         
         binding.btnHome.setOnClickListener {
             MainMenuBottomSheet().show(supportFragmentManager, MainMenuBottomSheet.TAG)
@@ -302,6 +292,13 @@ class MainActivity : HelperBaseActivity(),
 
     private fun setupViewModel() {
         mainViewModel.updateTestResultAction.observe(this) { setTestState(it) }
+        mainViewModel.updateIpResultAction.observe(this) { ip ->
+            binding.tvIpState.text = if (ip.isNullOrEmpty()) {
+                getString(R.string.ip_unknown)
+            } else {
+                getString(R.string.ip_connected, ip)
+            }
+        }
         mainViewModel.isRunning.observe(this) { isRunning ->
             applyRunningState(isLoading = false, isRunning = isRunning)
         }
@@ -394,19 +391,25 @@ class MainActivity : HelperBaseActivity(),
     private fun applyRunningState(isLoading: Boolean, isRunning: Boolean) {
         if (isLoading) {
             binding.fab.setImageResource(R.drawable.ic_fab_check)
+            binding.fabNoBlur.setImageResource(R.drawable.ic_fab_check)
             return
         }
 
         if (isRunning) {
             binding.fab.setImageResource(R.drawable.ic_stop_24dp)
             binding.fab.contentDescription = getString(R.string.action_stop_service)
+            binding.fabNoBlur.setImageResource(R.drawable.ic_stop_24dp)
+            binding.fabNoBlur.contentDescription = getString(R.string.action_stop_service)
             setTestState(getString(R.string.connection_connected))
-            binding.bottomAppBar.isFocusable = true
+            binding.cardBottomStatus.isFocusable = true
         } else {
             binding.fab.setImageResource(R.drawable.ic_play_24dp)
             binding.fab.contentDescription = getString(R.string.tasker_start_service)
+            binding.fabNoBlur.setImageResource(R.drawable.ic_play_24dp)
+            binding.fabNoBlur.contentDescription = getString(R.string.tasker_start_service)
             setTestState(getString(R.string.connection_not_connected))
-            binding.bottomAppBar.isFocusable = false
+            binding.tvIpState.text = getString(R.string.ip_unknown)
+            binding.cardBottomStatus.isFocusable = false
         }
     }
 

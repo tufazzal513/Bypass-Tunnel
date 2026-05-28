@@ -122,6 +122,15 @@
             android:title="@string/title_pref_enable_blur"
             android:summary="@string/summary_pref_enable_blur" />
 
+        <androidx.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_baseline_blur_on_24"
+            app:layout="@layout/uwu_mid_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
+            android:defaultValue="false"
+            android:key="pref_blur_bottom_status"
+            android:title="@string/title_pref_blur_bottom_status"
+            android:summary="@string/summary_pref_blur_bottom_status" />
+
         <Preference
             android:icon="@drawable/ic_cards_variant"
             app:layout="@layout/uwu_bot"
@@ -195,6 +204,19 @@
             android:key="action_delete_profile_banner_image"
             android:title="@string/delete_custom_banner_profile"
             android:summary="@string/delete_custom_banner_profile_summary" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/title_vpn_sound_settings">
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_audio"
+            app:layout="@layout/uwu_sin_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
+            android:defaultValue="true"
+            android:key="pref_sound_on_connect"
+            android:summary="@string/summary_pref_sound_on_connect"
+            android:title="@string/title_pref_sound_on_connect" />
 
     </PreferenceCategory>
 
