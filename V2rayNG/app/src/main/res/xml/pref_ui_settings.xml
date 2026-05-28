@@ -113,14 +113,32 @@
             app:key="pref_custom_dpi"
             app:title="@string/pref_custom_dpi" />
 
+        <Preference
+            android:icon="@drawable/ic_cards_variant"
+            app:layout="@layout/uwu_bot"
+            android:key="pref_indicator_style"
+            android:title="@string/pref_indicator_style_title"
+            android:summary="@string/pref_indicator_style_summary" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/title_blur_settings">
+
          <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_blur_on_24"
-            app:layout="@layout/uwu_mid_switch"
+            app:layout="@layout/uwu_top_switch"
             app:widgetLayout="@layout/uwu_widget_material_switch"
             android:defaultValue="false"
             android:key="pref_enable_blur"
             android:title="@string/title_pref_enable_blur"
             android:summary="@string/summary_pref_enable_blur" />
+
+        <com.v2ray.ang.ui.dialog.BlurIntensityDialog
+            android:icon="@drawable/ic_baseline_blur_on_24"
+            app:layout="@layout/uwu_mid"
+            app:key="pref_blur_intensity"
+            app:title="@string/pref_blur_intensity"
+            app:dependency="pref_enable_blur" />
 
         <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_blur_on_24"
@@ -131,15 +149,14 @@
             android:title="@string/title_pref_blur_bottom_status"
             android:summary="@string/summary_pref_blur_bottom_status" />
 
-        <Preference
-            android:icon="@drawable/ic_cards_variant"
+        <com.v2ray.ang.ui.dialog.BlurBottomIntensityDialog
+            android:icon="@drawable/ic_baseline_blur_on_24"
             app:layout="@layout/uwu_bot"
-            android:key="pref_indicator_style"
-            android:title="@string/pref_indicator_style_title"
-            android:summary="@string/pref_indicator_style_summary" />
+            app:key="pref_blur_bottom_intensity"
+            app:title="@string/pref_blur_bottom_intensity"
+            app:dependency="pref_blur_bottom_status" />
 
     </PreferenceCategory>
-
 
     <PreferenceCategory android:title="@string/home_banner_category">
 

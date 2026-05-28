@@ -44,7 +44,10 @@ object WindowBlurUtils {
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
                 
-                setBlurRadius(12f)
+                val blurRadius = MmkvManager.decodeSettingsInt(AppConfig.PREF_BLUR_RADIUS, AppConfig.DEFAULT_BLUR_RADIUS).toFloat()
+                val blurRounds = MmkvManager.decodeSettingsInt(AppConfig.PREF_BLUR_ROUNDS, AppConfig.DEFAULT_BLUR_ROUNDS)
+                setBlurRadius(blurRadius)
+                setBlurRounds(blurRounds)
                 setOverlayColor(Color.argb(120, 0, 0, 0))
                 
                 isClickable = false
@@ -68,6 +71,24 @@ object WindowBlurUtils {
             e.printStackTrace()
             window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
             window.attributes?.dimAmount = 0.6f
+        }
+    }
+
+    fun updateWindowBlur(window: Window?, radius: Float, rounds: Int) {
+        if (window == null) return
+        try {
+            val activity = window.context.getActivity() ?: return
+            val decorView = activity.window?.decorView as? ViewGroup ?: return
+            val blurView = decorView.findViewById<BlurView>(BLUR_OVERLAY_ID) ?: return
+            
+            blurView.setBlurRadius(radius)
+            blurView.setBlurRounds(rounds)
+            
+            blurView.invalidate()
+            decorView.invalidate()
+            
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

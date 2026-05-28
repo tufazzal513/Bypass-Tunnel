@@ -24,6 +24,8 @@ import com.v2ray.ang.ui.BaseActivity
 import com.v2ray.ang.ui.CheckUpdateActivity
 import com.v2ray.ang.ui.bottomsheet.IndicatorStyleBottomSheet
 import com.v2ray.ang.ui.dialog.DpiSliderDialog
+import com.v2ray.ang.ui.dialog.BlurIntensityDialog
+import com.v2ray.ang.ui.dialog.BlurBottomIntensityDialog
 import com.v2ray.ang.ui.dialog.ThemeColorDialog
 import com.v2ray.ang.ui.preference.CustomBannerPreference
 import com.v2ray.ang.util.ThemeManager
@@ -58,6 +60,8 @@ class UiSettingsActivity : BaseActivity() {
         private val nightTheme by lazy { findPreference<ListPreference>(AppConfig.PREF_UI_MODE_NIGHT) }
         private val iconShape by lazy { findPreference<ListPreference>(AppConfig.PREF_ICON_SHAPE) }
         private val customDpi by lazy { findPreference<DpiSliderDialog>(AppConfig.PREF_CUSTOM_DPI) }
+        private val blurIntensity by lazy { findPreference<BlurIntensityDialog>(AppConfig.PREF_BLUR_INTENSITY) }
+        private val blurBottomIntensity by lazy { findPreference<BlurBottomIntensityDialog>(AppConfig.PREF_BLUR_BOTTOM_INTENSITY) }
         private val indicatorStyle by lazy { findPreference<Preference>(AppConfig.PREF_INDICATOR_STYLE) }
         private val navigateCheckUpdate by lazy { findPreference<CustomBannerPreference>(AppConfig.PREF_NAVIGATE_CHECK_UPDATE) }
 
@@ -399,6 +403,14 @@ class UiSettingsActivity : BaseActivity() {
             val savedDpi = MmkvManager.decodeSettingsInt(AppConfig.PREF_CUSTOM_DPI, 0)
             val systemDpi = resources.displayMetrics.densityDpi
             customDpi?.summary = if (savedDpi > 0) savedDpi.toString() else systemDpi.toString()
+
+            val savedRadius = MmkvManager.decodeSettingsInt(AppConfig.PREF_BLUR_RADIUS, AppConfig.DEFAULT_BLUR_RADIUS)
+            val savedRounds = MmkvManager.decodeSettingsInt(AppConfig.PREF_BLUR_ROUNDS, AppConfig.DEFAULT_BLUR_ROUNDS)
+            blurIntensity?.updateSummary(savedRadius, savedRounds)
+
+            val savedBottomRadius = MmkvManager.decodeSettingsInt(AppConfig.PREF_BLUR_BOTTOM_RADIUS, AppConfig.DEFAULT_BLUR_BOTTOM_RADIUS)
+            val savedBottomRounds = MmkvManager.decodeSettingsInt(AppConfig.PREF_BLUR_BOTTOM_ROUNDS, AppConfig.DEFAULT_BLUR_BOTTOM_ROUNDS)
+            blurBottomIntensity?.updateSummary(savedBottomRadius, savedBottomRounds)
         }
 
         private fun updateTrueBlackState(isNight: Boolean) {

@@ -32,32 +32,16 @@ import com.v2ray.ang.util.DPIController
 import com.v2ray.ang.util.MyContextWrapper
 import com.v2ray.ang.util.ThemeManager
 import com.v2ray.ang.util.WindowBlurUtils
+import com.v2ray.ang.util.ThemeStateManager
 import com.qmdeve.blurview.widget.BlurView 
 
 abstract class BaseActivity : AppCompatActivity() {
     private var loadingOverlay: FrameLayout? = null
-
-    // Theme states
-    private var currentThemeKey: String = "8"
-    private var currentDynamicColor: Boolean = false
-    private var currentTrueBlack: Boolean = false
-    private var currentUseCustomColor: Boolean = false
-    private var currentCustomColor: Int = 0
-    private var currentDpi: Int = 0
-    private var currentShowBannerHome: Boolean = true
-    private var currentBannerUri: String = ""
-    private var currentBlurBottomStatus: Boolean = false
+    
+    private lateinit var themeStateManager: ThemeStateManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        currentThemeKey = MmkvManager.decodeSettingsString(AppConfig.PREF_APP_THEME) ?: "8"
-        currentDynamicColor = MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR, false)
-        currentTrueBlack = MmkvManager.decodeSettingsBool(AppConfig.PREF_TRUE_BLACK, false)
-        currentUseCustomColor = MmkvManager.decodeSettingsBool(AppConfig.PREF_USE_CUSTOM_COLOR, false)
-        currentCustomColor = MmkvManager.decodeSettingsInt(AppConfig.PREF_CUSTOM_COLOR, 0)
-        currentDpi = MmkvManager.decodeSettingsInt(AppConfig.PREF_CUSTOM_DPI, 0)
-        currentShowBannerHome = MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_HOME_BANNER, true)
-        currentBannerUri = MmkvManager.decodeSettingsString(AppConfig.PREF_CUSTOM_HOME_BANNER_URI) ?: ""
-        currentBlurBottomStatus = MmkvManager.decodeSettingsBool(AppConfig.PREF_BLUR_BOTTOM_STATUS, false)
+        themeStateManager = ThemeStateManager(this)
 
         ThemeManager.applyTheme(this)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -78,39 +62,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        val newThemeKey = MmkvManager.decodeSettingsString(AppConfig.PREF_APP_THEME) ?: "8"
-        val newDynamicColor = MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR, false)
-        val newTrueBlack = MmkvManager.decodeSettingsBool(AppConfig.PREF_TRUE_BLACK, false)
-        val newUseCustomColor = MmkvManager.decodeSettingsBool(AppConfig.PREF_USE_CUSTOM_COLOR, false)
-        val newCustomColor = MmkvManager.decodeSettingsInt(AppConfig.PREF_CUSTOM_COLOR, 0)
-        val newDpi = MmkvManager.decodeSettingsInt(AppConfig.PREF_CUSTOM_DPI, 0)
-        val newShowBannerHome = MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_HOME_BANNER, true)
-        val newBannerUri = MmkvManager.decodeSettingsString(AppConfig.PREF_CUSTOM_HOME_BANNER_URI) ?: ""
-        val newBlurBottomStatus = MmkvManager.decodeSettingsBool(AppConfig.PREF_BLUR_BOTTOM_STATUS, false)
-
-        if (currentThemeKey != newThemeKey ||
-            currentDynamicColor != newDynamicColor ||
-            currentTrueBlack != newTrueBlack ||
-            currentUseCustomColor != newUseCustomColor ||
-            currentCustomColor != newCustomColor ||
-            currentDpi != newDpi ||
-            currentShowBannerHome != newShowBannerHome ||
-            currentBannerUri != newBannerUri ||
-            currentBlurBottomStatus != newBlurBottomStatus
-        ) {
-            currentThemeKey = newThemeKey
-            currentDynamicColor = newDynamicColor
-            currentTrueBlack = newTrueBlack
-            currentUseCustomColor = newUseCustomColor
-            currentCustomColor = newCustomColor
-            currentDpi = newDpi
-            currentShowBannerHome = newShowBannerHome
-            currentBannerUri = newBannerUri
-            currentBlurBottomStatus = newBlurBottomStatus
-
-            recreate()
-        }
+        themeStateManager.checkThemeChangedAndRecreate()
     }
 
     override fun onContentChanged() {
@@ -221,7 +173,8 @@ abstract class BaseActivity : AppCompatActivity() {
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT
                     )
-                    setBlurRadius(12f)
+                    setBlurRadius(MmkvManager.decodeSettingsInt(AppConfig.PREF_BLUR_RADIUS, AppConfig.DEFAULT_BLUR_RADIUS).toFloat())
+                    setBlurRounds(MmkvManager.decodeSettingsInt(AppConfig.PREF_BLUR_ROUNDS, AppConfig.DEFAULT_BLUR_ROUNDS))
                     setOverlayColor(Color.argb(120, 0, 0, 0))
                 }
                 addView(blurView)
