@@ -51,6 +51,11 @@ abstract class BaseActivity : AppCompatActivity() {
         val fontOverlayId = getFontStyleResId(MmkvManager.decodeSettingsString(AppConfig.PREF_APP_FONT))
         if (fontOverlayId != 0) {
             theme.applyStyle(fontOverlayId, true)
+            
+            val isTrueBlack = ThemeManager.isDarkMode(this) && MmkvManager.decodeSettingsBool(AppConfig.PREF_TRUE_BLACK, false)
+            if (isTrueBlack) {
+                theme.applyStyle(R.style.ThemeOverlay_App_TrueBlack_DialogFix, true)
+            }
         }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)

@@ -455,5 +455,11 @@
         <item name="android:textAppearanceSmall">@style/Text.Font.Evolve</item>
         <item name="android:textAppearance">@style/Text.Font.Evolve</item>
     </style>
+    
+    <style name="ThemeOverlay.App.TrueBlack.DialogFix">
+        <item name="alertDialogTheme">@style/ThemeOverlay.App.TrueBlack.AlertDialog</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.TrueBlack.AlertDialog</item>
+    </style>
+
 
 </resources>
