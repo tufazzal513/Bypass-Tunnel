@@ -249,7 +249,6 @@
     
     <string-array name="app_font_entries" translatable="false">
         <item>Default</item>
-        <item>Montserrat</item>
         <item>Google Sans</item>
         <item>Roboto</item>
         <item>Poppins</item>
@@ -269,7 +268,6 @@
 
     <string-array name="app_font_values" translatable="false">
         <item>default</item>
-        <item>montserrat</item>
         <item>google</item>
         <item>roboto</item>
         <item>poppins</item>

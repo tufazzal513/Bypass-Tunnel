@@ -161,13 +161,9 @@
     <style name="StyleFontDefault">
     </style>
 
-    <style name="StyleFontMontserrat">
-        <item name="android:fontFamily">@font/montserrat_thin</item>
-        <item name="titleTextAppearance">@style/Text.Font.Montserrat</item>
-    </style>
-
     <style name="StyleFontGoogle">
         <item name="android:fontFamily">@font/googlesansregular</item>
+        <item name="fontFamily">@font/googlesansregular</item>
         <item name="titleTextAppearance">@style/Text.Font.Google</item>
         <item name="materialAlertDialogTheme">@style/DialogFontGoogle</item>
         <item name="alertDialogTheme">@style/DialogFontGoogle</item>
@@ -175,6 +171,7 @@
 
     <style name="StyleFontRoboto">
         <item name="android:fontFamily">@font/robotoregular</item>
+        <item name="fontFamily">@font/robotoregular</item>
         <item name="titleTextAppearance">@style/Text.Font.Roboto</item>
         <item name="materialAlertDialogTheme">@style/DialogFontRoboto</item>
         <item name="alertDialogTheme">@style/DialogFontRoboto</item>
@@ -182,6 +179,7 @@
 
     <style name="StyleFontPoppins">
         <item name="android:fontFamily">@font/poppinsregular</item>
+        <item name="fontFamily">@font/poppinsregular</item>
         <item name="titleTextAppearance">@style/Text.Font.Poppins</item>
         <item name="materialAlertDialogTheme">@style/DialogFontPoppins</item>
         <item name="alertDialogTheme">@style/DialogFontPoppins</item>
@@ -189,6 +187,7 @@
 
     <style name="StyleFontChocoCooky">
         <item name="android:fontFamily">@font/chococookyregular</item>
+        <item name="fontFamily">@font/chococookyregular</item>
         <item name="titleTextAppearance">@style/Text.Font.ChocoCooky</item>
         <item name="materialAlertDialogTheme">@style/DialogFontChocoCooky</item>
         <item name="alertDialogTheme">@style/DialogFontChocoCooky</item>
@@ -196,6 +195,7 @@
 
     <style name="StyleFontSimpleDay">
         <item name="android:fontFamily">@font/simpleday</item>
+        <item name="fontFamily">@font/simpleday</item>
         <item name="titleTextAppearance">@style/Text.Font.SimpleDay</item>
         <item name="materialAlertDialogTheme">@style/DialogFontSimpleDay</item>
         <item name="alertDialogTheme">@style/DialogFontSimpleDay</item>
@@ -203,6 +203,7 @@
 
     <style name="StyleFontFucek">
         <item name="android:fontFamily">@font/fucek</item>
+        <item name="fontFamily">@font/fucek</item>
         <item name="titleTextAppearance">@style/Text.Font.Fucek</item>
         <item name="materialAlertDialogTheme">@style/DialogFontFucek</item>
         <item name="alertDialogTheme">@style/DialogFontFucek</item>
@@ -210,6 +211,7 @@
 
     <style name="StyleFontSFProDisplay">
         <item name="android:fontFamily">@font/sfprodisplay</item>
+        <item name="fontFamily">@font/sfprodisplay</item>
         <item name="titleTextAppearance">@style/Text.Font.SFProDisplay</item>
         <item name="materialAlertDialogTheme">@style/DialogFontSFProDisplay</item>
         <item name="alertDialogTheme">@style/DialogFontSFProDisplay</item>
@@ -217,6 +219,7 @@
 
     <style name="StyleFontDancingScript">
         <item name="android:fontFamily">@font/dancingscript</item>
+        <item name="fontFamily">@font/dancingscript</item>
         <item name="titleTextAppearance">@style/Text.Font.DancingScript</item>
         <item name="materialAlertDialogTheme">@style/DialogFontDancingScript</item>
         <item name="alertDialogTheme">@style/DialogFontDancingScript</item>
@@ -224,6 +227,7 @@
 
     <style name="StyleFontCream">
         <item name="android:fontFamily">@font/cream</item>
+        <item name="fontFamily">@font/cream</item>
         <item name="titleTextAppearance">@style/Text.Font.Cream</item>
         <item name="materialAlertDialogTheme">@style/DialogFontCream</item>
         <item name="alertDialogTheme">@style/DialogFontCream</item>
@@ -231,6 +235,7 @@
 
     <style name="StyleFontOneUI">
         <item name="android:fontFamily">@font/oneui</item>
+        <item name="fontFamily">@font/oneui</item>
         <item name="titleTextAppearance">@style/Text.Font.OneUI</item>
         <item name="materialAlertDialogTheme">@style/DialogFontOneUI</item>
         <item name="alertDialogTheme">@style/DialogFontOneUI</item>
@@ -238,6 +243,7 @@
 
     <style name="StyleFontInconsolata">
         <item name="android:fontFamily">@font/incosolata</item>
+        <item name="fontFamily">@font/incosolata</item>
         <item name="titleTextAppearance">@style/Text.Font.Inconsolata</item>
         <item name="materialAlertDialogTheme">@style/DialogFontInconsolata</item>
         <item name="alertDialogTheme">@style/DialogFontInconsolata</item>
@@ -245,6 +251,7 @@
 
     <style name="StyleFontEmilysCandy">
         <item name="android:fontFamily">@font/emilyscandy</item>
+        <item name="fontFamily">@font/emilyscandy</item>
         <item name="titleTextAppearance">@style/Text.Font.EmilysCandy</item>
         <item name="materialAlertDialogTheme">@style/DialogFontEmilysCandy</item>
         <item name="alertDialogTheme">@style/DialogFontEmilysCandy</item>
@@ -252,6 +259,7 @@
 
     <style name="StyleFontSummerDream">
         <item name="android:fontFamily">@font/summerdream</item>
+        <item name="fontFamily">@font/summerdream</item>
         <item name="titleTextAppearance">@style/Text.Font.SummerDream</item>
         <item name="materialAlertDialogTheme">@style/DialogFontSummerDream</item>
         <item name="alertDialogTheme">@style/DialogFontSummerDream</item>
@@ -259,6 +267,7 @@
 
     <style name="StyleFontRine">
         <item name="android:fontFamily">@font/rine</item>
+        <item name="fontFamily">@font/rine</item>
         <item name="titleTextAppearance">@style/Text.Font.Rine</item>
         <item name="materialAlertDialogTheme">@style/DialogFontRine</item>
         <item name="alertDialogTheme">@style/DialogFontRine</item>
@@ -266,14 +275,10 @@
     
     <style name="StyleFontEvolve">
         <item name="android:fontFamily">@font/evolvesans</item>
+        <item name="fontFamily">@font/evolvesans</item>
         <item name="titleTextAppearance">@style/Text.Font.Evolve</item>
         <item name="materialAlertDialogTheme">@style/DialogFontEvolve</item>
         <item name="alertDialogTheme">@style/DialogFontEvolve</item>
-    </style>
-
-    <style name="Text.Font.Montserrat" parent="TextAppearance.Material3.TitleMedium">
-        <item name="android:fontFamily">@font/montserrat_thin</item>
-        <item name="fontFamily">@font/montserrat_thin</item>
     </style>
 
     <style name="Text.Font.Google" parent="TextAppearance.Material3.TitleMedium">

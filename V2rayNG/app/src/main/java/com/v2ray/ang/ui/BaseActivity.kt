@@ -140,7 +140,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun getFontStyleResId(fontName: String?): Int {
         return when (fontName) {
-            "montserrat"   -> R.style.StyleFontMontserrat
             "google"       -> R.style.StyleFontGoogle
             "roboto"       -> R.style.StyleFontRoboto
             "poppins"      -> R.style.StyleFontPoppins
@@ -163,7 +162,6 @@ abstract class BaseActivity : AppCompatActivity() {
     fun getCustomTypeface(fontName: String? = null): Typeface {
         val name = fontName ?: MmkvManager.decodeSettingsString(AppConfig.PREF_APP_FONT)
         val fontResId = when (name) {
-            "montserrat"    -> R.font.montserrat_thin
             "google"        -> R.font.googlesansregular
             "roboto"        -> R.font.robotoregular
             "poppins"       -> R.font.poppinsregular
