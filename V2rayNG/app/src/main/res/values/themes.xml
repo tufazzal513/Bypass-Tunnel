@@ -20,6 +20,18 @@
         <item name="elevation">0.0dip</item>
         <item name="preferenceTheme">@style/AppThemePreference</item>
         <item name="android:homeAsUpIndicator">@drawable/uwu_back_arrow</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.App.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.App.TitleSmall</item>
+    </style>
+    
+    <style name="TextAppearance.App.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:fontFamily">?attr/fontFamily</item>
+        <item name="fontFamily">?attr/fontFamily</item>
+    </style>
+    
+    <style name="TextAppearance.App.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:fontFamily">?attr/fontFamily</item>
+        <item name="fontFamily">?attr/fontFamily</item>
     </style>
     
     <style name="AppThemePreference" parent="@style/PreferenceThemeOverlay">
