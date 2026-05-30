@@ -8,6 +8,7 @@ import androidx.appcompat.widget.AppCompatTextView
 
 class AutoMarqueeTextView : AppCompatTextView {
     private var mAggregatedVisible: Boolean = false
+    private var mMarqueePosition: Int = 0
 
     constructor(context: Context) : super(context) {
         mAggregatedVisible = false
@@ -38,17 +39,21 @@ class AutoMarqueeTextView : AppCompatTextView {
 
     override fun onVisibilityAggregated(isVisible: Boolean) {
         super.onVisibilityAggregated(isVisible)
-        if (isVisible == mAggregatedVisible) {
-            return
-        }
+        if (isVisible == mAggregatedVisible) return
         mAggregatedVisible = isVisible
         if (mAggregatedVisible) {
             ellipsize = TextUtils.TruncateAt.MARQUEE
+            post {
+                scrollTo(mMarqueePosition, 0)
+                isSelected = true
+            }
         } else {
+            mMarqueePosition = scrollX
             ellipsize = TextUtils.TruncateAt.END
+            isSelected = false
         }
     }
-    
+
     fun View.isVisibleToUser(): Boolean {
         return this.visibility == View.VISIBLE
     }
