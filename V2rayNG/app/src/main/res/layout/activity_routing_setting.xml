@@ -58,49 +58,6 @@
             android:paddingTop="4.0dip"
             android:paddingBottom="@dimen/padding_spacing_dp16">
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/padding_spacing_dp16"
-                android:layout_marginBottom="4.0dip"
-                app:cardBackgroundColor="?colorCard"
-                app:cardCornerRadius="14.0dip"
-                app:cardElevation="0.0dip"
-                app:strokeWidth="0.0dip">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/padding_spacing_dp16">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/padding_spacing_dp16"
-                        android:text="@string/routing_settings_domain_strategy"
-                        android:textColor="?attr/colorPrimary"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/layout_domain_strategy"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/routing_settings_domain_strategy">
-
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/tv_domain_strategy_dropdown"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="none" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"

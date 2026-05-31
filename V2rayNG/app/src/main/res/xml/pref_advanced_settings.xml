@@ -53,6 +53,16 @@
             android:title="@string/title_pref_ip_api_url" />
 
         <ListPreference
+            android:icon="@drawable/ic_arrow_decision"
+            app:layout="@layout/uwu_mid"
+            android:defaultValue="AsIs"
+            android:entries="@array/routing_domain_strategy"
+            android:entryValues="@array/routing_domain_strategy"
+            android:key="pref_routing_domain_strategy"
+            android:summary="%s"
+            android:title="@string/routing_settings_domain_strategy" />
+
+        <ListPreference
             android:icon="@drawable/ic_key"
             app:layout="@layout/uwu_bot"
             android:defaultValue="VPN"

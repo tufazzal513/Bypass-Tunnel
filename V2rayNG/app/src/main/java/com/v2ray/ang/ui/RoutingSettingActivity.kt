@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import com.v2ray.ang.util.showBlur
@@ -38,13 +37,6 @@ class RoutingSettingActivity : HelperBaseActivity(), RoutingMenuBottomSheet.OnRo
     private val viewModel: RoutingSettingsViewModel by viewModels()
     private lateinit var adapter: RoutingSettingRecyclerAdapter
     private var mItemTouchHelper: ItemTouchHelper? = null
-    
-    private val routing_domain_strategy: Array<out String> by lazy {
-        resources.getStringArray(R.array.routing_domain_strategy)
-    }
-    private val preset_rulesets: Array<out String> by lazy {
-        resources.getStringArray(R.array.preset_rulesets)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,8 +54,6 @@ class RoutingSettingActivity : HelperBaseActivity(), RoutingMenuBottomSheet.OnRo
 
         mItemTouchHelper = ItemTouchHelper(SimpleItemTouchHelperCallback(adapter))
         mItemTouchHelper?.attachToRecyclerView(binding.recyclerView)
-
-        setupDomainStrategyDropdown()
     }
 
     override fun onResume() {
@@ -95,34 +85,8 @@ class RoutingSettingActivity : HelperBaseActivity(), RoutingMenuBottomSheet.OnRo
         }
     }
 
-    private fun getDomainStrategy(): String {
-        return MmkvManager.decodeSettingsString(AppConfig.PREF_ROUTING_DOMAIN_STRATEGY) ?: routing_domain_strategy.first()
-    }
-
-    private fun setupDomainStrategyDropdown() {
-        val dropdownAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_dropdown_item_1line,
-            routing_domain_strategy
-        )
-
-        binding.tvDomainStrategyDropdown.apply {
-            setAdapter(dropdownAdapter)
-            setText(getDomainStrategy(), false)
-            
-            setOnItemClickListener { _, _, position, _ ->
-                try {
-                    val value = routing_domain_strategy[position]
-                    MmkvManager.encodeSettings(AppConfig.PREF_ROUTING_DOMAIN_STRATEGY, value)
-                } catch (e: Exception) {
-                    LogUtil.e(AppConfig.TAG, "Failed to set domain strategy", e)
-                }
-            }
-        }
-    }
-
     private fun importPredefined() {
-        AlertDialog.Builder(this).setItems(preset_rulesets.asList().toTypedArray()) { _, i ->
+        AlertDialog.Builder(this).setItems(resources.getStringArray(R.array.preset_rulesets)) { _, i ->
             AlertDialog.Builder(this).setMessage(R.string.routing_settings_import_rulesets_tip)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     try {

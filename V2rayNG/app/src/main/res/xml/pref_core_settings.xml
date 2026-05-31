@@ -122,13 +122,23 @@
 
         <ListPreference
             android:icon="@drawable/ic_domain"
-            app:layout="@layout/uwu_bot"
+            app:layout="@layout/uwu_mid"
             android:defaultValue="1"
             android:entries="@array/outbound_domain_resolve_method"
             android:entryValues="@array/outbound_domain_resolve_method_value"
             android:key="pref_outbound_domain_resolve_method"
             android:summary="%s"
             android:title="@string/title_outbound_domain_resolve_method" />
+
+        <ListPreference
+            android:icon="@drawable/ic_cloud_download_24dp"
+            app:layout="@layout/uwu_bot"
+            android:defaultValue="Loyalsoldier/v2ray-rules-dat"
+            android:entries="@array/geo_files_sources_entries"
+            android:entryValues="@array/geo_files_sources_values"
+            android:key="pref_geo_files_sources"
+            android:summary="%s"
+            android:title="@string/asset_geo_files_sources" />
 
     </PreferenceCategory>
 

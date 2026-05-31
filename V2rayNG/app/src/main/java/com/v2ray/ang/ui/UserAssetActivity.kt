@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.provider.OpenableColumns
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,8 +52,6 @@ class UserAssetActivity : HelperBaseActivity(), AssetMenuBottomSheet.OnAssetMenu
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = UserAssetAdapter(viewModel, extDir, ActivityAdapterListener())
         binding.recyclerView.adapter = adapter
-
-        setupGeoFilesSourcesDropdown()
     }
 
     override fun onResume() {
@@ -82,34 +79,6 @@ class UserAssetActivity : HelperBaseActivity(), AssetMenuBottomSheet.OnAssetMenu
             R.id.add_file -> showFileChooser()
             R.id.add_url -> startActivity(Intent(this, UserAssetUrlActivity::class.java))
             R.id.add_qrcode -> importAssetFromQRcode()
-        }
-    }
-
-    private fun getGeoFilesSources(): String {
-        return MmkvManager.decodeSettingsString(AppConfig.PREF_GEO_FILES_SOURCES) ?: AppConfig.GEO_FILES_SOURCES.first()
-    }
-
-    private fun setupGeoFilesSourcesDropdown() {
-        val dropdownAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_dropdown_item_1line,
-            AppConfig.GEO_FILES_SOURCES
-        )
-
-        binding.tvGeoFilesSourcesDropdown.apply {
-            setAdapter(dropdownAdapter)
-            setText(getGeoFilesSources(), false)
-
-            setOnItemClickListener { _, _, position, _ ->
-                try {
-                    val value = AppConfig.GEO_FILES_SOURCES[position]
-                    MmkvManager.encodeSettings(AppConfig.PREF_GEO_FILES_SOURCES, value)
-                    
-                    refreshData() 
-                } catch (e: Exception) {
-                    LogUtil.e(AppConfig.TAG, "Failed to set geo files sources", e)
-                }
-            }
         }
     }
 
@@ -235,7 +204,8 @@ class UserAssetActivity : HelperBaseActivity(), AssetMenuBottomSheet.OnAssetMenu
 
     @SuppressLint("NotifyDataSetChanged")
     fun refreshData() {
-        viewModel.reload(getGeoFilesSources())
+        val geoFilesSources = MmkvManager.decodeSettingsString(AppConfig.PREF_GEO_FILES_SOURCES) ?: AppConfig.GEO_FILES_SOURCES.first()
+        viewModel.reload(geoFilesSources)
         adapter.notifyDataSetChanged()
     }
 
