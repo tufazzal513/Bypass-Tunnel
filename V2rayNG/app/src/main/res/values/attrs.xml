@@ -47,4 +47,8 @@
         </attr>
     </declare-styleable>
     
+    <declare-styleable name="DynamicShapeImageView">
+        <attr name="shapeBackgroundColor" format="color|reference" />
+    </declare-styleable>
+    
 </resources>

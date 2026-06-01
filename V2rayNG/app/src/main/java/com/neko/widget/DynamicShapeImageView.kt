@@ -24,6 +24,8 @@ class DynamicShapeImageView @JvmOverloads constructor(
 ) : ShaderImageView(context, attrs, defStyleAttr) {
 
     private var currentShapeKey: String? = AppConfig.PREF_ICON_SHAPE_DEFAULT
+    
+    private var customBgColor: Int? = null
 
     private val shapeChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {
@@ -40,13 +42,31 @@ class DynamicShapeImageView @JvmOverloads constructor(
     }
 
     init {
+        if (attrs != null) {
+            val typedArray = context.obtainStyledAttributes(
+                attrs, 
+                R.styleable.DynamicShapeImageView, 
+                defStyleAttr, 
+                0
+            )
+            
+            if (typedArray.hasValue(R.styleable.DynamicShapeImageView_shapeBackgroundColor)) {
+                customBgColor = typedArray.getColor(
+                    R.styleable.DynamicShapeImageView_shapeBackgroundColor, 
+                    0
+                )
+            }
+            
+            typedArray.recycle()
+        }
+
         scaleType = ScaleType.CENTER_CROP
         loadColorBitmap()
     }
 
     private fun loadColorBitmap() {
         try {
-            val color = context.getColorAttr(androidx.appcompat.R.attr.colorPrimary)
+            val color = customBgColor ?: context.getColorAttr(androidx.appcompat.R.attr.colorPrimary)
             
             val bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)
@@ -107,7 +127,7 @@ class DynamicShapeImageView @JvmOverloads constructor(
         "uwu_shape_octagon"        -> R.raw.uwu_shape_octagon
         "uwu_shape_rounded_square" -> R.raw.uwu_shape_rounded_square
         "uwu_shape_squircle"       -> R.raw.uwu_shape_squircle
-        "uwu_shape_heart"       -> R.raw.uwu_shape_heart
+        "uwu_shape_heart"          -> R.raw.uwu_shape_heart
         else                       -> R.raw.uwu_shape_cookie
     }
 }

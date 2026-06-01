@@ -171,6 +171,8 @@
     </style>
     
     <style name="StyleFontDefault">
+    	<item name="textAppearanceTitleMedium">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.Material3.TitleSmall</item>
     </style>
 
     <style name="StyleFontGoogle">
