@@ -218,10 +218,6 @@
     <string name="title_pref_proxy_sharing_enabled">Bolehin koneksi dari LAN</string>
     <string name="summary_pref_proxy_sharing_enabled">Device lain bisa numpang proxy pake IP HP lu via proxy lokal. Nyalain pas di jaringan yang lu percaya aja ya, biar ga ada yang nebeng diam-diam</string>
     <string name="toast_warning_pref_proxysharing_short">Ngebolehin koneksi dari LAN. Pastiin lo lagi di jaringan yang aman ya</string>
-
-    <string name="title_pref_allow_insecure">allowInsecure (Bolehin Gak Aman)</string>
-    <string name="summary_pref_allow_insecure">Kalo TLS dipake, koneksi ga aman tetep dibolehin secara bawaan</string>
-
     <string name="title_pref_socks_port">Port proxy lokal</string>
     <string name="title_pref_enable_local_proxy">Aktifin proxy lokal</string>
     <string name="summary_pref_enable_local_proxy">Kalo dimatiin, proxy SOCKS ga ada yang jalan, jadi fungsi kayak update langganan ga bisa pake proxy</string>

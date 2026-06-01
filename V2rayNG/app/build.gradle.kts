@@ -12,8 +12,8 @@ android {
         applicationId = "com.miku.ray"
         minSdk = 24
         targetSdk = 37
-        versionCode = 731
-        versionName = "2.2.1"
+        versionCode = 732
+        versionName = "2.2.2"
         multiDexEnabled = true
         
         resValue("string", "uwu_version_name", versionName.toString())

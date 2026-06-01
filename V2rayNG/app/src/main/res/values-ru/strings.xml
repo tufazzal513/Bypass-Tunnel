@@ -222,10 +222,6 @@
     <string name="title_pref_proxy_sharing_enabled">Разрешить подключения из локальной сети</string>
     <string name="summary_pref_proxy_sharing_enabled">Другие устройства могут подключаться к прокси по вашему IP через локальный прокси. Включайте только в доверенных сетях во избежание несанкционированных подключений</string>
     <string name="toast_warning_pref_proxysharing_short">Разрешены подключения из локальной сети. Убедитесь, что сеть доверенная</string>
-
-    <string name="title_pref_allow_insecure">allowInsecure</string>
-    <string name="summary_pref_allow_insecure">При выборе TLS — разрешить небезопасные соединения по умолчанию</string>
-
     <string name="title_pref_socks_port">Порт локального прокси</string>
     <string name="title_pref_enable_local_proxy">Включить локальный прокси</string>
     <string name="summary_pref_enable_local_proxy">При отключении SOCKS-прокси недоступен, поэтому обновление подписок и аналогичные действия не смогут использовать прокси</string>

@@ -13,7 +13,6 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputLayout
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.AppConfig.DEFAULT_PORT
-import com.v2ray.ang.AppConfig.PREF_ALLOW_INSECURE
 import com.v2ray.ang.AppConfig.REALITY
 import com.v2ray.ang.AppConfig.TLS
 import com.v2ray.ang.AppConfig.WIREGUARD_LOCAL_ADDRESS_V4
@@ -588,7 +587,7 @@ class ServerActivity : BaseActivity() {
 
         val allowInsecure =
             if (allowInsecurePos < 0 || allowinsecures[allowInsecurePos].isBlank()) {
-                MmkvManager.decodeSettingsBool(PREF_ALLOW_INSECURE)
+                false
             } else {
                 allowinsecures[allowInsecurePos].toBoolean()
             }
