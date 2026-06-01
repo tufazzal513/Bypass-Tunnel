@@ -7,8 +7,8 @@
     android:layout_marginTop="0.0dip"
     android:layout_marginBottom="0.0dip"
     android:baselineAligned="false"
-    android:paddingStart="?android:listPreferredItemPaddingStart"
-    android:paddingEnd="?android:listPreferredItemPaddingEnd"
+    android:paddingStart="24.0dip"
+    android:paddingEnd="24.0dip"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <ImageView
         android:layout_width="60.0dip"
