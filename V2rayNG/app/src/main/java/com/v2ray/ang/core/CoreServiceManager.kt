@@ -22,6 +22,7 @@ import com.v2ray.ang.extension.alertError
 import com.v2ray.ang.extension.alertSuccess
 import com.v2ray.ang.extension.isComplexType
 import com.v2ray.ang.extension.toast
+import com.v2ray.ang.extension.toastError
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.NotificationManager
 import com.v2ray.ang.handler.SettingsManager
@@ -185,9 +186,8 @@ object CoreServiceManager {
 //        if (!result.status) error(result.errorMessage.ifBlank { "Failed to get V2Ray config" })
 
         if (config.insecure == true) {
-            context.alertError(
-                context.getString(R.string.toast_allow_insecure_deprecated),
-                title = context.getString(R.string.title_alerter_error)
+            context.toastError(
+                context.getString(R.string.toast_allow_insecure_deprecated)
             )
         }
 
