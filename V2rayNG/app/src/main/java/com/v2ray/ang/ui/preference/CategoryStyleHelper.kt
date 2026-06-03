@@ -15,7 +15,7 @@ object CategoryStyleHelper {
         "teto"  -> R.layout.uwu_preference_category_teto_1
         "teto2"  -> R.layout.uwu_preference_category_teto_2
         "neru"  -> R.layout.uwu_preference_category_neru
-        else      -> R.layout.uwu_preference_category_1
+        else      -> R.layout.uwu_preference_category_miku_1
     }
 
     fun applyToGroup(styleValue: String?, group: PreferenceGroup) {
