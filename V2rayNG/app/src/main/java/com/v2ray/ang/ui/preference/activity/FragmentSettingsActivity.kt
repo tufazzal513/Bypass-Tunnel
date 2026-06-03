@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
+import com.v2ray.ang.ui.preference.BasePreferenceFragment
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.v2ray.ang.AppConfig
@@ -29,7 +30,7 @@ class FragmentSettingsActivity : BaseActivity() {
         }
     }
 
-    class FragmentSettingsFragment : PreferenceFragmentCompat() {
+    class FragmentSettingsFragment : BasePreferenceFragment() {
 
         private val fragment by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_FRAGMENT_ENABLED) }
         private val fragmentPackets by lazy { findPreference<ListPreference>(AppConfig.PREF_FRAGMENT_PACKETS) }

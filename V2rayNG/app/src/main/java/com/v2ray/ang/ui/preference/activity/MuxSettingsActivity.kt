@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
+import com.v2ray.ang.ui.preference.BasePreferenceFragment
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.v2ray.ang.AppConfig
@@ -29,7 +30,7 @@ class MuxSettingsActivity : BaseActivity() {
         }
     }
 
-    class MuxSettingsFragment : PreferenceFragmentCompat() {
+    class MuxSettingsFragment : BasePreferenceFragment() {
 
         private val mux by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_MUX_ENABLED) }
         private val muxConcurrency by lazy { findPreference<EditTextPreference>(AppConfig.PREF_MUX_CONCURRENCY) }

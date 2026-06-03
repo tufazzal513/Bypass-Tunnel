@@ -1,11 +1,7 @@
 package com.v2ray.ang.ui.preference.activity
 
 import android.os.Bundle
-import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.appbar.MaterialToolbar
@@ -13,6 +9,7 @@ import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.helper.MmkvPreferenceDataStore
 import com.v2ray.ang.ui.BaseActivity
+import com.v2ray.ang.ui.preference.BasePreferenceFragment
 
 class SettingsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +26,7 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
-    class SettingsFragment : PreferenceFragmentCompat() {
+    class SettingsFragment : BasePreferenceFragment() {
 
         private val navigateUiSettings by lazy { findPreference<Preference>(AppConfig.PREF_NAVIGATE_UI_SETTINGS) }
         private val navigateVpnSettings by lazy { findPreference<Preference>(AppConfig.PREF_NAVIGATE_VPN_SETTINGS) }
@@ -39,32 +36,32 @@ class SettingsActivity : BaseActivity() {
         private val navigateAdvancedSettings by lazy { findPreference<Preference>(AppConfig.PREF_NAVIGATE_ADVANCED_SETTINGS) }
 
         override fun onCreateRecyclerView(
-            inflater: LayoutInflater,
-            parent: ViewGroup,
-            savedInstanceState: Bundle?
+            inflater: android.view.LayoutInflater,
+            parent: android.view.ViewGroup,
+            savedInstanceState: android.os.Bundle?
         ): RecyclerView {
             val recyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
             recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            
-            val paddingHorizontalPx = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
+
+            val paddingHorizontalPx = android.util.TypedValue.applyDimension(
+                android.util.TypedValue.COMPLEX_UNIT_DIP,
                 12f,
                 resources.displayMetrics
             ).toInt()
 
-            val paddingVerticalPx = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
+            val paddingVerticalPx = android.util.TypedValue.applyDimension(
+                android.util.TypedValue.COMPLEX_UNIT_DIP,
                 4f,
                 resources.displayMetrics
             ).toInt()
 
+            // Set grid padding — bottom nanti ditambahi inset dari BasePreferenceFragment.onViewCreated
             recyclerView.setPadding(
                 paddingHorizontalPx,
                 paddingVerticalPx,
                 paddingHorizontalPx,
-                paddingVerticalPx
+                paddingVerticalPx   // baseline; BasePreferenceFragment akan update bottom dengan inset
             )
-            
             recyclerView.clipToPadding = false
 
             return recyclerView

@@ -14,6 +14,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.appbar.MaterialToolbar
+import com.v2ray.ang.ui.preference.BasePreferenceFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
@@ -51,7 +52,7 @@ class UiSettingsActivity : BaseActivity() {
         }
     }
 
-    class UiSettingsFragment : PreferenceFragmentCompat() {
+    class UiSettingsFragment : BasePreferenceFragment() {
 
         private val appTheme by lazy { findPreference<Preference>(AppConfig.PREF_APP_THEME) }
         private val dynamicColor by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_DYNAMIC_COLOR) }
