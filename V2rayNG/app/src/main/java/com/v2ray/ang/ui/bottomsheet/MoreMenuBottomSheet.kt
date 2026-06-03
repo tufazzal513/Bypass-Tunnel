@@ -81,6 +81,11 @@ class MoreMenuBottomSheet : BaseBottomSheetFragment() {
 
         val rootContainer = view as? ViewGroup ?: return
 
+        val particlesView = view.findViewById<View>(R.id.ParticlesView)
+        if (particlesView != null) {
+            val disabled = MmkvManager.decodeSettingsBool(AppConfig.PREF_DISABLE_PARTICLES_SHEET, false)
+            particlesView.visibility = if (disabled) View.GONE else View.VISIBLE
+        }
         loadBanner(view)
 
         // ── Expandable: Quick Actions ───────────────────────────────────────

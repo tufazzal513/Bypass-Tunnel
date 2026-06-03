@@ -625,6 +625,8 @@
     <string name="sheet_banner_delete_title">Удалить свой баннер панели</string>
     <string name="sheet_banner_delete_summary">Вернуть стандартный баннер</string>
     <string name="sheet_banner_updated">Баннер панели успешно обновлен.</string>
+    <string name="particles_disable_title">Отключить анимацию частиц</string>
+    <string name="particles_disable_summary">Скрыть эффект частиц на нижней панели</string>
 
     <!-- Alerter notification titles -->
     <string name="title_alerter_info">Информация</string>

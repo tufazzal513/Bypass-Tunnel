@@ -46,6 +46,11 @@ class AddConfigBottomSheet : BaseBottomSheetFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val particlesView = view.findViewById<View>(R.id.ParticlesView)
+        if (particlesView != null) {
+            val disabled = MmkvManager.decodeSettingsBool(AppConfig.PREF_DISABLE_PARTICLES_SHEET, false)
+            particlesView.visibility = if (disabled) View.GONE else View.VISIBLE
+        }
         loadBanner(view)
 
         val clickListener = View.OnClickListener {

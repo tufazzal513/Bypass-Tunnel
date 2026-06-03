@@ -630,6 +630,8 @@ you need."</string>
     <string name="sheet_banner_delete_title">Delete custom sheet banner</string>
     <string name="sheet_banner_delete_summary">Revert to default sheet banner</string>
     <string name="sheet_banner_updated">Sheet banner updated successfully.</string>
+    <string name="particles_disable_title">Disable particles animation</string>
+    <string name="particles_disable_summary">Hide the particles effect in bottomsheet</string>
 
     <!-- Alerter notification titles -->
     <string name="title_alerter_info">Info</string>

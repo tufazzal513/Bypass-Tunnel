@@ -216,6 +216,7 @@ class UiSettingsActivity : BaseActivity() {
             setupProfilePreferences()
             setupHomeBannerPreferences()
             setupSheetBannerPreferences()
+            setupParticlesPreferences()
         }
 
         private fun setupSheetBannerPreferences() {
@@ -332,6 +333,17 @@ class UiSettingsActivity : BaseActivity() {
                         .showBlur()
                 }
                 true
+            }
+        }
+
+
+        private fun setupParticlesPreferences() {
+            findPreference<SwitchPreferenceCompat>(AppConfig.PREF_DISABLE_PARTICLES_SHEET)?.apply {
+                isChecked = MmkvManager.decodeSettingsBool(AppConfig.PREF_DISABLE_PARTICLES_SHEET, false)
+                setOnPreferenceChangeListener { _, newValue ->
+                    MmkvManager.encodeSettings(AppConfig.PREF_DISABLE_PARTICLES_SHEET, newValue as Boolean)
+                    true
+                }
             }
         }
 

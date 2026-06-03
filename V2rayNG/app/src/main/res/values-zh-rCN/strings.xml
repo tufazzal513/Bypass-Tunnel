@@ -604,6 +604,8 @@
     <string name="sheet_banner_delete_title">删除自定义底部横幅</string>
     <string name="sheet_banner_delete_summary">恢复为默认底部横幅</string>
     <string name="sheet_banner_updated">底部横幅更新成功。</string>
+    <string name="particles_disable_title">禁用粒子动画</string>
+    <string name="particles_disable_summary">隐藏底部面板中的粒子效果</string>
 
     <!-- Alerter notification titles -->
     <string name="title_alerter_info">提示</string>
