@@ -530,6 +530,7 @@
     <string name="routing_settings_import_predefined_rulesets_title">Preset</string>
     <string name="routing_settings_import_rulesets_from_clipboard_title">Clipboard</string>
     <string name="routing_settings_import_rulesets_from_qrcode_title">QR Code</string>
+    <string name="title_pref_category_style">Gaya Judul Kategori</string>
 
      <string name="uwu_banner_settings_title">Halo disana…</string>
     <string name="uwu_banner_settings_summary">"Met dateng di menu

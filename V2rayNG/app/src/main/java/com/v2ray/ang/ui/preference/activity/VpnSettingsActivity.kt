@@ -14,6 +14,7 @@ import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.helper.MmkvPreferenceDataStore
 import com.v2ray.ang.ui.BaseActivity
 import com.v2ray.ang.ui.PerAppProxyActivity
+import com.v2ray.ang.ui.preference.CategoryStyleHelper
 
 class VpnSettingsActivity : BaseActivity() {
 
@@ -49,6 +50,7 @@ class VpnSettingsActivity : BaseActivity() {
             preferenceManager.preferenceDataStore = MmkvPreferenceDataStore()
             addPreferencesFromResource(R.xml.pref_vpn_settings)
             initPreferenceSummaries()
+            CategoryStyleHelper.applyToFragment(this)
 
             localDns?.setOnPreferenceChangeListener { _, any ->
                 updateLocalDns(any as Boolean)

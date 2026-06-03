@@ -549,6 +549,7 @@
     <string name="routing_settings_import_predefined_rulesets_title">Предустановленные</string>
     <string name="routing_settings_import_rulesets_from_clipboard_title">Буфер обмена</string>
     <string name="routing_settings_import_rulesets_from_qrcode_title">QR-код</string>
+    <string name="title_pref_category_style">Стиль заголовка категории</string>
     
     <string name="uwu_banner_settings_title">Привет...</string>
     <string name="uwu_banner_settings_summary">"Добро пожаловать в

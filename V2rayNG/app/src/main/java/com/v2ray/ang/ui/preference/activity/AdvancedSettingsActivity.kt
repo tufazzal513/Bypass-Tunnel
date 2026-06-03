@@ -11,6 +11,7 @@ import com.v2ray.ang.R
 import com.v2ray.ang.helper.MmkvPreferenceDataStore
 import com.v2ray.ang.util.Utils
 import com.v2ray.ang.ui.BaseActivity
+import com.v2ray.ang.ui.preference.CategoryStyleHelper
 
 class AdvancedSettingsActivity : BaseActivity() {
 
@@ -36,6 +37,7 @@ class AdvancedSettingsActivity : BaseActivity() {
             preferenceManager.preferenceDataStore = MmkvPreferenceDataStore()
             addPreferencesFromResource(R.xml.pref_advanced_settings)
             initPreferenceSummaries()
+            CategoryStyleHelper.applyToFragment(this)
 
             mode?.setOnPreferenceChangeListener { pref, newValue ->
                 val valueStr = newValue.toString()

@@ -11,6 +11,7 @@ import com.v2ray.ang.R
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.helper.MmkvPreferenceDataStore
 import com.v2ray.ang.ui.BaseActivity
+import com.v2ray.ang.ui.preference.CategoryStyleHelper
 
 class FragmentSettingsActivity : BaseActivity() {
 
@@ -39,6 +40,7 @@ class FragmentSettingsActivity : BaseActivity() {
             preferenceManager.preferenceDataStore = MmkvPreferenceDataStore()
             addPreferencesFromResource(R.xml.pref_fragment_settings)
             initPreferenceSummaries()
+            CategoryStyleHelper.applyToFragment(this)
 
             fragment?.setOnPreferenceChangeListener { _, newValue ->
                 updateFragment(newValue as Boolean)

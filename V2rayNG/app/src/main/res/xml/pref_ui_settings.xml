@@ -123,6 +123,16 @@
             android:summary="%s"
             android:title="@string/title_pref_app_font" />
 
+        <ListPreference
+            android:icon="@drawable/ic_cards_variant"
+            app:layout="@layout/uwu_mid"
+            android:defaultValue="miku"
+            android:entries="@array/category_style_entries"
+            android:entryValues="@array/category_style_values"
+            android:key="pref_category_style"
+            android:summary="%s"
+            android:title="@string/title_pref_category_style" />
+
         <Preference
             android:icon="@drawable/ic_cards_variant"
             app:layout="@layout/uwu_bot"

@@ -66,10 +66,9 @@
                 android:paddingTop="0dp"
                 android:paddingBottom="5dp">
 
-                <ImageView
+                <com.neko.widget.UwuHeaderIconView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/uwu_icon_miku"
                     android:layout_marginEnd="8dp" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -159,10 +158,9 @@
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp">
 
-                <ImageView
+                <com.neko.widget.UwuHeaderIconView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/uwu_icon_miku"
                     android:layout_marginEnd="8dp" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -208,10 +206,9 @@
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp">
 
-                <ImageView
+                <com.neko.widget.UwuHeaderIconView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/uwu_icon_miku"
                     android:layout_marginEnd="8dp" />
 
                 <com.google.android.material.textview.MaterialTextView

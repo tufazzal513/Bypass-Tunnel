@@ -28,6 +28,7 @@ import com.v2ray.ang.ui.dialog.BlurIntensityDialog
 import com.v2ray.ang.ui.dialog.BlurBottomIntensityDialog
 import com.v2ray.ang.ui.dialog.ThemeColorDialog
 import com.v2ray.ang.ui.preference.CustomBannerPreference
+import com.v2ray.ang.ui.preference.CategoryStyleHelper
 import com.v2ray.ang.util.ThemeManager
 import com.v2ray.ang.util.showBlur
 import com.yalantis.ucrop.UCrop
@@ -65,6 +66,7 @@ class UiSettingsActivity : BaseActivity() {
         private val indicatorStyle by lazy { findPreference<Preference>(AppConfig.PREF_INDICATOR_STYLE) }
         private val navigateCheckUpdate by lazy { findPreference<CustomBannerPreference>(AppConfig.PREF_NAVIGATE_CHECK_UPDATE) }
         private val appFont by lazy { findPreference<ListPreference>(AppConfig.PREF_APP_FONT) }
+        private val categoryStyle by lazy { findPreference<ListPreference>(AppConfig.PREF_CATEGORY_STYLE) }
 
         private val pickProfileImage =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -210,6 +212,21 @@ class UiSettingsActivity : BaseActivity() {
             appFont?.setOnPreferenceChangeListener { _, newValue ->
                 MmkvManager.encodeSettings(AppConfig.PREF_APP_FONT, newValue as String)
                 activity?.recreate()
+                true
+            }
+
+            CategoryStyleHelper.applyToFragment(this)
+
+            categoryStyle?.setOnPreferenceChangeListener { _, newValue ->
+                val styleValue = newValue as String
+                MmkvManager.encodeSettings(AppConfig.PREF_CATEGORY_STYLE, styleValue)
+                preferenceScreen?.let { screen ->
+                    CategoryStyleHelper.applyToGroup(styleValue, screen)
+                    listView.adapter?.notifyDataSetChanged()
+                }
+                requireContext().sendBroadcast(
+                    android.content.Intent(AppConfig.BROADCAST_ACTION_CATEGORY_STYLE_CHANGED)
+                )
                 true
             }
 

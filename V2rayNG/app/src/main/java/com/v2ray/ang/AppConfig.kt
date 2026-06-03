@@ -51,6 +51,7 @@ object AppConfig {
     const val PREF_APP_THEME = "pref_app_theme"
     const val PREF_DYNAMIC_COLOR = "pref_dynamic_color"
     const val PREF_TRUE_BLACK = "pref_true_black"
+    const val PREF_CATEGORY_STYLE = "pref_category_style"
     const val PREF_APP_FONT = "pref_app_font"
     const val PREF_CUSTOM_COLOR = "pref_custom_color"
     const val PREF_USE_CUSTOM_COLOR = "pref_use_custom_color"
@@ -139,6 +140,7 @@ object AppConfig {
     const val BROADCAST_ACTION_ICON_SHAPE_CHANGED = "$ANG_PACKAGE.action.icon_shape_changed"
     const val BROADCAST_ACTION_PROFILE_BANNER_CHANGED = "$ANG_PACKAGE.action.profile_banner_changed"
     const val BROADCAST_ACTION_HOME_BANNER_CHANGED = "$ANG_PACKAGE.action.home_banner_changed"
+    const val BROADCAST_ACTION_CATEGORY_STYLE_CHANGED = "$ANG_PACKAGE.action.category_style_changed"
 
     /** Tasker extras. */
     const val TASKER_EXTRA_BUNDLE = "com.twofortyfouram.locale.intent.extra.BUNDLE"
