@@ -119,6 +119,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
+            android:nextFocusDown="@+id/et_verify_peer_cert_by_name" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/lay_verify_peer_cert_by_name"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_spacing_dp16"
+        android:hint="@string/server_lab_verify_peer_cert_by_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_ech_config_list">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_verify_peer_cert_by_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
             android:nextFocusDown="@+id/et_pinned_ca256" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -131,7 +150,7 @@
         android:hint="@string/server_lab_pinned_ca256"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lay_ech_config_list">
+        app:layout_constraintTop_toBottomOf="@id/lay_verify_peer_cert_by_name">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_pinned_ca256"

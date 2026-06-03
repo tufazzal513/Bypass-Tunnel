@@ -88,6 +88,7 @@ class ServerActivity : BaseActivity() {
     private val layout_kcp: View? by lazy { findViewById(R.id.layout_kcp) }
     private val layout_extra: View? by lazy { findViewById(R.id.layout_extra) }
     private val container_ech_config_list: View? by lazy { findViewById(R.id.lay_ech_config_list) }
+    private val container_verify_peer_cert_by_name: View? by lazy { findViewById(R.id.lay_verify_peer_cert_by_name) }
     private val container_pinned_ca256: View? by lazy { findViewById(R.id.lay_pinned_ca256) }
     private val layout_browser_dialer: com.google.android.material.textfield.TextInputLayout? by lazy { findViewById(R.id.layout_browser_dialer) }
     private val sp_browser_dialer_mode: AutoCompleteTextView? by lazy { findViewById(R.id.sp_browser_dialer_mode) }
@@ -116,6 +117,7 @@ class ServerActivity : BaseActivity() {
     private val et_extra: EditText? by lazy { findViewById(R.id.et_extra) }
     private val et_fm: EditText? by lazy { findViewById(R.id.et_fm) }
     private val et_ech_config_list: EditText? by lazy { findViewById(R.id.et_ech_config_list) }
+    private val et_verify_peer_cert_by_name: EditText? by lazy { findViewById(R.id.et_verify_peer_cert_by_name) }
     private val et_pinned_ca256: EditText? by lazy { findViewById(R.id.et_pinned_ca256) }
     
     private lateinit var softInputAssist: SoftInputAssist
@@ -265,6 +267,7 @@ class ServerActivity : BaseActivity() {
                     container_spider_x,
                     container_mldsa65_verify,
                     container_ech_config_list,
+                    container_verify_peer_cert_by_name,
                     container_pinned_ca256
                 ).forEach { it?.visibility = View.GONE }
             }
@@ -275,6 +278,7 @@ class ServerActivity : BaseActivity() {
                     container_alpn,
                     container_allow_insecure,
                     container_ech_config_list,
+                    container_verify_peer_cert_by_name,
                     container_pinned_ca256
                 ).forEach { it?.visibility = View.VISIBLE }
                 listOf(
@@ -293,6 +297,7 @@ class ServerActivity : BaseActivity() {
                     container_alpn,
                     container_allow_insecure,
                     container_ech_config_list,
+                    container_verify_peer_cert_by_name,
                     container_pinned_ca256
                 ).forEach { it?.visibility = View.GONE }
                 listOf(
@@ -355,6 +360,7 @@ class ServerActivity : BaseActivity() {
                 val allowinsecure = Utils.arrayFind(allowinsecures, config.insecure.toString())
                 if (allowinsecure >= 0) sp_allow_insecure?.setText(allowinsecures[allowinsecure], false)
                 et_ech_config_list?.text = Utils.getEditable(config.echConfigList)
+                et_verify_peer_cert_by_name?.text = Utils.getEditable(config.verifyPeerCertByName)
                 et_pinned_ca256?.text = Utils.getEditable(config.pinnedCA256)
             } else if (config.security == REALITY) {
                 et_public_key?.text = Utils.getEditable(config.publicKey.orEmpty())
@@ -583,6 +589,7 @@ class ServerActivity : BaseActivity() {
         val spiderX = et_spider_x?.text?.toString()
         val mldsa65Verify = et_mldsa65_verify?.text?.toString()
         val echConfigList = et_ech_config_list?.text?.toString()
+        val verifyPeerCertByName = et_verify_peer_cert_by_name?.text?.toString()
         val pinnedCA256 = et_pinned_ca256?.text?.toString()
 
         val allowInsecure =
@@ -602,6 +609,7 @@ class ServerActivity : BaseActivity() {
         config.spiderX = spiderX
         config.mldsa65Verify = mldsa65Verify
         config.echConfigList = echConfigList
+        config.verifyPeerCertByName = verifyPeerCertByName
         config.pinnedCA256 = pinnedCA256
     }
 
