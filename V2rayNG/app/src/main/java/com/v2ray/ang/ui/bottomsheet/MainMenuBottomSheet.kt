@@ -8,11 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
-import com.bumptech.glide.load.resource.gif.GifOptions
-import com.bumptech.glide.request.target.Target
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.handler.MmkvManager
@@ -81,12 +77,7 @@ class MainMenuBottomSheet : BaseBottomSheetFragment() {
             if (!uriString.isNullOrBlank()) {
                 Glide.with(this)
                     .load(Uri.parse(uriString))
-                    .downsample(DownsampleStrategy.NONE)
-                    .set(GifOptions.DECODE_FORMAT, DecodeFormat.PREFER_ARGB_8888)
-                    .format(DecodeFormat.PREFER_ARGB_8888)
-                    .override(Target.SIZE_ORIGINAL)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .skipMemoryCache(false)
                     .error(R.drawable.uwu_banner_image_about)
                     .into(bannerImageView)
             } else {
