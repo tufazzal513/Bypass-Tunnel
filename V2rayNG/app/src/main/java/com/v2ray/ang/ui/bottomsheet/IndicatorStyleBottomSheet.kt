@@ -1,8 +1,10 @@
 package com.v2ray.ang.ui.bottomsheet
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -41,6 +43,12 @@ class IndicatorStyleBottomSheet(
 
         dialog.setContentView(view)
 
+        dialog.window?.let { window ->
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.navigationBarColor = Color.TRANSPARENT
+            WindowBlurUtils.applyWindowBlur(window)
+        }
+
         dialog.behavior.apply {
             state = BottomSheetBehavior.STATE_EXPANDED
             skipCollapsed = true
@@ -49,19 +57,31 @@ class IndicatorStyleBottomSheet(
         val bottomSheet = dialog.findViewById<android.view.View>(
             com.google.android.material.R.id.design_bottom_sheet
         )
+        
         if (bottomSheet != null) {
-            ViewCompat.setOnApplyWindowInsetsListener(bottomSheet) { v, insets ->
-                val statusBarInset = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            bottomSheet.clipToOutline = true
+            
+            ViewCompat.setOnApplyWindowInsetsListener(bottomSheet) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val statusBarInset = systemBars.top
+                val navBarInset = systemBars.bottom
+
                 val screenHeight = v.resources.displayMetrics.heightPixels
                 val margin = (8 * v.resources.displayMetrics.density).toInt()
 
                 dialog.behavior.maxHeight = screenHeight - statusBarInset - margin
 
+                view.setPadding(
+                    view.paddingLeft,
+                    view.paddingTop,
+                    view.paddingRight,
+                    navBarInset
+                )
+
                 insets
             }
         }
 
-        WindowBlurUtils.applyWindowBlur(dialog.window)
         dialog.show()
     }
 }
