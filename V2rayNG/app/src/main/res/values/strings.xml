@@ -598,6 +598,13 @@ you need."</string>
     <string name="uwu_random_text_9">Reach the highest note!</string>
     <string name="uwu_random_text_10">Writing lyrics for me?</string>
     
+    <!-- greeting -->
+    <string name="uwu_greeting_morning">Good morning...</string>
+    <string name="uwu_greeting_afternoon">Good afternoon...</string>
+    <string name="uwu_greeting_evening">Good evening...</string>
+    <string name="uwu_greeting_night">Good night...</string>
+    <string name="uwu_greeting_late_night">"It's time to go to sleep..."</string>
+    
     <!-- Header banner: username display -->
     <string name="uwu_profile_banner_title">master</string>
     <string name="uwu_profile_banner_title_custom">Hi, %1$s</string>

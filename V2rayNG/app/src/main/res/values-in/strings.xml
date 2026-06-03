@@ -575,6 +575,13 @@ yang kamu butuhin."</string>
     <string name="uwu_random_text_9">Tembus nada tertingginya!</string>
     <string name="uwu_random_text_10">Lagi nulis lirik buat Miku?</string>
     
+    <!-- greeting -->
+    <string name="uwu_greeting_morning">Met pagi...</string>
+    <string name="uwu_greeting_afternoon">Met siang...</string>
+    <string name="uwu_greeting_evening">Met sore...</string>
+    <string name="uwu_greeting_night">Met malem...</string>
+    <string name="uwu_greeting_late_night">"Udah waktunya tidur nih..."</string>
+    
     <!-- Header banner: username display -->
     <string name="uwu_profile_banner_title_custom">Hai, %1$s</string>
     

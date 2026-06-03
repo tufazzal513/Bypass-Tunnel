@@ -593,6 +593,13 @@
     <string name="uwu_random_text_9">Достигни самой высокой ноты!</string>
     <string name="uwu_random_text_10">Пишешь для меня слова?</string>
     
+    <!-- greeting -->
+     <string name="uwu_greeting_morning">Доброе утро...</string>
+    <string name="uwu_greeting_afternoon">Добрый день...</string>
+    <string name="uwu_greeting_evening">Добрый вечер...</string>
+    <string name="uwu_greeting_night">Спокойной ночи...</string>
+    <string name="uwu_greeting_late_night">"Пора ложиться спать..."</string>
+    
     <!-- Header banner: username display -->
     <string name="uwu_profile_banner_title">мастер</string>
     <string name="uwu_profile_banner_title_custom">Привет, %1$s</string>

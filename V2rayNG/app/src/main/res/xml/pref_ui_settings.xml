@@ -201,7 +201,8 @@
 
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_sparkles_24dp"
-            app:layout="@layout/uwu_top"
+            app:layout="@layout/uwu_top_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
             android:key="pref_disable_particles_sheet"
             android:title="@string/particles_disable_title"
             android:summary="@string/particles_disable_summary"

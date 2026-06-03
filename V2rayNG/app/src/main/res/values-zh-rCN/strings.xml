@@ -573,6 +573,13 @@
     <string name="uwu_random_text_9">冲向最高音！</string>
     <string name="uwu_random_text_10">在给Miku写歌词吗？</string>
     
+    <!-- greeting -->
+    <string name="uwu_greeting_morning">早上好...</string>
+    <string name="uwu_greeting_afternoon">下午好...</string>
+    <string name="uwu_greeting_evening">晚上好...</string>
+    <string name="uwu_greeting_night">晚安...</string>
+    <string name="uwu_greeting_late_night">"该睡觉啦..."</string>
+    
     <!-- Header banner: username display -->
     <string name="uwu_profile_banner_title_custom">嗨, %1$s</string>
     
