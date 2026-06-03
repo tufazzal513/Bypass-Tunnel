@@ -112,6 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="16dp"
+                android:textAllCaps="true"
                 android:text="@string/uwu_next"
                 style="@style/Widget.Material3Expressive.Button" />
             <com.google.android.material.button.MaterialButton
@@ -121,6 +122,7 @@
                 android:padding="16dp"
                 android:layout_marginStart="12dp"
                 android:text="@string/uwu_skip"
+                android:textColor="?colorPrimary"
                 app:icon="@drawable/uwu_icon_skip"
                 app:iconGravity="end"
                 app:iconPadding="16dp"
@@ -209,6 +211,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="16dp"
+                android:textAllCaps="true"
                 android:text="@string/uwu_next"
                 style="@style/Widget.Material3Expressive.Button" />
             <com.google.android.material.button.MaterialButton
@@ -218,6 +221,7 @@
                 android:padding="16dp"
                 android:layout_marginStart="12dp"
                 android:text="@string/uwu_skip"
+                android:textColor="?colorPrimary"
                 app:icon="@drawable/uwu_icon_skip"
                 app:iconGravity="end"
                 app:iconPadding="16dp"
@@ -305,6 +309,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
+                android:textAllCaps="true"
                 android:text="@string/uwu_start"
                 style="@style/Widget.Material3Expressive.Button" />
         </LinearLayout>

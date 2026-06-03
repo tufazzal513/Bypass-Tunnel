@@ -3,6 +3,7 @@ package com.v2ray.ang.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -13,6 +14,8 @@ class WelcomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        enableEdgeToEdge()
 
         if (MmkvManager.decodeSettingsBool(PREF_WELCOME_SHOW)) {
             navigateToMain()
@@ -20,9 +23,15 @@ class WelcomeActivity : BaseActivity() {
         }
 
         setContentView(R.layout.uwu_activity_welcome)
+        setupViewsAndListeners()
+    }
 
-        val rootLayout = findViewById<View>(R.id.main_content)
-        ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, insets ->
+    private fun setupViewsAndListeners() {
+        val page1 = findViewById<View>(R.id.page1)
+        val page2 = findViewById<View>(R.id.page2)
+        val page3 = findViewById<View>(R.id.page3)
+
+        val insetListener = androidx.core.view.OnApplyWindowInsetsListener { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.updatePadding(
                 left = systemBars.left,
@@ -33,13 +42,9 @@ class WelcomeActivity : BaseActivity() {
             insets
         }
 
-        setupViewsAndListeners()
-    }
-
-    private fun setupViewsAndListeners() {
-        val page1 = findViewById<View>(R.id.page1)
-        val page2 = findViewById<View>(R.id.page2)
-        val page3 = findViewById<View>(R.id.page3)
+        ViewCompat.setOnApplyWindowInsetsListener(page1, insetListener)
+        ViewCompat.setOnApplyWindowInsetsListener(page2, insetListener)
+        ViewCompat.setOnApplyWindowInsetsListener(page3, insetListener)
 
         page2.visibility = View.GONE
         page3.visibility = View.GONE
@@ -56,7 +61,7 @@ class WelcomeActivity : BaseActivity() {
 
         val navigateAction = View.OnClickListener { navigateToMain() }
         
-        findViewById<View>(R.id.page_3button).setOnClickListener(navigateAction)    
+        findViewById<View>(R.id.page_3button).setOnClickListener(navigateAction)
         findViewById<View>(R.id.page_1_skip).setOnClickListener(navigateAction)
         findViewById<View>(R.id.page_2_skip).setOnClickListener(navigateAction)
     }
