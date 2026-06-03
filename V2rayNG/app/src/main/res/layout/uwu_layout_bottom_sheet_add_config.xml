@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     android:orientation="vertical"
-    android:background="@drawable/uwu_background_bottom_sheet"
+    android:backgroundTint="?colorBg"
     android:paddingBottom="8.0dip"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

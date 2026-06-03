@@ -1,7 +1,9 @@
 package com.v2ray.ang.ui.bottomsheet
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
+import android.view.WindowManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,10 +49,16 @@ class IndicatorStyleBottomSheet(
             skipCollapsed = true
         }
 
+        val bgColor = context.getColorAttr("colorBg")
+
         val bottomSheet = dialog.findViewById<android.view.View>(
             com.google.android.material.R.id.design_bottom_sheet
         )
         if (bottomSheet != null) {
+            bottomSheet.backgroundTintList = ColorStateList.valueOf(bgColor)
+            
+            bottomSheet.clipToOutline = true
+
             ViewCompat.setOnApplyWindowInsetsListener(bottomSheet) { v, insets ->
                 val statusBarInset = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
                 val screenHeight = v.resources.displayMetrics.heightPixels
@@ -64,7 +72,11 @@ class IndicatorStyleBottomSheet(
 
         dialog.window?.let { window ->
             WindowBlurUtils.applyWindowBlur(window)
-            window.navigationBarColor = context.getColorAttr("colorBg")
+            
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+            
+            window.navigationBarColor = bgColor
         }
         
         dialog.show()

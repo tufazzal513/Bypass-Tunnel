@@ -1,6 +1,7 @@
 package com.v2ray.ang.ui.bottomsheet
 
-import android.content.Context
+import android.content.res.ColorStateList
+import android.view.WindowManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -16,14 +17,22 @@ abstract class BaseBottomSheetFragment : BottomSheetDialogFragment() {
         super.onStart()
         val sheetDialog = dialog as? BottomSheetDialog ?: return
 
+        val bgColor = requireContext().getColorAttr("colorBg")
+
         sheetDialog.window?.let { window ->
             WindowBlurUtils.applyWindowBlur(window)
-            window.navigationBarColor = requireContext().getColorAttr("colorBg")
+            
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+            window.navigationBarColor = bgColor
         }
         
         val bottomSheet = sheetDialog.findViewById<android.view.View>(
             com.google.android.material.R.id.design_bottom_sheet
         ) ?: return
+
+        bottomSheet.backgroundTintList = ColorStateList.valueOf(bgColor)
+        bottomSheet.clipToOutline = true
 
         sheetDialog.behavior.apply {
             state = BottomSheetBehavior.STATE_EXPANDED
