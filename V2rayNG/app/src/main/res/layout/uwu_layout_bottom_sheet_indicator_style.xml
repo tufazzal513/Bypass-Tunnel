@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/uwu_background_bottom_sheet"
+    android:paddingBottom="12.0dip"
     android:orientation="vertical">
 
     <LinearLayout

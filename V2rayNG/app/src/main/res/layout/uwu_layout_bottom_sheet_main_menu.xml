@@ -2,6 +2,7 @@
 <LinearLayout
     android:orientation="vertical"
     android:background="@drawable/uwu_background_bottom_sheet"
+    android:paddingBottom="8.0dip"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
