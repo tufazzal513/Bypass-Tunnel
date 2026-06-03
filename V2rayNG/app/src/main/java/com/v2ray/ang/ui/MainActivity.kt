@@ -1,11 +1,14 @@
 package com.v2ray.ang.ui
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.net.VpnService
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
@@ -14,44 +17,47 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.v2ray.ang.util.BlurBottomStatusController
-import com.v2ray.ang.util.showBlur
-import com.v2ray.ang.util.showDeleteConfirmDialog
 import com.google.android.material.tabs.TabLayoutMediator
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
+import com.v2ray.ang.core.CoreServiceManager
 import com.v2ray.ang.databinding.ActivityMainBinding
 import com.v2ray.ang.databinding.ItemQrcodeBinding
 import com.v2ray.ang.enums.EConfigType
 import com.v2ray.ang.enums.PermissionType
+import com.v2ray.ang.extension.alert
+import com.v2ray.ang.extension.alertError
+import com.v2ray.ang.extension.alertSuccess
 import com.v2ray.ang.extension.toast
 import com.v2ray.ang.extension.toastError
-import com.v2ray.ang.extension.alert
-import com.v2ray.ang.extension.alertSuccess
-import com.v2ray.ang.extension.alertError
 import com.v2ray.ang.handler.AngConfigManager
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.SettingsChangeManager
 import com.v2ray.ang.handler.SettingsManager
 import com.v2ray.ang.handler.SubscriptionUpdater
-import com.v2ray.ang.core.CoreServiceManager
 import com.v2ray.ang.ui.bottomsheet.AddConfigBottomSheet
 import com.v2ray.ang.ui.bottomsheet.MainMenuBottomSheet
 import com.v2ray.ang.ui.bottomsheet.MoreMenuBottomSheet
 import com.v2ray.ang.ui.bottomsheet.ShareConfigBottomSheet
+import com.v2ray.ang.ui.preference.activity.SettingsActivity
+import com.v2ray.ang.util.BlurBottomStatusController
 import com.v2ray.ang.util.LogUtil
+import com.v2ray.ang.util.QRCodeDecoder
 import com.v2ray.ang.util.Utils
+import com.v2ray.ang.util.showBlur
+import com.v2ray.ang.util.showDeleteConfirmDialog
 import com.v2ray.ang.viewmodel.MainViewModel
+import io.github.g00fy2.quickie.QRResult
+import io.github.g00fy2.quickie.ScanCustomCode
+import io.github.g00fy2.quickie.config.BarcodeFormat
+import io.github.g00fy2.quickie.config.ScannerConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.v2ray.ang.ui.preference.activity.SettingsActivity
-import android.view.View
-import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 class MainActivity : HelperBaseActivity(),
     MainMenuBottomSheet.OnOptionClickListener,
@@ -83,6 +89,12 @@ class MainActivity : HelperBaseActivity(),
         }
     }
 
+    private val scanQrCode = registerForActivityResult(ScanCustomCode()) { result ->
+        if (result is QRResult.QRSuccess) {
+            importBatchConfig(result.content.rawValue.orEmpty())
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -106,7 +118,7 @@ class MainActivity : HelperBaseActivity(),
     override fun onContentChanged() {
         super.onContentChanged()
         
-        val root = findViewById<android.view.View>(R.id.main_content) ?: return
+        val root = findViewById<View>(R.id.main_content) ?: return
         
         ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -122,7 +134,7 @@ class MainActivity : HelperBaseActivity(),
             val bottomInset = maxOf(systemBars.bottom, displayCutout.bottom)
             binding.cardBottomStatus.updatePadding(bottom = bottomInset)
 
-            val headerContent = view.findViewById<android.view.View>(R.id.header_content)
+            val headerContent = view.findViewById<View>(R.id.header_content)
             headerContent?.updatePadding(top = systemBars.top)
             
             insets
@@ -342,7 +354,7 @@ class MainActivity : HelperBaseActivity(),
         
         binding.layoutTabWrapper.isVisible = hasAnyGroup
         binding.tabGroup.isVisible = hasAnyGroup
-        (binding.tabGroup.parent as? android.view.View)?.isVisible = hasAnyGroup 
+        (binding.tabGroup.parent as? View)?.isVisible = hasAnyGroup 
     }
 
     private fun handleFabAction() {
@@ -441,10 +453,61 @@ class MainActivity : HelperBaseActivity(),
     }
 
     private fun importQRcode(): Boolean {
-        launchQRCodeScanner { scanResult ->
-            scanResult?.let { importBatchConfig(it) }
+        if (MmkvManager.decodeSettingsBool(AppConfig.PREF_START_SCAN_IMMEDIATE)) {
+            launchScan()
+        } else {
+            showQRCodeSelectionDialog()
         }
         return true
+    }
+
+    private fun showQRCodeSelectionDialog() {
+        val options = arrayOf(
+            getString(R.string.scan_code),
+            getString(R.string.select_photo)
+        )
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.menu_item_import_config_qrcode)
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> launchScan()
+                    1 -> showQRFileChooser()
+                }
+            }
+            .showBlur()
+    }
+
+    private fun launchScan() {
+        scanQrCode.launch(
+            ScannerConfig.build {
+                setHapticSuccessFeedback(true)
+                setShowTorchToggle(true)
+                setShowCloseButton(true)
+                setBarcodeFormats(listOf(BarcodeFormat.QR_CODE))
+            }
+        )
+    }
+
+    private fun showQRFileChooser() {
+        launchFileChooser("image/*") { uri ->
+            if (uri == null) return@launchFileChooser
+            try {
+                val inputStream = contentResolver.openInputStream(uri)
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                inputStream?.close()
+
+                val text = QRCodeDecoder.syncDecodeQRCode(bitmap)
+                if (text.isNullOrEmpty()) {
+                    toast(R.string.toast_decoding_failed)
+                } else {
+                    importBatchConfig(text)
+                }
+            } catch (e: Exception) {
+                LogUtil.e(AppConfig.TAG, "Failed to decode QR code from file", e)
+                toast(R.string.toast_decoding_failed)
+            }
+        }
     }
 
     private fun importClipboard(): Boolean {

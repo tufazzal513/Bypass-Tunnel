@@ -124,9 +124,6 @@
             android:name=".ui.AppPickerActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.ScannerActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.LogcatActivity"
             android:exported="false" />
         <activity
