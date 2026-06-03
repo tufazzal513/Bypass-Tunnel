@@ -134,32 +134,6 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">15.0dip</item>
     </style>
-
-    <!-- True Black overlay: applied on top of any theme when dark mode + true black enabled -->
-    <style name="ThemeOverlay.App.TrueBlack" parent="@style/ThemeOverlay.Material3Expressive">
-        <item name="android:colorBackground">#ff000000</item>
-        <item name="colorBg">#ff000000</item>
-        <item name="colorCard">#ff131313</item>
-        <item name="colorSurface">#ff000000</item>
-        <item name="colorSurfaceVariant">#ff1a1a1a</item>
-        <item name="colorSurfaceContainerLow">#ff131313</item>
-        <item name="colorSurfaceContainerHigh">#ff212121</item>
-        <item name="colorSurfaceContainerHighest">#ff212121</item>
-        <item name="alertDialogTheme">@style/ThemeOverlay.App.TrueBlack.AlertDialog</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.TrueBlack.AlertDialog</item>
-    </style>
-
-    <style name="ThemeOverlay.App.TrueBlack.AlertDialog" parent="@style/ThemeOverlay.Material3Expressive.MaterialAlertDialog">
-        <item name="shapeAppearance">@style/AppThemeAlertDialogShape</item>
-        <item name="backgroundTint">#ff131313</item>
-        <item name="colorSurface">#ff131313</item>
-        <item name="android:backgroundTint">#ff131313</item>
-        <item name="android:background">#ff131313</item>
-        <item name="android:colorBackground">#ff131313</item>
-        <item name="android:colorBackgroundFloating">#ff131313</item>
-        <item name="colorBackgroundFloating">#ff131313</item>
-        <item name="android:dialogCornerRadius">28.0dip</item>
-    </style>
     
     <style name="AppThemeCrashLogger" parent="@style/AppThemeBase">
         <item name="android:windowBackground">@android:color/transparent</item>
