@@ -16,11 +16,13 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
 
     private fun applyBottomInsetToListView() {
         val rv = listView ?: return
+        
         rv.clipToPadding = false
 
         ViewCompat.setOnApplyWindowInsetsListener(rv) { v, insets ->
             val bars   = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            
             val bottomInset = maxOf(bars.bottom, cutout.bottom)
 
             v.updatePadding(bottom = bottomInset)

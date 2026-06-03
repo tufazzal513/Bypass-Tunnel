@@ -24,7 +24,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.v2ray.ang.R
@@ -95,51 +94,18 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onContentChanged() {
         super.onContentChanged()
-        val root = findViewById<View>(R.id.main_content) ?: return
-
-        val appBar = findViewById<com.google.android.material.appbar.AppBarLayout>(R.id.app_bar)
-        val scrollingChild = findScrollingChild(root)
-
+        val root = findViewById<android.view.View>(R.id.main_content) ?: return
         ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
-            val bars   = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
-
-            val insetsLeft   = maxOf(bars.left,   cutout.left)
-            val insetsTop    = maxOf(bars.top,     cutout.top)
-            val insetsRight  = maxOf(bars.right,   cutout.right)
-            val insetsBottom = maxOf(bars.bottom,  cutout.bottom)
-
-            if (appBar != null) {
-                appBar.updatePadding(top = insetsTop)
-                view.updatePadding(
-                    left   = insetsLeft,
-                    right  = insetsRight,
-                    bottom = 0
-                )
-                scrollingChild?.updatePadding(bottom = insetsBottom)
-                    ?: view.updatePadding(bottom = insetsBottom)
-            } else {
-                view.updatePadding(
-                    top    = insetsTop,
-                    bottom = insetsBottom,
-                    left   = insetsLeft,
-                    right  = insetsRight
-                )
-            }
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val displayCutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            view.updatePadding(
+                top    = maxOf(systemBars.top,    displayCutout.top),
+                bottom = maxOf(systemBars.bottom, displayCutout.bottom),
+                left   = maxOf(systemBars.left,   displayCutout.left),
+                right  = maxOf(systemBars.right,  displayCutout.right)
+            )
             insets
         }
-    }
-
-    private fun findScrollingChild(root: View): View? {
-        if (root !is ViewGroup) return null
-        for (i in 0 until root.childCount) {
-            val child = root.getChildAt(i)
-            if (child is androidx.core.widget.NestedScrollView ||
-                child is androidx.recyclerview.widget.RecyclerView ||
-                child is android.widget.ScrollView
-            ) return child
-        }
-        return null
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -243,7 +209,6 @@ abstract class BaseActivity : AppCompatActivity() {
         LayoutInflater.from(this).inflate(layoutResId, container, true)
         super.setContentView(base)
         setupToolbar(base, showHomeAsUp, title)
-        applyInsetsToBaseLayout(base)
     }
 
     protected fun setContentViewWithToolbar(childView: View, showHomeAsUp: Boolean = true, title: CharSequence? = null) {
@@ -252,26 +217,6 @@ abstract class BaseActivity : AppCompatActivity() {
         container.addView(childView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         super.setContentView(base)
         setupToolbar(base, showHomeAsUp, title)
-        applyInsetsToBaseLayout(base)
-    }
-
-    private fun applyInsetsToBaseLayout(base: View) {
-        val toolbar = base.findViewById<MaterialToolbar>(R.id.toolbar) ?: return
-        ViewCompat.setOnApplyWindowInsetsListener(base) { _, insets ->
-            val bars     = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val cutout   = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
-            val topInset = maxOf(bars.top, cutout.top)
-            val actionBarSize = with(android.util.TypedValue()) {
-                theme.resolveAttribute(androidx.appcompat.R.attr.actionBarSize, this, true)
-                resources.getDimensionPixelSize(resourceId)
-            }
-            toolbar.updatePadding(top = topInset)
-            (toolbar.layoutParams as? ViewGroup.MarginLayoutParams)?.let {
-                it.height = actionBarSize + topInset
-                toolbar.layoutParams = it
-            }
-            insets
-        }
     }
 
     private fun setupToolbar(baseRoot: View, showHomeAsUp: Boolean, title: CharSequence?) {
