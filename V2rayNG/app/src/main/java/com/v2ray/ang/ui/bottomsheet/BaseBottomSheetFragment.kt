@@ -8,6 +8,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.v2ray.ang.util.WindowBlurUtils
+import com.v2ray.ang.util.getColorAttr
 
 abstract class BaseBottomSheetFragment : BottomSheetDialogFragment() {
 
@@ -17,8 +18,7 @@ abstract class BaseBottomSheetFragment : BottomSheetDialogFragment() {
         val window = sheetDialog.window ?: return
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.navigationBarColor = Color.TRANSPARENT
-
+        window.navigationBarColor = requireContext().getColorAttr("colorBg")
         WindowBlurUtils.applyWindowBlur(window)
         
         val bottomSheet = sheetDialog.findViewById<android.view.View>(

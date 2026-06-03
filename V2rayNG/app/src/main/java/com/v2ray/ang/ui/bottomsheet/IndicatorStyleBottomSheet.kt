@@ -15,6 +15,7 @@ import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.util.IndicatorStyle
 import com.v2ray.ang.util.WindowBlurUtils
 import com.v2ray.ang.ui.IndicatorStyleAdapter
+import com.v2ray.ang.util.getColorAttr
 
 class IndicatorStyleBottomSheet(
     private val context: Context,
@@ -45,7 +46,7 @@ class IndicatorStyleBottomSheet(
 
         dialog.window?.let { window ->
             WindowCompat.setDecorFitsSystemWindows(window, false)
-            window.navigationBarColor = Color.TRANSPARENT
+            window.navigationBarColor = context.getColorAttr("colorBg")
             WindowBlurUtils.applyWindowBlur(window)
         }
 

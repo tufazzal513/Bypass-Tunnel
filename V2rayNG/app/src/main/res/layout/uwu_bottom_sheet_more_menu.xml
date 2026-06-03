@@ -4,9 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/uwu_background_bottom_sheet"
-    android:orientation="vertical"
-    android:paddingTop="0.0dip"
-    android:paddingBottom="8.0dip">
+    android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="fill_parent"
