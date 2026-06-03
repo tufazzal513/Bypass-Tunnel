@@ -217,8 +217,14 @@ class UiSettingsActivity : BaseActivity() {
 
             CategoryStyleHelper.applyToFragment(this)
 
-            categoryStyle?.setOnPreferenceChangeListener { _, newValue ->
+            categoryStyle?.setOnPreferenceChangeListener { pref, newValue ->
                 val styleValue = newValue as String
+                
+                (pref as? ListPreference)?.let { lp ->
+                    val idx = lp.findIndexOfValue(styleValue)
+                    lp.summary = if (idx >= 0) lp.entries[idx] else styleValue
+                }
+
                 MmkvManager.encodeSettings(AppConfig.PREF_CATEGORY_STYLE, styleValue)
                 preferenceScreen?.let { screen ->
                     CategoryStyleHelper.applyToGroup(styleValue, screen)
