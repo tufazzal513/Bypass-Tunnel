@@ -258,13 +258,16 @@ abstract class BaseActivity : AppCompatActivity() {
     private fun applyInsetsToBaseLayout(base: View) {
         val toolbar = base.findViewById<MaterialToolbar>(R.id.toolbar) ?: return
         ViewCompat.setOnApplyWindowInsetsListener(base) { _, insets ->
-            val bars   = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val bars     = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val cutout   = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
             val topInset = maxOf(bars.top, cutout.top)
-            // Geser toolbar ke bawah status bar dengan padding top
+            val actionBarSize = with(android.util.TypedValue()) {
+                theme.resolveAttribute(androidx.appcompat.R.attr.actionBarSize, this, true)
+                resources.getDimensionPixelSize(resourceId)
+            }
             toolbar.updatePadding(top = topInset)
             (toolbar.layoutParams as? ViewGroup.MarginLayoutParams)?.let {
-                it.height = resources.getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material) + topInset
+                it.height = actionBarSize + topInset
                 toolbar.layoutParams = it
             }
             insets

@@ -16,8 +16,10 @@ abstract class BaseBottomSheetFragment : BottomSheetDialogFragment() {
         super.onStart()
         val sheetDialog = dialog as? BottomSheetDialog ?: return
 
-        WindowBlurUtils.applyWindowBlur(sheetDialog.window)
-        window.navigationBarColor = requireContext().getColorAttr("colorBg")
+        sheetDialog.window?.let { window ->
+            WindowBlurUtils.applyWindowBlur(window)
+            window.navigationBarColor = requireContext().getColorAttr("colorBg")
+        }
         
         val bottomSheet = sheetDialog.findViewById<android.view.View>(
             com.google.android.material.R.id.design_bottom_sheet
