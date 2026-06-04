@@ -134,7 +134,7 @@
     <string name="uwu_welcome_summary_3">Made with Heart, Kotlin, Java code and more.</string>
     <string name="uwu_welcome_page1_desc">Free and open source V2Ray/Xray client for Android.</string>
     <string name="uwu_welcome_page2_desc">Supports VLESS, VMess, Trojan, Shadowsocks, and more.</string>
-    <string name="uwu_welcome_page3_desc">Made with Heart, Kotlin, Java code and more.</string>
+    <string name="uwu_welcome_page3_desc">Experience fast, secure internet wrapped in a cute Miku-inspired design.</string>
 
     <!-- UserAssetActivity -->
     <string name="toast_asset_copy_failed">File copy failed, please use File Manager</string>
