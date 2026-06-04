@@ -36,7 +36,7 @@ object ThemeManager {
             }
 
             else -> {
-                val key = MmkvManager.decodeSettingsString(AppConfig.PREF_APP_THEME) ?: "8"
+                val key = MmkvManager.decodeSettingsString(AppConfig.PREF_APP_THEME) ?: "9"
                 applyCustomColorTheme(activity, themeSeedColorFor(activity, key))
             }
         }
@@ -89,27 +89,28 @@ object ThemeManager {
 
     @ColorInt
     fun themeSeedColorFor(context: Context, key: String): Int {
-        return when (key) {
-            "1"  -> 0xFFBA1A1A.toInt()
-            "2"  -> 0xFFB94073.toInt()
-            "3"  -> 0xFF6750A4.toInt()
-            "4"  -> 0xFF7E42A4.toInt()
-            "5"  -> 0xFF5355A9.toInt()
-            "6"  -> 0xFF335BBC.toInt()
-            "7"  -> 0xFF00639B.toInt()
-            "8"  -> 0xFF006874.toInt()
-            "9"  -> 0xFF006A64.toInt()
-            "10" -> 0xFF006D39.toInt()
-            "11" -> 0xFF4A672D.toInt()
-            "12" -> 0xFF5E6400.toInt()
-            "13" -> 0xFF795900.toInt()
-            "14" -> 0xFF8C5300.toInt()
-            "15" -> 0xFF944A00.toInt()
-            "16" -> 0xFF7D524A.toInt()
-            "17" -> 0xFF5F6162.toInt()
-            "18" -> 0xFF575D7E.toInt()
-            else -> 0xFF006874.toInt()
+        val colorRes = when (key) {
+            "1"  -> R.color.palette_red
+            "2"  -> R.color.palette_pink
+            "3"  -> R.color.palette_purple
+            "4"  -> R.color.palette_deep_purple
+            "5"  -> R.color.palette_indigo
+            "6"  -> R.color.palette_blue
+            "7"  -> R.color.palette_light_blue
+            "8"  -> R.color.palette_cyan
+            "9"  -> R.color.palette_teal
+            "10" -> R.color.palette_green
+            "11" -> R.color.palette_light_green
+            "12" -> R.color.palette_lime
+            "13" -> R.color.palette_yellow
+            "14" -> R.color.palette_amber
+            "15" -> R.color.palette_orange
+            "16" -> R.color.palette_deep_orange
+            "17" -> R.color.palette_brown
+            "18" -> R.color.palette_blue_grey
+            else -> R.color.palette_teal
         }
+        return ContextCompat.getColor(context, colorRes)
     }
 }
 

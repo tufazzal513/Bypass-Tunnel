@@ -1,7 +1,6 @@
 package com.v2ray.ang.ui.dialog
 
 import android.app.Dialog
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -9,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
@@ -26,24 +27,24 @@ class ThemeColorDialog : DialogFragment() {
         const val TAG = "ThemeColorDialog"
 
         val THEME_COLORS = listOf(
-            ThemeColor("1",  0xFFBA1A1A.toInt()),
-            ThemeColor("2",  0xFFB94073.toInt()),
-            ThemeColor("3",  0xFF6750A4.toInt()),
-            ThemeColor("4",  0xFF7E42A4.toInt()),
-            ThemeColor("5",  0xFF5355A9.toInt()),
-            ThemeColor("6",  0xFF335BBC.toInt()),
-            ThemeColor("7",  0xFF00639B.toInt()),
-            ThemeColor("8",  0xFF006874.toInt()),
-            ThemeColor("9",  0xFF006A64.toInt()),
-            ThemeColor("10", 0xFF006D39.toInt()),
-            ThemeColor("11", 0xFF4A672D.toInt()),
-            ThemeColor("12", 0xFF5E6400.toInt()),
-            ThemeColor("13", 0xFF795900.toInt()),
-            ThemeColor("14", 0xFF8C5300.toInt()),
-            ThemeColor("15", 0xFF944A00.toInt()),
-            ThemeColor("16", 0xFF7D524A.toInt()),
-            ThemeColor("17", 0xFF5F6162.toInt()),
-            ThemeColor("18", 0xFF575D7E.toInt()),
+            ThemeColor("1",  R.color.palette_red),
+            ThemeColor("2",  R.color.palette_pink),
+            ThemeColor("3",  R.color.palette_purple),
+            ThemeColor("4",  R.color.palette_deep_purple),
+            ThemeColor("5",  R.color.palette_indigo),
+            ThemeColor("6",  R.color.palette_blue),
+            ThemeColor("7",  R.color.palette_light_blue),
+            ThemeColor("8",  R.color.palette_cyan),
+            ThemeColor("9",  R.color.palette_teal),
+            ThemeColor("10", R.color.palette_green),
+            ThemeColor("11", R.color.palette_light_green),
+            ThemeColor("12", R.color.palette_lime),
+            ThemeColor("13", R.color.palette_yellow),
+            ThemeColor("14", R.color.palette_amber),
+            ThemeColor("15", R.color.palette_orange),
+            ThemeColor("16", R.color.palette_deep_orange),
+            ThemeColor("17", R.color.palette_brown),
+            ThemeColor("18", R.color.palette_blue_grey)
         )
 
         fun show(
@@ -56,7 +57,7 @@ class ThemeColorDialog : DialogFragment() {
         }
     }
 
-    data class ThemeColor(val key: String, @ColorInt val colorInt: Int)
+    data class ThemeColor(val key: String, @ColorRes val colorRes: Int)
 
     var onAppliedCallback: () -> Unit = {}
 
@@ -73,7 +74,7 @@ class ThemeColorDialog : DialogFragment() {
 
         val useCustom   = MmkvManager.decodeSettingsBool(AppConfig.PREF_USE_CUSTOM_COLOR, false)
         val savedColor  = MmkvManager.decodeSettingsInt(AppConfig.PREF_CUSTOM_COLOR, 0)
-        val currentKey  = MmkvManager.decodeSettingsString(AppConfig.PREF_APP_THEME) ?: "2"
+        val currentKey  = MmkvManager.decodeSettingsString(AppConfig.PREF_APP_THEME) ?: "8"
 
         THEME_COLORS.forEach { themeColor ->
             val itemView = LayoutInflater.from(requireContext())
@@ -84,7 +85,7 @@ class ThemeColorDialog : DialogFragment() {
 
             val isSelected = !useCustom && themeColor.key == currentKey
             
-            val rawSeedColor = themeColor.colorInt
+            val rawSeedColor = ContextCompat.getColor(requireContext(), themeColor.colorRes)
             
             val options = DynamicColorsOptions.Builder()
                 .setContentBasedSource(rawSeedColor)
@@ -113,7 +114,7 @@ class ThemeColorDialog : DialogFragment() {
         val customIcon   = customItemView.findViewById<ImageView>(R.id.iv_check)
 
         val isCustomSelected = useCustom && savedColor != 0
-        val rawCustomColor   = if (savedColor != 0) savedColor else Color.parseColor("#6750A4")
+        val rawCustomColor   = if (savedColor != 0) savedColor else ContextCompat.getColor(requireContext(), R.color.palette_purple)
         
         val customOptions = DynamicColorsOptions.Builder()
             .setContentBasedSource(rawCustomColor)
