@@ -552,6 +552,8 @@
     <string name="title_pref_category_style">Стиль заголовка категории</string>
     <string name="scan_code">Сканировать QR-код</string>
     <string name="select_photo">Выбрать фото</string>
+    <string name="pref_show_splash_title">Показывать заставку</string>
+    <string name="pref_show_splash_summary">Показывать заставку при запуске приложения</string>
     
     <string name="uwu_banner_settings_title">Привет...</string>
     <string name="uwu_banner_settings_summary">"Добро пожаловать в
@@ -568,6 +570,8 @@
     <string name="uwu_update_summary">"Давайте обновим MikuRay!"</string>
     <string name="uwu_about_version_title">О приложении</string>
     <string name="uwu_about_version_summary">Нажмите здесь или на значок стрелки, чтобы узнать больше о приложении.</string>
+    <string name="uwu_splash_title">Сделано с ❤️\nот HatsuneMikuUwU Development</string>
+    <string name="uwu_splash_summary">Версия %1$s (%2$d)</string>
     
     <!-- miku-->
     <string name="uwu_miku_gender_title">Пол </string>

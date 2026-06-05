@@ -63,7 +63,7 @@ class WelcomeActivity : BaseActivity() {
 
     private fun navigateToMain() {
         MmkvManager.encodeSettings(PREF_WELCOME_SHOW, true)
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(Intent(this, SplashActivity::class.java))
         finish()
     }
 

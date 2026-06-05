@@ -36,7 +36,7 @@ object ThemeManager {
             }
 
             else -> {
-                val key = MmkvManager.decodeSettingsString(AppConfig.PREF_APP_THEME) ?: "9"
+                val key = MmkvManager.decodeSettingsString(AppConfig.PREF_APP_THEME) ?: "8"
                 applyCustomColorTheme(activity, themeSeedColorFor(activity, key))
             }
         }

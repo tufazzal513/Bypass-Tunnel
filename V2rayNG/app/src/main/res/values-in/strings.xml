@@ -533,6 +533,8 @@
     <string name="title_pref_category_style">Gaya Judul Kategori</string>
     <string name="scan_code">Scan Kode QR</string>
     <string name="select_photo">Pilih Foto</string>
+    <string name="pref_show_splash_title">Tampilin splash screen</string>
+    <string name="pref_show_splash_summary">Tampilin splash screen pas aplikasi dibuka</string>
 
      <string name="uwu_banner_settings_title">Halo disana…</string>
     <string name="uwu_banner_settings_summary">"Met dateng di menu
@@ -550,6 +552,8 @@ yang kamu butuhin."</string>
     <string name="uwu_update_summary">Yuk update MikuRay master!</string>
     <string name="uwu_about_version_title">Tentang Aplikasi</string>
     <string name="uwu_about_version_summary">Klik di sini atau ikon panah buat cari tau lebih lanjut tentang aplikasi ini.</string>
+    <string name="uwu_splash_title">Dibuat dengan ❤️\noleh HatsuneMikuUwU Development</string>
+    <string name="uwu_splash_summary">Versi %1$s (%2$d)</string>
     
     <!-- miku-->
      <string name="uwu_miku_gender_title">Jenis Kelamin</string>

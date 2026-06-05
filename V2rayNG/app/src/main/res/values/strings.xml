@@ -569,6 +569,8 @@
     <string name="title_pref_category_style">Category Title Style</string>
     <string name="scan_code">Scan QR Code</string>
     <string name="select_photo">Select Photo</string>
+    <string name="pref_show_splash_title">Show splash screen</string>
+    <string name="pref_show_splash_summary">Show splash screen when application is run</string>
     
     <string name="uwu_banner_settings_title">Hello there...</string>
     <string name="uwu_banner_settings_summary">"Welcome to the settings
@@ -586,6 +588,8 @@ you need."</string>
     <string name="uwu_update_summary">"Let's update MikuRay master!"</string>
     <string name="uwu_about_version_title">About app</string>
     <string name="uwu_about_version_summary">Tap here or arrow icon to know more about the app.</string>
+    <string name="uwu_splash_title">Made With ❤️\nby HatsuneMikuUwU Development</string>
+    <string name="uwu_splash_summary">Version %1$s (%2$d)</string>
     
     <!-- miku-->
     <string name="uwu_miku_gender_title">Gender </string>

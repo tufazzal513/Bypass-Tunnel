@@ -531,6 +531,8 @@
     <string name="title_pref_category_style">类别标题样式</string>
     <string name="scan_code">扫描二维码</string>
     <string name="select_photo">选择照片</string>
+    <string name="pref_show_splash_title">显示启动画面</string>
+    <string name="pref_show_splash_summary">在运行应用时显示启动画面</string>
     
     <string name="uwu_banner_settings_title">你好呀……</string>
     <string name="uwu_banner_settings_summary">"欢迎来到设置菜单,
@@ -548,6 +550,8 @@
     <string name="uwu_update_summary">来更新 MikuRay 吧，主人！</string>
     <string name="uwu_about_version_title">关于应用</string>
     <string name="uwu_about_version_summary">点击此处或箭头图标, 了解应用更多信息.</string>
+    <string name="uwu_splash_title">用心制作 ❤️\nHatsuneMikuUwU 开发组</string>
+    <string name="uwu_splash_summary">版本 %1$s (%2$d)</string>
     
     <!-- miku-->
     <string name="uwu_miku_gender_title">性别</string>

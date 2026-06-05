@@ -84,6 +84,7 @@ class UiSettingsActivity : BaseActivity() {
         private val navigateCheckUpdate by lazy { findPreference<CustomBannerPreference>(AppConfig.PREF_NAVIGATE_CHECK_UPDATE) }
         private val appFont by lazy { findPreference<ListPreference>(AppConfig.PREF_APP_FONT) }
         private val categoryStyle by lazy { findPreference<ListPreference>(AppConfig.PREF_CATEGORY_STYLE) }
+        private val showSplash by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_SHOW_SPLASH) }
 
         private val pickProfileImage =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -250,6 +251,11 @@ class UiSettingsActivity : BaseActivity() {
                 requireContext().sendBroadcast(
                     android.content.Intent(AppConfig.BROADCAST_ACTION_CATEGORY_STYLE_CHANGED)
                 )
+                true
+            }
+            
+            showSplash?.setOnPreferenceChangeListener { _, newValue ->
+                MmkvManager.encodeSettings(AppConfig.PREF_SHOW_SPLASH, newValue as Boolean)
                 true
             }
 
