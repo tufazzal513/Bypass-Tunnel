@@ -15,6 +15,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
@@ -45,6 +46,7 @@ import com.v2ray.ang.ui.bottomsheet.MoreMenuBottomSheet
 import com.v2ray.ang.ui.bottomsheet.ShareConfigBottomSheet
 import com.v2ray.ang.ui.preference.activity.SettingsActivity
 import com.v2ray.ang.util.BlurBottomStatusController
+import com.v2ray.ang.util.getColorAttr
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.QRCodeDecoder
 import com.v2ray.ang.util.Utils
@@ -73,6 +75,15 @@ class MainActivity : HelperBaseActivity(),
     val mainViewModel: MainViewModel by viewModels()
     private lateinit var groupPagerAdapter: GroupPagerAdapter
     private var tabMediator: TabLayoutMediator? = null
+    private val tabSelectedListener = object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
+        override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab) {
+            applyTabSelectedStyle(tab, true)
+        }
+        override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab) {
+            applyTabSelectedStyle(tab, false)
+        }
+        override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab) {}
+    }
     private val TAG_HOME_BANNER_DEFAULT = "DEFAULT_HOME_BANNER"
 
     private val requestVpnPermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -333,6 +344,25 @@ class MainActivity : HelperBaseActivity(),
         mainViewModel.initAssets(assets)
     }
 
+    private fun applyTabSelectedStyle(tab: com.google.android.material.tabs.TabLayout.Tab?, selected: Boolean) {
+        val view = tab?.customView ?: return
+        val label = view.findViewById<TextView>(R.id.tab_label) ?: return
+        val badge = view.findViewById<TextView>(R.id.tab_badge) ?: return
+        if (selected) {
+            label.setTextColor(getColorAttr("colorOnPrimary"))
+            badge.setTextColor(getColorAttr("colorPrimary"))
+            badge.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                getColorAttr("colorOnPrimary")
+            )
+        } else {
+            label.setTextColor(getColorAttr("colorOnSurfaceVariant"))
+            badge.setTextColor(getColorAttr("colorOnPrimary"))
+            badge.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                getColorAttr("colorPrimary")
+            )
+        }
+    }
+
     private fun setupGroupTab() {
         val groups = mainViewModel.getSubscriptions(this)
         groupPagerAdapter.update(groups)
@@ -354,6 +384,18 @@ class MainActivity : HelperBaseActivity(),
                 tab.customView = tabView
             }
         }.also { it.attach() }
+
+        // Apply initial selected style after attach
+        binding.tabGroup.post {
+            for (i in 0 until binding.tabGroup.tabCount) {
+                val tab = binding.tabGroup.getTabAt(i)
+                applyTabSelectedStyle(tab, i == binding.tabGroup.selectedTabPosition)
+            }
+        }
+
+        // Keep styles in sync on tab switch
+        binding.tabGroup.removeOnTabSelectedListener(tabSelectedListener)
+        binding.tabGroup.addOnTabSelectedListener(tabSelectedListener)
 
         val targetIndex = groups.indexOfFirst { it.id == mainViewModel.subscriptionId }
             .takeIf { it >= 0 } ?: (groups.size - 1)
