@@ -308,8 +308,6 @@ class MainActivity : HelperBaseActivity(),
             R.id.del_invalid_config -> delInvalidConfig()
             R.id.sub_update -> importConfigViaSub()
             R.id.locate_selected_config -> locateSelectedServer()
-            // Order actions: order is already saved in MoreMenuBottomSheet before dismiss,
-            // just reload the list to reflect new sort.
             R.id.action_order_origin,
             R.id.action_order_by_name,
             R.id.action_order_by_delay -> {
@@ -320,6 +318,7 @@ class MainActivity : HelperBaseActivity(),
 
     private fun setupViewModel() {
         mainViewModel.updateListAction.observe(this) { refreshTabBadges() }
+        mainViewModel.updateGroupBadgeAction.observe(this) { refreshTabBadges() }
         mainViewModel.updateTestResultAction.observe(this) { setTestState(it) }
         mainViewModel.updateIpResultAction.observe(this) { ip ->
             binding.tvIpState.text = if (ip.isNullOrEmpty()) {
@@ -409,7 +408,6 @@ class MainActivity : HelperBaseActivity(),
             }
         }.also { it.attach() }
 
-        // Apply initial selected style after attach
         binding.tabGroup.post {
             for (i in 0 until binding.tabGroup.tabCount) {
                 val tab = binding.tabGroup.getTabAt(i)
@@ -417,7 +415,6 @@ class MainActivity : HelperBaseActivity(),
             }
         }
 
-        // Keep styles in sync on tab switch
         binding.tabGroup.removeOnTabSelectedListener(tabSelectedListener)
         binding.tabGroup.addOnTabSelectedListener(tabSelectedListener)
 
