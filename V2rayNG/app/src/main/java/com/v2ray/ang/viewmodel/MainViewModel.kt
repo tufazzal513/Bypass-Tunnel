@@ -47,7 +47,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val updateTestResultAction by lazy { MutableLiveData<String>() }
     val updateIpResultAction by lazy { MutableLiveData<String>() }
     val alertAction by lazy { MutableLiveData<Pair<Boolean, String>>() }
-    val updateGroupBadgeAction by lazy { MutableLiveData<Unit>() } // LiveData baru untuk memicu refresh badge grup
+    val updateGroupBadgeAction by lazy { MutableLiveData<Unit>() }
     private val tcpingTestScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     /**
