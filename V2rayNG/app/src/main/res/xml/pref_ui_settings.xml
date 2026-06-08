@@ -208,7 +208,7 @@
             android:summary="@string/home_banner_show_summary" />
 
         <Preference
-            android:icon="@drawable/ic_image_24dp"
+            android:icon="@drawable/ic_image_edit_24dp"
             app:layout="@layout/uwu_mid"
             android:key="action_change_home_banner_image"
             app:dependency="pref_show_home_banner"
@@ -237,7 +237,7 @@
             android:defaultValue="false" />
 
         <Preference
-            android:icon="@drawable/ic_image_24dp"
+            android:icon="@drawable/ic_image_edit_24dp"
             app:layout="@layout/uwu_mid"
             android:key="action_change_sheet_banner_image"
             android:title="@string/sheet_banner_custom_title"
@@ -264,7 +264,7 @@
             android:singleLine="true" />
 
         <Preference
-            android:icon="@drawable/ic_image_24dp"
+            android:icon="@drawable/ic_image_edit_24dp"
             app:layout="@layout/uwu_mid"
             android:key="action_change_profile_banner_image"
             android:title="@string/banner_profile_custom_title"
