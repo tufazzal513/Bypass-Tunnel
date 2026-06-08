@@ -125,6 +125,7 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.fragment)
+    implementation(libs.androidx.palette)
 
     // UI Libraries
     implementation(libs.material)
@@ -153,7 +154,7 @@ dependencies {
     implementation(libs.quickie.foss)
     implementation(libs.core)
 
-    // Image loading & cropping (Profile banner)
+    // Image loading & cropping
     implementation(libs.glide)
     implementation(libs.ucrop)
 

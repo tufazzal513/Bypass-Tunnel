@@ -2,6 +2,7 @@ package com.v2ray.ang.ui.preference.activity
 
 import android.app.Activity
 import android.graphics.Color
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +13,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
+import androidx.palette.graphics.Palette
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -36,6 +39,9 @@ import com.v2ray.ang.ui.preference.CategoryStyleHelper
 import com.v2ray.ang.util.ThemeManager
 import com.v2ray.ang.util.showBlur
 import com.yalantis.ucrop.UCrop
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 
@@ -113,9 +119,7 @@ class UiSettingsActivity : BaseActivity() {
                         val savedUri = saveToCache(cacheUri, "home_banner_")
                         MmkvManager.encodeSettings(AppConfig.PREF_CUSTOM_HOME_BANNER_URI, savedUri.toString())
                         
-                        if (MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR_BANNER, false)) {
-                            activity?.recreate()
-                        }
+                        extractAndSaveBannerColor(savedUri)
                         
                         broadcastHomeBannerChanged()
                         requireContext().toastSuccess(getString(R.string.home_banner_updated))
@@ -188,7 +192,7 @@ class UiSettingsActivity : BaseActivity() {
                 val enabled = newValue as Boolean
                 MmkvManager.encodeSettings(AppConfig.PREF_DYNAMIC_COLOR, enabled)
                 
-                dynamicColorBanner?.isEnabled = !enabled && showHomeBanner?.isChecked == true
+                dynamicColorBanner?.isEnabled = !enabled
                 appTheme?.isEnabled = !enabled
                 
                 activity?.recreate()
@@ -286,6 +290,36 @@ class UiSettingsActivity : BaseActivity() {
             setupHomeBannerPreferences()
             setupSheetBannerPreferences()
             setupParticlesPreferences()
+        }
+
+        private fun extractAndSaveBannerColor(uri: Uri) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val inputStream = requireContext().contentResolver.openInputStream(uri)
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    inputStream?.close()
+
+                    if (bitmap != null) {
+                        val palette = Palette.from(bitmap).generate()
+                        val color = palette.getDominantColor(
+                            palette.getVibrantColor(
+                                palette.getMutedColor(0)
+                            )
+                        )
+
+                        if (color != 0) {
+                            MmkvManager.encodeSettings(AppConfig.PREF_BANNER_COLOR, color)
+                            withContext(Dispatchers.Main) {
+                                if (MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR_BANNER, false)) {
+                                    activity?.recreate()
+                                }
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
 
         private fun setupSheetBannerPreferences() {
@@ -412,6 +446,7 @@ class UiSettingsActivity : BaseActivity() {
                         .setPositiveButton(android.R.string.ok) { _, _ ->
                             deleteOldFile(savedUri)
                             MmkvManager.encodeSettings(AppConfig.PREF_CUSTOM_HOME_BANNER_URI, "")
+                            MmkvManager.encodeSettings(AppConfig.PREF_BANNER_COLOR, 0)
                             if (MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR_BANNER, false)) {
                                 activity?.recreate()
                             }
