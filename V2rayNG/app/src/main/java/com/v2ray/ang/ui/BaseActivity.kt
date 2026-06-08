@@ -58,8 +58,8 @@ abstract class BaseActivity : AppCompatActivity() {
             }
         }
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(

@@ -24,6 +24,11 @@
         <item name="textAppearanceTitleSmall">@style/TextAppearance.App.TitleSmall</item>
     </style>
     
+    <style name="Theme.App.Splash" parent="@style/AppThemeBase">
+        <item name="android:windowSplashScreenBackground">?colorBg</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+    </style>
+    
     <style name="TextAppearance.App.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
         <item name="android:fontFamily">?attr/fontFamily</item>
         <item name="fontFamily">?attr/fontFamily</item>

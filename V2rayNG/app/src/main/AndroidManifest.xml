@@ -51,7 +51,7 @@
         <activity
             android:name=".ui.WelcomeActivity"
             android:exported="true"
-            android:theme="@style/AppThemeBase">
+            android:theme="@style/Theme.App.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

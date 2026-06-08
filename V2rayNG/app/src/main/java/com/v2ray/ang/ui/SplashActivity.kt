@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -18,6 +19,14 @@ import kotlinx.coroutines.launch
 class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (!isTaskRoot) {
+            val intentAction = intent.action
+            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intentAction != null && intentAction == Intent.ACTION_MAIN) {
+                finish()
+                return
+            }
+        }
+
         super.onCreate(savedInstanceState)
 
         if (!MmkvManager.decodeSettingsBool(PREF_SHOW_SPLASH, false)) {
@@ -53,7 +62,16 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun navigateToMain() {
-        startActivity(Intent(this, MainActivity::class.java))
+        val intent = Intent(this, MainActivity::class.java)
+        
+        val options = ActivityOptionsCompat.makeCustomAnimation(
+            this,
+            R.anim.fade_in,
+            R.anim.fade_out
+        )
+        
+        startActivity(intent, options.toBundle())
+        
         finish()
     }
 
