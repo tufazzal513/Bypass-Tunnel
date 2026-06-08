@@ -3,7 +3,9 @@ package com.v2ray.ang.util
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.util.TypedValue
 import androidx.annotation.AttrRes
@@ -26,22 +28,51 @@ object ThemeManager {
         val customColor = MmkvManager.decodeSettingsInt(AppConfig.PREF_CUSTOM_COLOR, 0)
         val isTrueBlack = isDarkMode(activity) && MmkvManager.decodeSettingsBool(AppConfig.PREF_TRUE_BLACK, false)
 
-        when {
-            isDynamic && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-                DynamicColors.applyToActivityIfAvailable(activity)
-            }
+        val isDynamicBanner = MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR_BANNER, false)
+        val bannerUriStr = MmkvManager.decodeSettingsString(AppConfig.PREF_CUSTOM_HOME_BANNER_URI)
 
-            useCustom && customColor != 0 -> {
-                applyCustomColorTheme(activity, customColor)
-            }
+        var themeApplied = false
 
-            else -> {
-                val key = MmkvManager.decodeSettingsString(AppConfig.PREF_APP_THEME) ?: "8"
-                applyCustomColorTheme(activity, themeSeedColorFor(activity, key))
+        if (isDynamicBanner && !bannerUriStr.isNullOrEmpty()) {
+            try {
+                val uri = Uri.parse(bannerUriStr)
+                val inputStream = activity.contentResolver.openInputStream(uri)
+                val options = BitmapFactory.Options().apply { inSampleSize = 4 }
+                val bitmap = BitmapFactory.decodeStream(inputStream, null, options)
+                inputStream?.close()
+
+                if (bitmap != null) {
+                    val builder = DynamicColorsOptions.Builder()
+                        .setContentBasedSource(bitmap)
+                    
+                    if (isTrueBlack) {
+                        builder.setThemeOverlay(R.style.ThemeOverlay_App_TrueBlack)
+                    }
+                    
+                    DynamicColors.applyToActivityIfAvailable(activity, builder.build())
+                    themeApplied = true
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 
-        if (isTrueBlack) {
+        if (!themeApplied) {
+            when {
+                isDynamic && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                    DynamicColors.applyToActivityIfAvailable(activity)
+                }
+                useCustom && customColor != 0 -> {
+                    applyCustomColorTheme(activity, customColor)
+                }
+                else -> {
+                    val key = MmkvManager.decodeSettingsString(AppConfig.PREF_APP_THEME) ?: "9"
+                    applyCustomColorTheme(activity, themeSeedColorFor(activity, key))
+                }
+            }
+        }
+
+        if (isTrueBlack && !themeApplied) {
             activity.theme.applyStyle(R.style.ThemeOverlay_App_TrueBlack, true)
         }
     }

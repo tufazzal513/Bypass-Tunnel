@@ -72,6 +72,8 @@ class UiSettingsActivity : BaseActivity() {
 
         private val appTheme by lazy { findPreference<Preference>(AppConfig.PREF_APP_THEME) }
         private val dynamicColor by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_DYNAMIC_COLOR) }
+        private val dynamicColorBanner by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_DYNAMIC_COLOR_BANNER) }
+        private val showHomeBanner by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_SHOW_HOME_BANNER) }
         private val trueBlack by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_TRUE_BLACK) }
         private val enableBlur by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_ENABLE_BLUR) }
         private val blurBottomStatus by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_BLUR_BOTTOM_STATUS) }
@@ -110,6 +112,11 @@ class UiSettingsActivity : BaseActivity() {
                         deleteOldFile(oldUri)
                         val savedUri = saveToCache(cacheUri, "home_banner_")
                         MmkvManager.encodeSettings(AppConfig.PREF_CUSTOM_HOME_BANNER_URI, savedUri.toString())
+                        
+                        if (MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR_BANNER, false)) {
+                            activity?.recreate()
+                        }
+                        
                         broadcastHomeBannerChanged()
                         requireContext().toastSuccess(getString(R.string.home_banner_updated))
                     } catch (e: Exception) {
@@ -180,7 +187,23 @@ class UiSettingsActivity : BaseActivity() {
             dynamicColor?.setOnPreferenceChangeListener { _, newValue ->
                 val enabled = newValue as Boolean
                 MmkvManager.encodeSettings(AppConfig.PREF_DYNAMIC_COLOR, enabled)
+                
+                dynamicColorBanner?.isEnabled = !enabled && showHomeBanner?.isChecked == true
                 appTheme?.isEnabled = !enabled
+                
+                activity?.recreate()
+                true
+            }
+
+            dynamicColorBanner?.setOnPreferenceChangeListener { _, newValue ->
+                val enabled = newValue as Boolean
+                MmkvManager.encodeSettings(AppConfig.PREF_DYNAMIC_COLOR_BANNER, enabled)
+                
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    dynamicColor?.isEnabled = !enabled
+                }
+                appTheme?.isEnabled = !enabled
+                
                 activity?.recreate()
                 true
             }
@@ -347,10 +370,27 @@ class UiSettingsActivity : BaseActivity() {
         }
 
         private fun setupHomeBannerPreferences() {
-            findPreference<SwitchPreferenceCompat>(AppConfig.PREF_SHOW_HOME_BANNER)?.apply {
+            showHomeBanner?.apply {
                 isChecked = MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_HOME_BANNER, true)
                 setOnPreferenceChangeListener { _, newValue ->
-                    MmkvManager.encodeSettings(AppConfig.PREF_SHOW_HOME_BANNER, newValue as Boolean)
+                    val checked = newValue as Boolean
+                    MmkvManager.encodeSettings(AppConfig.PREF_SHOW_HOME_BANNER, checked)
+                    
+                    val isDynamicColor = MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR, false)
+                    
+                    dynamicColorBanner?.isEnabled = checked && !isDynamicColor
+                    
+                    if (!checked) {
+                        val isDynamicBannerActive = MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR_BANNER, false)
+                        if (isDynamicBannerActive) {
+                            MmkvManager.encodeSettings(AppConfig.PREF_DYNAMIC_COLOR_BANNER, false)
+                            dynamicColorBanner?.isChecked = false
+                            
+                            appTheme?.isEnabled = !isDynamicColor
+                            activity?.recreate()
+                        }
+                    }
+                    
                     broadcastHomeBannerChanged()
                     true
                 }
@@ -372,6 +412,9 @@ class UiSettingsActivity : BaseActivity() {
                         .setPositiveButton(android.R.string.ok) { _, _ ->
                             deleteOldFile(savedUri)
                             MmkvManager.encodeSettings(AppConfig.PREF_CUSTOM_HOME_BANNER_URI, "")
+                            if (MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR_BANNER, false)) {
+                                activity?.recreate()
+                            }
                             broadcastHomeBannerChanged()
                             requireContext().toastSuccess(getString(R.string.home_banner_delete_summary))
                         }
@@ -381,7 +424,6 @@ class UiSettingsActivity : BaseActivity() {
                 true
             }
         }
-
 
         private fun setupParticlesPreferences() {
             findPreference<SwitchPreferenceCompat>(AppConfig.PREF_DISABLE_PARTICLES_SHEET)?.apply {
@@ -520,13 +562,20 @@ class UiSettingsActivity : BaseActivity() {
         override fun onStart() {
             super.onStart()
             val isDynamicColor = MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR, false)
-            appTheme?.isEnabled = !isDynamicColor
+            val isDynamicBanner = MmkvManager.decodeSettingsBool(AppConfig.PREF_DYNAMIC_COLOR_BANNER, false)
+            val isShowHomeBanner = MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_HOME_BANNER, true)
+            
+            appTheme?.isEnabled = !isDynamicColor && !isDynamicBanner
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 dynamicColor?.isEnabled = false
                 dynamicColor?.summary = requireContext().getString(R.string.summary_pref_dynamic_color_unavailable)
+            } else {
+                dynamicColor?.isEnabled = !isDynamicBanner
             }
 
+            dynamicColorBanner?.isEnabled = !isDynamicColor && isShowHomeBanner
+            
             val savedDpi = MmkvManager.decodeSettingsInt(AppConfig.PREF_CUSTOM_DPI, 0)
             val systemDpi = resources.displayMetrics.densityDpi
             customDpi?.summary = if (savedDpi > 0) savedDpi.toString() else systemDpi.toString()

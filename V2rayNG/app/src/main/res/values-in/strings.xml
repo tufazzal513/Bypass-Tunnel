@@ -535,6 +535,8 @@
     <string name="select_photo">Pilih Foto</string>
     <string name="pref_show_splash_title">Tampilin splash screen</string>
     <string name="pref_show_splash_summary">Tampilin splash screen pas aplikasi dibuka</string>
+    <string name="title_pref_dynamic_color_banner">Tema Dinamis dari Banner Beranda</string>
+    <string name="summary_pref_dynamic_color_banner">Skema warna tema bakal otomatis nyesuaiin sama gambar Banner Beranda kamu.</string>
 
      <string name="uwu_banner_settings_title">Halo disana…</string>
     <string name="uwu_banner_settings_summary">"Met dateng di menu

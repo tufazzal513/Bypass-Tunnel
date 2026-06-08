@@ -571,6 +571,8 @@
     <string name="select_photo">Select Photo</string>
     <string name="pref_show_splash_title">Show splash screen</string>
     <string name="pref_show_splash_summary">Show splash screen when application is run</string>
+    <string name="title_pref_dynamic_color_banner">Dynamic Theme from Home Banner</string>
+    <string name="summary_pref_dynamic_color_banner">The theme color scheme will dynamically adapt to your Home Banner image.</string>
     
     <string name="uwu_banner_settings_title">Hello there...</string>
     <string name="uwu_banner_settings_summary">"Welcome to the settings
