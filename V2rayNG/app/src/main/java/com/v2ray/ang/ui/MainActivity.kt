@@ -51,6 +51,7 @@ import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.QRCodeDecoder
 import com.v2ray.ang.util.Utils
 import com.v2ray.ang.util.showBlur
+import com.v2ray.ang.util.ThemeManager
 import com.v2ray.ang.util.showDeleteConfirmDialog
 import com.v2ray.ang.viewmodel.MainViewModel
 import io.github.g00fy2.quickie.QRResult
@@ -76,7 +77,6 @@ class MainActivity : HelperBaseActivity(),
     private lateinit var groupPagerAdapter: GroupPagerAdapter
     private var tabMediator: TabLayoutMediator? = null
     
-    // [DIPERBAIKI]: Menyimpan instance receiver di level class agar bisa di-unregister
     private var bannerReceiver: android.content.BroadcastReceiver? = null 
 
     private val tabSelectedListener = object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
@@ -181,10 +181,15 @@ class MainActivity : HelperBaseActivity(),
 
         fun applyBannerVisibility(show: Boolean) {
             bannerHome.visibility = if (show) View.VISIBLE else View.GONE
-            val topPad = if (show) paddingTopWithBanner else paddingTopNoBanner
+            // paddingTop on headerTopRow is now controlled by applyHeaderTopRowPadding()
+        }
+
+        fun applyHeaderTopRowPadding() {
+            val paddingDp = ThemeManager.uiState.headerTopRowPaddingDp
+            val paddingPx = (paddingDp * resources.displayMetrics.density).toInt()
             headerTopRow.setPadding(
                 headerTopRow.paddingLeft,
-                topPad,
+                paddingPx,
                 headerTopRow.paddingRight,
                 headerTopRow.paddingBottom
             )
@@ -209,25 +214,32 @@ class MainActivity : HelperBaseActivity(),
             headerImage.tag = targetTag
         }
 
-        val show = MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_HOME_BANNER, true)
-        applyBannerVisibility(show)
+        val state = ThemeManager.refreshUiState()
+        applyBannerVisibility(state.showHomeBanner)
         applyBannerHeight()
+        applyHeaderTopRowPadding()
         loadBannerImage()
 
         bannerReceiver = object : android.content.BroadcastReceiver() {
             override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
                 when (intent?.action) {
                     AppConfig.BROADCAST_ACTION_HOME_BANNER_CHANGED -> {
-                        val showNow = MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_HOME_BANNER, true)
-                        applyBannerVisibility(showNow)
+                        val state = ThemeManager.refreshUiState()
+                        applyBannerVisibility(state.showHomeBanner)
                         applyBannerHeight()
+                        applyHeaderTopRowPadding()
                         loadBannerImage()
+                    }
+                    AppConfig.BROADCAST_ACTION_HEADER_TOP_ROW_PADDING_CHANGED -> {
+                        ThemeManager.refreshUiState()
+                        applyHeaderTopRowPadding()
                     }
                 }
             }
         }
         
         val filter = android.content.IntentFilter(AppConfig.BROADCAST_ACTION_HOME_BANNER_CHANGED)
+        filter.addAction(AppConfig.BROADCAST_ACTION_HEADER_TOP_ROW_PADDING_CHANGED)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(bannerReceiver, filter, android.content.Context.RECEIVER_NOT_EXPORTED)
         } else {

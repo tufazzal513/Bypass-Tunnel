@@ -136,6 +136,10 @@ object AppConfig {
     const val HOME_BANNER_HEIGHT_DEFAULT = 170
     const val HOME_BANNER_HEIGHT_MIN = 150
     const val HOME_BANNER_HEIGHT_MAX = 300
+    const val PREF_HEADER_TOP_ROW_PADDING = "pref_header_top_row_padding"
+    const val HEADER_TOP_ROW_PADDING_DEFAULT = 16
+    const val HEADER_TOP_ROW_PADDING_MIN = 0
+    const val HEADER_TOP_ROW_PADDING_MAX = 100
 
     /** Cache keys. */
     const val CACHE_SUBSCRIPTION_ID = "cache_subscription_id"
@@ -150,6 +154,7 @@ object AppConfig {
     const val BROADCAST_ACTION_ICON_SHAPE_CHANGED = "$ANG_PACKAGE.action.icon_shape_changed"
     const val BROADCAST_ACTION_PROFILE_BANNER_CHANGED = "$ANG_PACKAGE.action.profile_banner_changed"
     const val BROADCAST_ACTION_HOME_BANNER_CHANGED = "$ANG_PACKAGE.action.home_banner_changed"
+    const val BROADCAST_ACTION_HEADER_TOP_ROW_PADDING_CHANGED = "$ANG_PACKAGE.action.header_top_row_padding_changed"
     const val BROADCAST_ACTION_CATEGORY_STYLE_CHANGED = "$ANG_PACKAGE.action.category_style_changed"
 
     /** Tasker extras. */

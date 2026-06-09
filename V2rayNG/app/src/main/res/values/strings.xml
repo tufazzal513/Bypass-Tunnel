@@ -653,6 +653,8 @@ you need."</string>
     <string name="home_banner_updated">Home banner updated successfully.</string>
     <string name="pref_home_banner_height_title">Banner height</string>
     <string name="pref_home_banner_height_summary_value">%1$ddp</string>
+    <string name="pref_header_top_row_padding_title">Header top padding</string>
+    <string name="pref_header_top_row_padding_summary_value">%1$ddp</string>
     
     <!-- Sheet banner settings -->   	
     <string name="sheet_banner_category">Bottomsheet Banner</string>
