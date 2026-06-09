@@ -62,6 +62,7 @@ class VpnSettingsActivity : BaseActivity() {
         private val hevTunLogLevel by lazy { findPreference<ListPreference>(AppConfig.PREF_HEV_TUNNEL_LOGLEVEL) }
         private val hevTunRwTimeout by lazy { findPreference<EditTextPreference>(AppConfig.PREF_HEV_TUNNEL_RW_TIMEOUT) }
         private val navigatePerAppProxy by lazy { findPreference<Preference>(AppConfig.PREF_NAVIGATE_PER_APP_PROXY_SETTINGS) }
+        private val keepAwake by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_KEEP_AWAKE) }
 
         override fun onCreatePreferences(bundle: Bundle?, s: String?) {
             preferenceManager.preferenceDataStore = MmkvPreferenceDataStore()
@@ -132,6 +133,7 @@ class VpnSettingsActivity : BaseActivity() {
             vpnInterfaceAddress?.isEnabled = vpn
             vpnMtu?.isEnabled = vpn
             useHevTun?.isEnabled = vpn
+            keepAwake?.isEnabled = vpn
         }
 
         private fun updateLocalDns(enabled: Boolean) {

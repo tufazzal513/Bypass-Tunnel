@@ -13,6 +13,15 @@
             android:title="@string/title_pref_ipv6_enabled" />
 
         <androidx.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_flash_on"
+            app:layout="@layout/uwu_mid_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
+            android:defaultValue="false"
+            android:key="pref_keep_awake"
+            android:summary="@string/summary_pref_keep_awake"
+            android:title="@string/title_pref_keep_awake" />
+
+        <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_domain"
             app:layout="@layout/uwu_mid_switch"
             app:widgetLayout="@layout/uwu_widget_material_switch"

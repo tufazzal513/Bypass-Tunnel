@@ -116,6 +116,7 @@ object AppConfig {
     const val PREF_CUSTOM_DPI = "pref_custom_dpi"
     const val PREF_SOUND_ON_CONNECT = "pref_sound_on_connect"    
     const val PREF_SHOW_SPLASH = "pref_show_splash_screen"
+    const val PREF_KEEP_AWAKE = "pref_keep_awake"
 
     // Profile banner, sheet banner, home banner & username
     const val PREF_CUSTOM_PROFILE_NAME = "custom_profile_name"
