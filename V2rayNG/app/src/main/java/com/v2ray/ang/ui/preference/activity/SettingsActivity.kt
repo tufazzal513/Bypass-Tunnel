@@ -29,7 +29,7 @@ class SettingsActivity : BaseActivity() {
             val displayCutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
             view.updatePadding(
                 top    = maxOf(systemBars.top,    displayCutout.top),
-                bottom = 0,
+                bottom = maxOf(systemBars.bottom,    displayCutout.bottom),
                 left   = maxOf(systemBars.left,   displayCutout.left),
                 right  = maxOf(systemBars.right,  displayCutout.right)
             )
@@ -83,14 +83,6 @@ class SettingsActivity : BaseActivity() {
             )
             
             recyclerView.clipToPadding = false
-
-            ViewCompat.setOnApplyWindowInsetsListener(recyclerView) { view, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                view.updatePadding(
-                    bottom = paddingVerticalPx + systemBars.bottom
-                )
-                insets
-            }
 
             return recyclerView
         }
