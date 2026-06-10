@@ -2,7 +2,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="@string/title_vpn_settings">
+    <com.neko.widget.UwuPreferenceCategory android:title="@string/title_vpn_settings"
+        app:sectionIcon="@drawable/ic_lan">
 
         <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_toggle_switch"
@@ -121,6 +122,6 @@
             android:summary="@string/summary_navigate_per_app_proxy_settings"
             android:title="@string/per_app_proxy_settings" />
 
-    </PreferenceCategory>
+    </com.neko.widget.UwuPreferenceCategory>
 
 </PreferenceScreen>

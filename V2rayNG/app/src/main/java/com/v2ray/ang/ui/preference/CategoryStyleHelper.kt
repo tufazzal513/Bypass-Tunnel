@@ -15,7 +15,8 @@ object CategoryStyleHelper {
         "teto"  -> R.layout.uwu_preference_category_teto_1
         "teto2"  -> R.layout.uwu_preference_category_teto_2
         "neru"  -> R.layout.uwu_preference_category_neru
-        else      -> R.layout.uwu_preference_category_miku_1
+        "gradient" -> R.layout.uwu_preference_category_gradient
+        else      -> R.layout.uwu_preference_category_gradient
     }
 
     fun applyToGroup(styleValue: String?, group: PreferenceGroup) {
@@ -28,7 +29,7 @@ object CategoryStyleHelper {
     }
     
     fun applyToFragment(fragment: PreferenceFragmentCompat) {
-        val saved = MmkvManager.decodeSettingsString(AppConfig.PREF_CATEGORY_STYLE, "style1")
+        val saved = MmkvManager.decodeSettingsString(AppConfig.PREF_CATEGORY_STYLE, "gradient")
         fragment.preferenceScreen?.let { applyToGroup(saved, it) }
     }
 }

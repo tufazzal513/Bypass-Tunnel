@@ -51,6 +51,10 @@
         <attr name="shapeBackgroundColor" format="color|reference" />
     </declare-styleable>
     
+    <declare-styleable name="UwuHeaderIconView">
+        <attr name="sectionIcon" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="ParticlesView">
         <attr
             name="minDotRadius"

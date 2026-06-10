@@ -9,7 +9,8 @@
         android:summary="@string/uwu_update_summary"
         app:icon="@drawable/ic_check_update_24dp" />    
 
-    <PreferenceCategory android:title="@string/title_ui_general">
+    <com.neko.widget.UwuPreferenceCategory android:title="@string/title_ui_general"
+        app:sectionIcon="@drawable/ic_baseline_speed_24">
 
         <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_speed_24"
@@ -54,9 +55,10 @@
             android:summary="%s"
             android:title="@string/title_language" />
 
-    </PreferenceCategory>
+    </com.neko.widget.UwuPreferenceCategory>
 
-    <PreferenceCategory android:title="@string/title_ui_theme">
+    <com.neko.widget.UwuPreferenceCategory android:title="@string/title_ui_theme"
+        app:sectionIcon="@drawable/ic_baseline_color_lens_24">
 
         <Preference
             android:icon="@drawable/ic_baseline_color_lens_24"
@@ -102,9 +104,10 @@
             android:title="@string/title_pref_true_black"
             android:summary="@string/summary_pref_true_black" />
 
-    </PreferenceCategory>
+    </com.neko.widget.UwuPreferenceCategory>
 
-    <PreferenceCategory android:title="@string/title_ui_appearance">
+    <com.neko.widget.UwuPreferenceCategory android:title="@string/title_ui_appearance"
+        app:sectionIcon="@drawable/ic_palette_24">
 
         <ListPreference
             android:icon="@drawable/ic_shape_outline"
@@ -135,7 +138,7 @@
         <ListPreference
             android:icon="@drawable/ic_cards_variant"
             app:layout="@layout/uwu_mid"
-            android:defaultValue="miku"
+            android:defaultValue="gradient"
             android:entries="@array/category_style_entries"
             android:entryValues="@array/category_style_values"
             android:key="pref_category_style"
@@ -158,9 +161,10 @@
             android:title="@string/pref_show_splash_title"
             android:summary="@string/pref_show_splash_summary" />
 
-    </PreferenceCategory>
+    </com.neko.widget.UwuPreferenceCategory>
 
-    <PreferenceCategory android:title="@string/title_blur_settings">
+    <com.neko.widget.UwuPreferenceCategory android:title="@string/title_blur_settings"
+        app:sectionIcon="@drawable/ic_baseline_blur_on_24">
 
          <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_blur_on_24"
@@ -194,9 +198,10 @@
             app:title="@string/pref_blur_bottom_intensity"
             app:dependency="pref_blur_bottom_status" />
 
-    </PreferenceCategory>
+    </com.neko.widget.UwuPreferenceCategory>
 
-    <PreferenceCategory android:title="@string/home_banner_category">
+    <com.neko.widget.UwuPreferenceCategory android:title="@string/home_banner_category"
+        app:sectionIcon="@drawable/ic_baseline_home_24">
 
         <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_baseline_home_24"
@@ -237,9 +242,10 @@
             android:title="@string/home_banner_delete_title"
             android:summary="@string/home_banner_delete_summary" />
 
-    </PreferenceCategory>
+    </com.neko.widget.UwuPreferenceCategory>
     
-    <PreferenceCategory android:title="@string/sheet_banner_category">
+    <com.neko.widget.UwuPreferenceCategory android:title="@string/sheet_banner_category"
+        app:sectionIcon="@drawable/ic_sparkles_24dp">
 
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_sparkles_24dp"
@@ -264,9 +270,10 @@
             android:title="@string/sheet_banner_delete_title"
             android:summary="@string/sheet_banner_delete_summary" />
 
-    </PreferenceCategory>
+    </com.neko.widget.UwuPreferenceCategory>
 
-    <PreferenceCategory android:title="@string/banner_profile_category">
+    <com.neko.widget.UwuPreferenceCategory android:title="@string/banner_profile_category"
+        app:sectionIcon="@drawable/ic_account_heart">
 
         <EditTextPreference
             android:icon="@drawable/ic_edit_24dp"
@@ -301,9 +308,10 @@
             android:title="@string/delete_custom_banner_profile"
             android:summary="@string/delete_custom_banner_profile_summary" />
 
-    </PreferenceCategory>
+    </com.neko.widget.UwuPreferenceCategory>
 
-    <PreferenceCategory android:title="@string/title_vpn_sound_settings">
+    <com.neko.widget.UwuPreferenceCategory android:title="@string/title_vpn_sound_settings"
+        app:sectionIcon="@drawable/ic_audio">
 
         <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_audio"
@@ -314,6 +322,6 @@
             android:summary="@string/summary_pref_sound_on_connect"
             android:title="@string/title_pref_sound_on_connect" />
 
-    </PreferenceCategory>
+    </com.neko.widget.UwuPreferenceCategory>
 
 </PreferenceScreen>
