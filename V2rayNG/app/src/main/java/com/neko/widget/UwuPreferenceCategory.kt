@@ -3,7 +3,6 @@ package com.neko.widget
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.widget.ImageView
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceViewHolder
@@ -31,12 +30,10 @@ class UwuPreferenceCategory @JvmOverloads constructor(
             iconView.setImageResource(sectionIconRes)
         }
         val frame = iconView.parent as? android.view.ViewGroup ?: return
-        val tv = TypedValue()
-        val theme = context.theme
-        context.getColorAttr("colorPrimary", tv, true)
-        val colorStart = tv.data
-        context.getColorAttr("colorTertiary", tv, true)
-        val colorEnd = tv.data
+        
+        val colorStart = context.getColorAttr("colorPrimary")
+        val colorEnd = context.getColorAttr("colorTertiary")
+        
         frame.background = GradientDrawable(
             GradientDrawable.Orientation.TL_BR,
             intArrayOf(colorStart, colorEnd)
