@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import com.v2ray.ang.util.showDeleteConfirmDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
@@ -49,6 +50,11 @@ class GroupServerFragment : BaseFragment<FragmentGroupServerBinding>(),
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         
         binding.recyclerView.adapter = adapter
+
+        val animator = binding.recyclerView.itemAnimator
+        if (animator is SimpleItemAnimator) {
+            animator.supportsChangeAnimations = false
+        }
 
         itemTouchHelper = ItemTouchHelper(SimpleItemTouchHelperCallback(adapter, allowSwipe = false))
         itemTouchHelper?.attachToRecyclerView(binding.recyclerView)

@@ -108,6 +108,10 @@ class MoreMenuBottomSheet : BaseBottomSheetFragment() {
         }
         updateChecks(currentOrder)
 
+        // ── Hide/Show Reset Traffic ─────────────────────────────────────────
+        val isTrafficEnabled = MmkvManager.decodeSettingsBool(AppConfig.PREF_TRAFFIC_ENABLED) == true
+        view.findViewById<View>(R.id.reset_traffic)?.visibility = if (isTrafficEnabled) View.VISIBLE else View.GONE
+
         // ── Click listeners ─────────────────────────────────────────────────
         val clickListener = View.OnClickListener { v ->
             mListener?.onMoreOptionClicked(v.id)
@@ -146,7 +150,8 @@ class MoreMenuBottomSheet : BaseBottomSheetFragment() {
             R.id.ping_all,
             R.id.real_ping_all,
             R.id.locate_selected_config,
-            R.id.sub_update
+            R.id.sub_update,
+            R.id.reset_traffic
         ).forEach { id ->
             view.findViewById<View>(id)?.setOnClickListener(clickListener)
         }

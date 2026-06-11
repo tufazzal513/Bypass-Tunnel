@@ -612,4 +612,21 @@ object Utils {
             ""
         }
     }
+
+    /**
+     * Converts an ISO 3166-1 alpha-2 country code to its corresponding flag emoji.
+     * Uses Unicode regional indicator symbols (U+1F1E6–U+1F1FF).
+     * Returns an empty string for null or invalid input.
+     *
+     * @param countryCode Two-letter country code (e.g. "US", "JP", "ID")
+     * @return Flag emoji string, or empty string if the code is invalid
+     */
+    fun countryCodeToFlag(countryCode: String?): String {
+        if (countryCode.isNullOrBlank() || countryCode.length < 2) return ""
+        val upper = countryCode.uppercase(Locale.ROOT)
+        if (!upper.all { it in 'A'..'Z' }) return ""
+        val firstChar = Character.toChars(upper[0].code - 'A'.code + 0x1F1E6)
+        val secondChar = Character.toChars(upper[1].code - 'A'.code + 0x1F1E6)
+        return String(firstChar) + String(secondChar)
+    }
 }

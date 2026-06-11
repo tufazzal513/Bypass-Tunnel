@@ -71,6 +71,16 @@ class MainRecyclerAdapter(
                 holder.itemMainBinding.tvTestResult.setTextColor(ContextCompat.getColor(context, R.color.colorPing))
             }
 
+            val isTrafficEnabled = MmkvManager.decodeSettingsBool(AppConfig.PREF_TRAFFIC_ENABLED) == true
+            val trafficStr = MmkvManager.getProfileTrafficString(guid)
+            
+            if (isTrafficEnabled && !trafficStr.isNullOrEmpty()) {
+                holder.itemMainBinding.tvTraffic.text = trafficStr
+                holder.itemMainBinding.tvTraffic.visibility = View.VISIBLE
+            } else {
+                holder.itemMainBinding.tvTraffic.visibility = View.GONE
+            }
+
             //layoutIndicator & Card Background (Transparent when selected)
             if (guid == MmkvManager.getSelectServer()) {
                 val styleName = MmkvManager.decodeSettingsString(

@@ -269,7 +269,6 @@ class MainActivity : HelperBaseActivity(),
         binding.fabNoBlur.setOnClickListener { handleFabAction() }
         
         binding.cardBottomStatus.setOnClickListener { handleLayoutTestClick() }
-        
         binding.btnHome.setOnClickListener {
             MainMenuBottomSheet().show(supportFragmentManager, MainMenuBottomSheet.TAG)
         }
@@ -349,6 +348,47 @@ class MainActivity : HelperBaseActivity(),
             R.id.del_invalid_config -> delInvalidConfig()
             R.id.sub_update -> importConfigViaSub()
             R.id.locate_selected_config -> locateSelectedServer()
+            R.id.reset_traffic -> {
+                val currentGroupName = mainViewModel.getSubscriptions(this)
+                    .firstOrNull { it.id == mainViewModel.subscriptionId }
+                    ?.remarks
+                    ?: getString(R.string.filter_config_all)
+
+                val options = arrayOf(
+                    getString(R.string.reset_traffic_scope_profile),
+                    getString(R.string.reset_traffic_scope_group, currentGroupName),
+                    getString(R.string.reset_traffic_scope_all)
+                )
+
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.title_reset_traffic)
+                    .setItems(options) { _, which ->
+                        val msgRes: Int
+                        val action: () -> Unit
+                        
+                        when (which) {
+                            0 -> {
+                                msgRes = R.string.confirm_reset_traffic_profile
+                                action = { mainViewModel.resetCurrentProfileTraffic() }
+                            }
+                            1 -> {
+                                msgRes = R.string.confirm_reset_traffic_group
+                                action = { mainViewModel.resetGroupTraffic() }
+                            }
+                            else -> {
+                                msgRes = R.string.confirm_reset_traffic_all
+                                action = { mainViewModel.resetAllTraffic() }
+                            }
+                        }
+                        
+                        showDeleteConfirmDialog(
+                            context = this,
+                            titleRes = R.string.title_reset_traffic,
+                            messageRes = msgRes
+                        ) { action() }
+                    }
+                    .showBlur()
+            }
             R.id.action_order_origin,
             R.id.action_order_by_name,
             R.id.action_order_by_delay -> {

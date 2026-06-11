@@ -251,6 +251,9 @@ object NotificationManager {
 
         val proxyTotal = proxyUplink + proxyDownlink
         val directTotal = directUplink + directDownlink
+
+        // Traffic accumulation is handled by TrafficController — not duplicated here.
+
         val zeroSpeed = proxyTotal + directTotal == 0L
         if (!zeroSpeed || !lastZeroSpeed) {
             val text = StringBuilder()

@@ -491,6 +491,33 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * Clears the cumulative traffic for the currently selected profile and
+     * refreshes the display.
+     */
+    fun resetCurrentProfileTraffic() {
+        MmkvManager.getSelectServer()?.let { guid ->
+            MmkvManager.resetProfileTraffic(guid)
+            updateListAction.postValue(getPosition(guid))
+        }
+    }
+
+    /**
+     * Clears the cumulative traffic for the currently selected group.
+     */
+    fun resetGroupTraffic() {
+        MmkvManager.resetGroupTraffic(subscriptionId)
+        updateListAction.postValue(-1)
+    }
+
+    /**
+     * Clears the cumulative traffic for all profiles.
+     */
+    fun resetAllTraffic() {
+        MmkvManager.resetAllTraffic()
+        updateListAction.postValue(-1)
+    }
+
     private val mMsgReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctx: Context?, intent: Intent?) {
             when (intent?.getIntExtra("key", 0)) {
@@ -548,6 +575,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     if (content == "0") {
                         onTestsFinished()
                     }
+                }
+
+                AppConfig.MSG_TRAFFIC_UPDATED -> {
+                    val guid = intent.getStringExtra("content") ?: return
+                    updateListAction.postValue(getPosition(guid))
                 }
             }
         }

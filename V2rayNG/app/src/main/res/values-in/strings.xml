@@ -539,6 +539,15 @@
     <string name="summary_pref_dynamic_color_banner">Skema warna tema bakal otomatis nyesuaiin sama gambar Banner Beranda kamu.</string>
     <string name="title_pref_keep_awake">Bikin HP tetep aktif</string>
     <string name="summary_pref_keep_awake">Nahan partial wake lock pas VPN lagi nyambung. Dibutuhin buat HP Xiaomi/HyperOS; kalau di Samsung/Pixel malah bikin boros baterai — mending biarin mati aja.</string>
+    <string name="title_reset_traffic">Reset Penggunaan Data</string>
+    <string name="reset_traffic_scope_profile">Cuma profil yang dipilih</string>
+    <string name="reset_traffic_scope_group">Cuma di grup \"%1$s\"</string>
+    <string name="reset_traffic_scope_all">Di semua grup</string>
+    <string name="confirm_reset_traffic_profile">Reset penggunaan data buat profil ini?</string>
+    <string name="confirm_reset_traffic_group">Reset penggunaan data semua server di grup ini?</string>
+    <string name="confirm_reset_traffic_all">Reset penggunaan data buat semua grup? Nggak bisa dibatalin lho ya</string>
+    <string name="pref_traffic_enabled_title">Tampilin Penggunaan Data</string>
+    <string name="pref_traffic_enabled_summary">Tampilin jumlah upload dan download di tiap server</string>
 
      <string name="uwu_banner_settings_title">Halo disana…</string>
     <string name="uwu_banner_settings_summary">"Met dateng di menu

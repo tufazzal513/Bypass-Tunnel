@@ -326,6 +326,7 @@
                     android:text="@string/connection_test_pending"
                     android:singleLine="true"
                     android:marqueeRepeatLimit="marquee_forever" />
+
             </LinearLayout>
 
             <FrameLayout

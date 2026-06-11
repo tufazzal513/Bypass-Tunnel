@@ -151,6 +151,17 @@
                             android:layout_height="wrap_content"
                             android:lines="1" />
                     </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_traffic"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textSize="11.0sp"
+                        android:textColor="?colorOnSurfaceVariant"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="2.0dip"
+                        android:visibility="gone"
+                        android:lines="1" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

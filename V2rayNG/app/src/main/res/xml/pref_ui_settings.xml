@@ -19,6 +19,14 @@
             android:key="pref_speed_enabled"
             android:summary="@string/summary_pref_speed_enabled"
             android:title="@string/title_pref_speed_enabled" />
+            
+         <androidx.preference.SwitchPreferenceCompat
+            android:icon="@drawable/ic_baseline_speed_24"
+            app:layout="@layout/uwu_mid_switch"
+            app:widgetLayout="@layout/uwu_widget_material_switch"
+            android:key="pref_traffic_enabled"
+            android:summary="@string/pref_traffic_enabled_summary"
+            android:title="@string/pref_traffic_enabled_title" />
 
         <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_delete_24dp"

@@ -6,6 +6,7 @@ import com.v2ray.ang.dto.UrlContentRequest
 import com.v2ray.ang.util.HttpUtil
 import com.v2ray.ang.util.JsonUtil
 import com.v2ray.ang.util.LogUtil
+import com.v2ray.ang.util.Utils
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.isActive
 import java.io.IOException
@@ -114,6 +115,8 @@ object SpeedtestManager {
             ipInfo.location?.country_code
         ).firstOrNull { !it.isNullOrBlank() }
 
-        return "(${country ?: "unknown"}) ${ip ?: "unknown"}"
+        val flag = Utils.countryCodeToFlag(country)
+        val flagPrefix = if (flag.isNotEmpty()) "$flag " else ""
+        return "${flagPrefix}(${country ?: "unknown"}) ${ip ?: "unknown"}"
     }
 }

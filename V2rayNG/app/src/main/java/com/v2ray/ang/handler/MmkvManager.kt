@@ -289,6 +289,71 @@ object MmkvManager {
     }
 
     /**
+     * Adds traffic bytes to a profile's cumulative totals.
+     *
+     * @param guid The server GUID.
+     * @param uplink Uplink bytes to add.
+     * @param downlink Downlink bytes to add.
+     */
+    fun addProfileTraffic(guid: String, uplink: Long, downlink: Long) {
+        if (guid.isBlank() || (uplink == 0L && downlink == 0L)) return
+        val aff = decodeServerAffiliationInfo(guid) ?: ServerAffiliationInfo()
+        aff.uplinkTotal += uplink
+        aff.downlinkTotal += downlink
+        serverAffStorage.encode(guid, JsonUtil.toJson(aff))
+    }
+
+    /**
+     * Returns a formatted traffic string for a profile, e.g. "↑ 1.2 MB  ↓ 3.4 GB".
+     * Returns null if no traffic has been recorded yet.
+     *
+     * @param guid The server GUID.
+     */
+    fun getProfileTrafficString(guid: String): String? {
+        if (guid.isBlank()) return null
+        val aff = decodeServerAffiliationInfo(guid) ?: return null
+        if (aff.uplinkTotal == 0L && aff.downlinkTotal == 0L) return null
+        return "↑ ${formatTrafficBytes(aff.uplinkTotal)}  ↓ ${formatTrafficBytes(aff.downlinkTotal)}"
+    }
+
+    /**
+     * Resets the cumulative traffic totals for a profile.
+     *
+     * @param guid The server GUID.
+     */
+    fun resetProfileTraffic(guid: String) {
+        if (guid.isBlank()) return
+        val aff = decodeServerAffiliationInfo(guid) ?: return
+        aff.uplinkTotal = 0L
+        aff.downlinkTotal = 0L
+        serverAffStorage.encode(guid, JsonUtil.toJson(aff))
+    }
+
+    /**
+     * Mereset traffic semua server dalam satu subscription/group.
+     * Kalau subscriptionId kosong, reset server ungrouped (DEFAULT_SUBSCRIPTION_ID).
+     */
+    fun resetGroupTraffic(subscriptionId: String) {
+        val guids = decodeServerList(subscriptionId.ifEmpty { DEFAULT_SUBSCRIPTION_ID })
+        guids.forEach { guid -> resetProfileTraffic(guid) }
+    }
+
+    /**
+     * Mereset traffic semua server dari semua group.
+     */
+    fun resetAllTraffic() {
+        decodeAllServerList().forEach { guid -> resetProfileTraffic(guid) }
+    }
+
+    private fun formatTrafficBytes(bytes: Long): String {
+        val units = arrayOf("B", "KB", "MB", "GB", "TB")
+        var size = bytes.toDouble()
+        var i = 0
+        while (size >= 1024 && i < units.size - 1) { size /= 1024; i++ }
+        return String.format(java.util.Locale.getDefault(), "%.1f %s", size, units[i])
+    }
+
+    /**
      * Clears all test delay results.
      *
      * @param keys The list of server GUIDs.

@@ -558,6 +558,15 @@
     <string name="summary_pref_dynamic_color_banner">Цветовая схема темы будет динамически подстраиваться под изображение баннера на главном экране.</string>
     <string name="title_pref_keep_awake">Не давать устройству уснуть</string>
     <string name="summary_pref_keep_awake">Удерживать частичную блокировку сна (partial wake lock) при подключенном VPN. Необходимо на Xiaomi/HyperOS; на Samsung/Pixel это только разряжает батарею — оставьте выключенным.</string>
+    <string name="title_reset_traffic">Сброс статистики трафика</string>
+    <string name="reset_traffic_scope_profile">Только выбранный профиль</string>
+    <string name="reset_traffic_scope_group">Только в группе \"%1$s\"</string>
+    <string name="reset_traffic_scope_all">Во всех группах</string>
+    <string name="confirm_reset_traffic_profile">Сбросить статистику трафика для этого профиля?</string>
+    <string name="confirm_reset_traffic_group">Сбросить статистику трафика всех серверов в этой группе?</string>
+    <string name="confirm_reset_traffic_all">Сбросить статистику трафика для всех групп? Это действие нельзя отменить</string>
+    <string name="pref_traffic_enabled_title">Показывать статистику трафика</string>
+    <string name="pref_traffic_enabled_summary">Показывать объем загрузки и отдачи на каждом сервере</string>
     
     <string name="uwu_banner_settings_title">Привет...</string>
     <string name="uwu_banner_settings_summary">"Добро пожаловать в

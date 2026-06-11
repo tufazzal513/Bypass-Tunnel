@@ -575,6 +575,15 @@
     <string name="summary_pref_dynamic_color_banner">The theme color scheme will dynamically adapt to your Home Banner image.</string>
     <string name="title_pref_keep_awake">Keep device awake</string>
     <string name="summary_pref_keep_awake">Hold a partial wake lock while the VPN is connected. Needed on Xiaomi/HyperOS; on Samsung/Pixel it just drains battery — leave off.</string>
+    <string name="title_reset_traffic">Reset Data Usage</string>
+    <string name="reset_traffic_scope_profile">Selected profile only</string>
+    <string name="reset_traffic_scope_group">Only in \"%1$s\" group</string>
+    <string name="reset_traffic_scope_all">In all groups</string>
+    <string name="confirm_reset_traffic_profile">Reset data usage for this profile?</string>
+    <string name="confirm_reset_traffic_group">Reset data usage for all servers in this group?</string>
+    <string name="confirm_reset_traffic_all">Reset data usage for all groups? This cannot be undone</string>
+    <string name="pref_traffic_enabled_title">Show Data Usage</string>
+    <string name="pref_traffic_enabled_summary">Show upload and download traffic on each server</string>
     
     <string name="uwu_banner_settings_title">Hello there...</string>
     <string name="uwu_banner_settings_summary">"Welcome to the settings
