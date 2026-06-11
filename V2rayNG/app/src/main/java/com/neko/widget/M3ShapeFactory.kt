@@ -2,6 +2,7 @@ package com.neko.widget
 
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
+import androidx.graphics.shapes.circle
 import androidx.graphics.shapes.star
 
 object M3ShapeFactory {
@@ -58,28 +59,28 @@ object M3ShapeFactory {
             "m3_gem" -> RoundedPolygon(6, rounding = CornerRounding(0.2f))
 
             // 2. COOKIES
-            "m3_cookie_4" -> RoundedPolygon.star(4, innerRadius = 0.8f, roundingRadius = 0.3f)
-            "m3_cookie_6" -> RoundedPolygon.star(6, innerRadius = 0.8f, roundingRadius = 0.3f)
-            "m3_cookie_7" -> RoundedPolygon.star(7, innerRadius = 0.8f, roundingRadius = 0.3f)
-            "m3_cookie_9" -> RoundedPolygon.star(9, innerRadius = 0.85f, roundingRadius = 0.2f)
-            "m3_cookie_12" -> RoundedPolygon.star(12, innerRadius = 0.9f, roundingRadius = 0.2f)
+            "m3_cookie_4" -> RoundedPolygon.star(4, innerRadius = 0.8f, rounding = CornerRounding(0.3f))
+            "m3_cookie_6" -> RoundedPolygon.star(6, innerRadius = 0.8f, rounding = CornerRounding(0.3f))
+            "m3_cookie_7" -> RoundedPolygon.star(7, innerRadius = 0.8f, rounding = CornerRounding(0.3f))
+            "m3_cookie_9" -> RoundedPolygon.star(9, innerRadius = 0.85f, rounding = CornerRounding(0.2f))
+            "m3_cookie_12" -> RoundedPolygon.star(12, innerRadius = 0.9f, rounding = CornerRounding(0.2f))
 
             // 3. SUNNY & BURST
-            "m3_very_sunny" -> RoundedPolygon.star(8, innerRadius = 0.4f, roundingRadius = 0.1f)
-            "m3_sunny" -> RoundedPolygon.star(8, innerRadius = 0.6f, roundingRadius = 0.15f)
-            "m3_burst" -> RoundedPolygon.star(12, innerRadius = 0.7f, roundingRadius = 0.05f)
-            "m3_soft_burst" -> RoundedPolygon.star(12, innerRadius = 0.85f, roundingRadius = 0.2f)
+            "m3_very_sunny" -> RoundedPolygon.star(8, innerRadius = 0.4f, rounding = CornerRounding(0.1f))
+            "m3_sunny" -> RoundedPolygon.star(8, innerRadius = 0.6f, rounding = CornerRounding(0.15f))
+            "m3_burst" -> RoundedPolygon.star(12, innerRadius = 0.7f, rounding = CornerRounding(0.05f))
+            "m3_soft_burst" -> RoundedPolygon.star(12, innerRadius = 0.85f, rounding = CornerRounding(0.2f))
 
             // 4. CLOVERS & FLOWER
-            "m3_clover_4" -> RoundedPolygon.star(4, innerRadius = 0.4f, roundingRadius = 0.4f)
-            "m3_clover_8" -> RoundedPolygon.star(8, innerRadius = 0.6f, roundingRadius = 0.3f)
-            "m3_flower" -> RoundedPolygon.star(8, innerRadius = 0.5f, roundingRadius = 0.2f)
+            "m3_clover_4" -> RoundedPolygon.star(4, innerRadius = 0.4f, rounding = CornerRounding(0.4f))
+            "m3_clover_8" -> RoundedPolygon.star(8, innerRadius = 0.6f, rounding = CornerRounding(0.3f))
+            "m3_flower" -> RoundedPolygon.star(8, innerRadius = 0.5f, rounding = CornerRounding(0.2f))
 
             // 5. BOOM & PUFFY
-            "m3_boom" -> RoundedPolygon.star(16, innerRadius = 0.4f, roundingRadius = 0.05f)
-            "m3_soft_boom" -> RoundedPolygon.star(16, innerRadius = 0.5f, roundingRadius = 0.1f)
-            "m3_puffy" -> RoundedPolygon.star(12, innerRadius = 0.8f, roundingRadius = 0.3f)
-            "m3_puffy_diamond" -> RoundedPolygon.star(4, innerRadius = 0.6f, roundingRadius = 0.3f)
+            "m3_boom" -> RoundedPolygon.star(16, innerRadius = 0.4f, rounding = CornerRounding(0.05f))
+            "m3_soft_boom" -> RoundedPolygon.star(16, innerRadius = 0.5f, rounding = CornerRounding(0.1f))
+            "m3_puffy" -> RoundedPolygon.star(12, innerRadius = 0.8f, rounding = CornerRounding(0.3f))
+            "m3_puffy_diamond" -> RoundedPolygon.star(4, innerRadius = 0.6f, rounding = CornerRounding(0.3f))
 
             // 6. CUSTOM & UNIQUE
             "m3_ghost_ish" -> RoundedPolygon(
@@ -107,7 +108,7 @@ object M3ShapeFactory {
             )
 
             // Fallback
-            else -> RoundedPolygon.star(8, innerRadius = 0.85f, roundingRadius = 0.2f) // Default Soft Burst/Cookie
+            else -> RoundedPolygon.star(8, innerRadius = 0.85f, rounding = CornerRounding(0.2f))
         }
     }
 }
