@@ -15,24 +15,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
+        android:layout_marginLeft="16.0dip"
+        android:layout_marginRight="16.0dip"
+        android:layout_marginHorizontal="16.0dip"
         android:gravity="end">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save"
-            style="?materialIconButtonFilledStyle"
+            style="@style/Widget.Material3Expressive.Button.IconButton.Filled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="55dp"
+            android:minHeight="55dp"
             app:iconPadding="0.0dip"
+            app:iconGravity="textStart"
+            app:iconTint="?colorOnPrimary"
+            app:backgroundTint="?colorPrimary"
             app:icon="@drawable/ic_action_done" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_close"
-            style="?materialIconButtonFilledTonalStyle"
+            style="@style/Widget.Material3Expressive.Button.IconButton.Filled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="55dp"
+            android:minHeight="55dp"
             app:iconPadding="0.0dip"
+            app:iconGravity="textStart"
+            app:iconTint="?colorOnError"
+            app:backgroundTint="?colorError"
             app:icon="@drawable/ic_close_24dp" />
 
     </LinearLayout>

@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.preference.Preference
@@ -109,7 +108,7 @@ class EditTextPreferenceBottomSheet @JvmOverloads constructor(
             win.navigationBarColor = bgColor
             win.setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
             )
         }
         dialog.findViewById<android.view.View>(
@@ -131,14 +130,6 @@ class EditTextPreferenceBottomSheet @JvmOverloads constructor(
             val margin = (8 * v.resources.displayMetrics.density).toInt()
             dialog.behavior.maxHeight = screenHeight - statusBarHeight - margin
             insets
-        }
-
-        dialog.setOnShowListener {
-            editText.post {
-                editText.requestFocus()
-                val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
-            }
         }
 
         dialog.show()
