@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 object TrafficController {
 
-    private const val QUERY_INTERVAL_MS = 5000L
+    private const val QUERY_INTERVAL_MS = 3000L
 
     private var job: Job? = null
 
