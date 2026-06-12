@@ -429,13 +429,10 @@ class MainActivity : HelperBaseActivity(),
         if (count > 0) {
             badge.text = if (count > 99) "99+" else count.toString()
             badge.visibility = View.VISIBLE
-            (badge.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.marginStart =
-                (6 * resources.displayMetrics.density).toInt()
         } else {
             badge.visibility = View.GONE
-            (badge.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.marginStart = 0
         }
-        badge.requestLayout()
+        badge.post { badge.requestLayout() }
     }
 
     private fun applyTabSelectedStyle(
