@@ -424,7 +424,6 @@ class MainActivity : HelperBaseActivity(),
         mainViewModel.initAssets(assets)
     }
 
-
     private fun setBadgeVisibility(badge: TextView, label: TextView, count: Int) {
         if (count > 0) {
             badge.text = if (count > 99) "99+" else count.toString()
@@ -444,13 +443,6 @@ class MainActivity : HelperBaseActivity(),
         val view = tab?.customView ?: return
         val label = view.findViewById<TextView>(R.id.tab_label) ?: return
         val badge = view.findViewById<TextView>(R.id.tab_badge) ?: return
-        val px = resources.displayMetrics.density
-
-        val (paddingLeftDp, paddingRightDp) = if (selected) {
-            Pair(16f, 16f) 
-        } else {
-            if (tabCount <= 1) Pair(16f, 16f) else Pair(12f, 12f) 
-        }
 
         if (selected) {
             label.setTextColor(getColorAttr("colorOnPrimary"))
@@ -465,8 +457,6 @@ class MainActivity : HelperBaseActivity(),
                 getColorAttr("colorPrimary")
             )
         }
-
-        view.setPadding((paddingLeftDp * px).toInt(), 0, (paddingRightDp * px).toInt(), 0)
     }
 
     private fun setupGroupTab() {
