@@ -186,7 +186,7 @@ class MainRecyclerAdapter(
         // tv_network
         if (enabled && !isComplex && network != null) {
             holder.itemMainBinding.tvNetwork.text = network
-            holder.itemMainBinding.tvNetwork.setCompoundDrawables(makeIcon(R.drawable.ic_telegram_24dp), null, null, null)
+            holder.itemMainBinding.tvNetwork.setCompoundDrawables(makeIcon(R.drawable.ic_thumb_up_outline), null, null, null)
             holder.itemMainBinding.tvNetwork.visibility = View.VISIBLE
         } else {
             holder.itemMainBinding.tvNetwork.visibility = View.GONE
