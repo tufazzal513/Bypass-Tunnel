@@ -216,7 +216,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:cardBackgroundColor="?colorCard"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="28dp"
                 app:cardElevation="0dp"
                 app:contentPadding="5dp"
                 app:strokeWidth="0dp">
