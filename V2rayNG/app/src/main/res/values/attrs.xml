@@ -53,10 +53,6 @@
         <attr name="iconTint" format="color|reference" />
         <attr name="iconSizeFraction" format="float" />
     </declare-styleable>
-    
-    <declare-styleable name="UwuHeaderIconView">
-        <attr name="sectionIcon" format="reference" />
-    </declare-styleable>
 
     <declare-styleable name="ParticlesView">
         <attr
