@@ -45,8 +45,10 @@ class GroupServerFragment : BaseFragment<FragmentGroupServerBinding>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         adapter = MainRecyclerAdapter(mainViewModel, ActivityAdapterListener())
-        binding.recyclerView.setHasFixedSize(true)        
+        binding.recyclerView.setHasFixedSize(true)
+        
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
+        
         binding.recyclerView.adapter = adapter
 
         val animator = binding.recyclerView.itemAnimator
@@ -114,7 +116,6 @@ class GroupServerFragment : BaseFragment<FragmentGroupServerBinding>(),
     private fun removeServerSub(guid: String, position: Int) {
         mainViewModel.removeServer(guid)
         adapter.removeServerSub(guid, position)
-        ownerActivity.refreshGroupTabTitles()
     }
 
     private fun setSelectServer(guid: String) {

@@ -101,14 +101,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * Removes a server by its GUID.
      * @param guid The GUID of the server to remove.
      */
-    fun removeServer(guid: String) {
-        serverList.remove(guid)
-        MmkvManager.removeServer(guid)
-        val index = getPosition(guid)
-        if (index >= 0) {
-            serversCache.removeAt(index)
-        }
-        updateGroupBadgeAction.postValue(Unit)
+    fun removeAllServer(): Int {
+        val count =
+            if (subscriptionId.isEmpty() && keywordFilter.isEmpty()) {
+                MmkvManager.removeAllServer()
+            } else {
+                val serversCopy = serversCache.toList()
+                for (item in serversCopy) {
+                    MmkvManager.removeServer(item.guid)
+                }
+                serversCache.toList().count()
+            }
+        return count
     }
 
     /**

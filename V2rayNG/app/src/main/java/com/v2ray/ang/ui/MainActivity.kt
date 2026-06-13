@@ -126,7 +126,6 @@ class MainActivity : HelperBaseActivity(),
 
         SubscriptionUpdater.sync()
         mainViewModel.reloadServerList()
-        refreshGroupTabTitles(true)
 
         checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
     }
@@ -501,10 +500,6 @@ class MainActivity : HelperBaseActivity(),
         (binding.tabGroup.parent as? View)?.isVisible = hasAnyGroup 
     }
 
-    fun refreshGroupTabTitles(refreshAll: Boolean = false) {
-        refreshTabBadges()
-    }
-
     private fun refreshTabBadges() {
         val groups = mainViewModel.getSubscriptions(this)
         for (i in groups.indices) {
@@ -692,7 +687,6 @@ class MainActivity : HelperBaseActivity(),
                         count > 0 -> {
                             alertSuccess(getString(R.string.title_import_config_count, count), title = getString(R.string.title_alerter_success))
                             mainViewModel.reloadServerList()
-                            refreshGroupTabTitles()
                         }
                         countSub > 0 -> setupGroupTab()
                         else -> alertError(getString(R.string.import_configuration), title = getString(R.string.title_alerter_error))
@@ -744,7 +738,6 @@ class MainActivity : HelperBaseActivity(),
                 }
                 if (result.configCount > 0) {
                     mainViewModel.reloadServerList()
-                    refreshGroupTabTitles()
                 }
                 hideLoading()
             }
@@ -771,7 +764,6 @@ class MainActivity : HelperBaseActivity(),
                 val ret = mainViewModel.removeAllServer()
                 withContext(Dispatchers.Main) {
                     mainViewModel.reloadServerList()
-                    refreshGroupTabTitles()
                     alertSuccess(getString(R.string.title_del_config_count, ret), title = getString(R.string.title_alerter_success))
                     hideLoading()
                 }
@@ -786,7 +778,6 @@ class MainActivity : HelperBaseActivity(),
                 val ret = mainViewModel.removeDuplicateServer()
                 withContext(Dispatchers.Main) {
                     mainViewModel.reloadServerList()
-                    refreshGroupTabTitles()
                     alertSuccess(getString(R.string.title_del_duplicate_config_count, ret), title = getString(R.string.title_alerter_success))
                     hideLoading()
                 }
@@ -801,7 +792,6 @@ class MainActivity : HelperBaseActivity(),
                 val ret = mainViewModel.removeInvalidServer()
                 withContext(Dispatchers.Main) {
                     mainViewModel.reloadServerList()
-                    refreshGroupTabTitles()
                     alertSuccess(getString(R.string.title_del_config_count, ret), title = getString(R.string.title_alerter_success))
                     hideLoading()
                 }
@@ -908,6 +898,7 @@ class MainActivity : HelperBaseActivity(),
         } catch (e: Exception) {
             LogUtil.e(AppConfig.TAG, "Failed to unregister bannerReceiver", e)
         }
+        
         super.onDestroy()
     }
 }
