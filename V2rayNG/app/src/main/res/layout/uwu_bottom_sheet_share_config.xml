@@ -198,8 +198,8 @@
                         android:layout_marginStart="8.0dip"
                         android:layout_marginEnd="8.0dip">
                         <com.neko.widget.DynamicShapeImageView
-                            android:layout_width="55.0dip"
-                            android:layout_height="55.0dip"
+                            android:layout_width="50.0dip"
+                            android:layout_height="50.0dip"
                             android:layout_marginStart="8.0dip"
                             app:shapeBackgroundColor="?colorPrimary"
                             app:sectionIcon="@drawable/ic_action_qr"
@@ -288,8 +288,8 @@
                         android:layout_marginStart="8.0dip"
                         android:layout_marginEnd="8.0dip">
                         <com.neko.widget.DynamicShapeImageView
-                            android:layout_width="55.0dip"
-                            android:layout_height="55.0dip"
+                            android:layout_width="50.0dip"
+                            android:layout_height="50.0dip"
                             android:layout_marginStart="8.0dip"
                             app:shapeBackgroundColor="?colorPrimary"
                             app:sectionIcon="@drawable/ic_action_clipboard"
@@ -378,8 +378,8 @@
                         android:layout_marginStart="8.0dip"
                         android:layout_marginEnd="8.0dip">
                         <com.neko.widget.DynamicShapeImageView
-                            android:layout_width="55.0dip"
-                            android:layout_height="55.0dip"
+                            android:layout_width="50.0dip"
+                            android:layout_height="50.0dip"
                             android:layout_marginStart="8.0dip"
                             app:shapeBackgroundColor="?colorPrimary"
                             app:sectionIcon="@drawable/ic_action_clipboard"

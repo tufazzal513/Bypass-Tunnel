@@ -9,6 +9,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.core.content.ContextCompat
@@ -27,7 +28,8 @@ class DynamicShapeImageView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ShaderImageView(context, attrs, defStyleAttr) {
 
-    private var currentShapeKey: String? = AppConfig.PREF_ICON_SHAPE_DEFAULT
+    // Null initially so first applyShape() always triggers reloadShape()
+    private var currentShapeKey: String? = null
 
     private var customBgColor: Int? = null
     private var iconDrawable: Drawable? = null
@@ -101,6 +103,37 @@ class DynamicShapeImageView @JvmOverloads constructor(
         }
     }
 
+    // Preference framework may also call setImageResource directly.
+    // Route through our setImageDrawable so VectorDrawables are captured as overlay.
+    override fun setImageResource(resId: Int) {
+        if (resId == 0) {
+            super.setImageResource(resId)
+            return
+        }
+        val d = ContextCompat.getDrawable(context, resId)
+        setImageDrawable(d)
+    }
+
+    // Preference framework sets android:icon via setImageDrawable(VectorDrawable).
+    // ShaderHelper.getBitmap() only handles BitmapDrawable, so VectorDrawables cause
+    // the shader to fail and the shape disappears. We intercept here:
+    //  • If it's already a BitmapDrawable (e.g. from loadColorBitmap), let it through normally.
+    //  • If it's any other drawable (VectorDrawable from android:icon), capture it as
+    //    iconDrawable for drawIconOverlay, then restore the solid-color bitmap so the
+    //    ShaderHelper always has a valid BitmapDrawable to work with.
+    override fun setImageDrawable(drawable: Drawable?) {
+        if (drawable is BitmapDrawable || drawable == null) {
+            super.setImageDrawable(drawable)
+        } else {
+            // Capture as overlay icon (only if not already set from XML attrs)
+            if (iconDrawable == null) {
+                iconDrawable = drawable.mutate()
+            }
+            // Keep the solid-color bitmap as the ShaderHelper source
+            loadColorBitmap()
+        }
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         drawIconOverlay(canvas)
@@ -131,7 +164,15 @@ class DynamicShapeImageView @JvmOverloads constructor(
         if (!isInEditMode) {
             val savedKey = MmkvManager.decodeSettingsString(AppConfig.PREF_ICON_SHAPE)
                 ?: AppConfig.PREF_ICON_SHAPE_DEFAULT
-            applyShape(savedKey)
+
+            // Always force-reload on first attach: currentShapeKey starts null so
+            // applyShape() will always enter reloadShape(). This fixes the case
+            // where the bitmap was set in init() before the view had a size,
+            // leaving the shader un-calculated.
+            applyShape(savedKey, force = true)
+
+            // Re-apply the bitmap so ShaderHelper picks it up after reloadShape()
+            loadColorBitmap()
 
             val filter = IntentFilter(AppConfig.BROADCAST_ACTION_ICON_SHAPE_CHANGED)
             ContextCompat.registerReceiver(
@@ -158,8 +199,8 @@ class DynamicShapeImageView @JvmOverloads constructor(
         }
     }
 
-    private fun applyShape(shapeKey: String) {
-        if (currentShapeKey != shapeKey) {
+    private fun applyShape(shapeKey: String, force: Boolean = false) {
+        if (force || currentShapeKey != shapeKey) {
             currentShapeKey = shapeKey
             reloadShape()
             invalidate()
