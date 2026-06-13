@@ -19,6 +19,6 @@
     <include
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        layout="@layout/uwu_preference_material_switch" />
+        layout="@layout/uwu_preference_material" />
 
 </com.google.android.material.card.MaterialCardView>
