@@ -177,7 +177,16 @@ class MainRecyclerAdapter(
 
         val isComplex = profile.configType.isComplexType()
         val network = profile.network?.takeIf { it.isNotBlank() && !it.equals("tcp", ignoreCase = true) }
-        val security = profile.security?.takeIf { it.isNotBlank() }
+        
+        val security = profile.security?.takeIf { it.isNotBlank() }?.let { sec ->
+            if (profile.insecure == true && sec.equals("tls", ignoreCase = true)) {
+                "$sec(insecure)"
+            } else if (!sec.equals("tls", ignoreCase = true)) {
+                sec
+            } else {
+                null
+            }
+        }
 
         val showAny = enabled && !isComplex && (network != null || security != null)
         holder.itemMainBinding.layoutNetworkSecurity.visibility =
