@@ -184,6 +184,19 @@
             android:nextFocusDown="@+id/et_public_key" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_pinned_ca256_action"
+        style="@style/Widget.Material3Expressive.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_spacing_dp8"
+        android:layout_marginBottom="@dimen/padding_spacing_dp8"
+        android:text="@string/pinned_ca256_action_fetch"
+        app:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lay_pinned_ca256" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lay_public_key"
         app:shapeAppearance="?shapeAppearanceCornerMedium"
@@ -196,7 +209,7 @@
         android:hint="@string/server_lab_public_key"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lay_pinned_ca256">
+        app:layout_constraintTop_toBottomOf="@id/btn_pinned_ca256_action">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_public_key"

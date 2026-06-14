@@ -7,7 +7,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Button
 import android.widget.EditText
+import androidx.lifecycle.lifecycleScope
 import com.v2ray.ang.util.showDeleteConfirmDialog
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputLayout
@@ -24,12 +26,17 @@ import com.v2ray.ang.enums.NetworkType
 import com.v2ray.ang.extension.isNotNullEmpty
 import com.v2ray.ang.extension.nullIfBlank
 import com.v2ray.ang.extension.alertError
+import com.v2ray.ang.extension.alertSuccess
 import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.handler.AngConfigManager
+import com.v2ray.ang.handler.CertificateFingerprintManager
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.util.JsonUtil
 import com.v2ray.ang.util.Utils
 import com.v2ray.ang.util.SoftInputAssist
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ServerActivity : BaseActivity() {
 
@@ -119,6 +126,7 @@ class ServerActivity : BaseActivity() {
     private val et_ech_config_list: EditText? by lazy { findViewById(R.id.et_ech_config_list) }
     private val et_verify_peer_cert_by_name: EditText? by lazy { findViewById(R.id.et_verify_peer_cert_by_name) }
     private val et_pinned_ca256: EditText? by lazy { findViewById(R.id.et_pinned_ca256) }
+    private val btn_pinned_ca256_action: Button? by lazy { findViewById(R.id.btn_pinned_ca256_action) }
     
     private lateinit var softInputAssist: SoftInputAssist
 
@@ -153,6 +161,10 @@ class ServerActivity : BaseActivity() {
 
         sp_stream_security?.setOnItemClickListener { _, _, position, _ ->
             updateStreamSecurityUI(position)
+        }
+
+        btn_pinned_ca256_action?.setOnClickListener {
+            fetchPinnedCA256ForCurrentConfig()
         }
 
         if (config != null) {
@@ -612,6 +624,60 @@ class ServerActivity : BaseActivity() {
         config.verifyPeerCertByName = verifyPeerCertByName
         config.pinnedCA256 = pinnedCA256
     }
+
+    private fun fetchPinnedCA256ForCurrentConfig() {
+        val config = buildCurrentProfileForCertificateFetch() ?: return
+
+        lifecycleScope.launch {
+            btn_pinned_ca256_action?.isEnabled = false
+            try {
+                val sha256 = withContext(Dispatchers.IO) {
+                    CertificateFingerprintManager.fetchForManualFill(config)
+                }
+                if (sha256.isNullOrBlank()) {
+                    alertError(
+                        getString(R.string.toast_fetch_cert_sha256_failed),
+                        title = getString(R.string.title_alerter_error)
+                    )
+                } else {
+                    et_pinned_ca256?.text = Utils.getEditable(sha256)
+                    alertSuccess(
+                        getString(R.string.toast_fetch_cert_sha256_success),
+                        title = getString(R.string.title_alerter_success)
+                    )
+                }
+            } finally {
+                btn_pinned_ca256_action?.isEnabled = true
+            }
+        }
+    }
+
+    private fun buildCurrentProfileForCertificateFetch(): ProfileItem? {
+        if (TextUtils.isEmpty(et_address.text.toString())) {
+            alertError(
+                getString(R.string.server_lab_address),
+                title = getString(R.string.title_alerter_error)
+            )
+            return null
+        }
+
+        val configType = MmkvManager.decodeServerConfig(editGuid)?.configType ?: createConfigType
+        if (configType != EConfigType.HYSTERIA2 && Utils.parseInt(et_port.text.toString()) <= 0) {
+            alertError(
+                getString(R.string.server_lab_port),
+                title = getString(R.string.title_alerter_error)
+            )
+            return null
+        }
+
+        val config = ProfileItem.create(configType)
+        saveCommon(config)
+        saveStreamSettings(config)
+        saveTls(config)
+
+        return config
+    }
+
 
     private fun transportTypes(network: String?): Array<out String> {
         return when (network) {
