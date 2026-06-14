@@ -181,10 +181,8 @@ class MainRecyclerAdapter(
         val security = profile.security?.takeIf { it.isNotBlank() }?.let { sec ->
             if (profile.insecure == true && sec.equals("tls", ignoreCase = true)) {
                 "$sec(insecure)"
-            } else if (!sec.equals("tls", ignoreCase = true)) {
-                sec
             } else {
-                null
+                sec
             }
         }
 
