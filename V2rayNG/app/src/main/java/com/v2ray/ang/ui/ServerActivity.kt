@@ -155,12 +155,14 @@ class ServerActivity : BaseActivity() {
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         setupToolbar(toolbar, showHomeAsUp = true, title = (config?.configType ?: createConfigType).toString())
 
-        sp_network?.setOnItemClickListener { _, _, position, _ ->
-            updateNetworkUI(position, config)
+        sp_network?.setOnItemClickListener { parent, _, position, _ ->
+            val selectedItem = parent.getItemAtPosition(position).toString()
+            updateNetworkUI(selectedItem, config)
         }
 
-        sp_stream_security?.setOnItemClickListener { _, _, position, _ ->
-            updateStreamSecurityUI(position)
+        sp_stream_security?.setOnItemClickListener { parent, _, position, _ ->
+            val selectedItem = parent.getItemAtPosition(position).toString()
+            updateStreamSecurityUI(selectedItem)
         }
 
         btn_pinned_ca256_action?.setOnClickListener {
@@ -174,20 +176,20 @@ class ServerActivity : BaseActivity() {
         }
     }
 
-    private fun updateNetworkUI(position: Int, config: ProfileItem?) {
-        val types = transportTypes(networks[position])
+    private fun updateNetworkUI(network: String, config: ProfileItem?) {
+        val types = transportTypes(network)
         sp_header_type?.isEnabled = types.size > 1
         
         val adapter = ArrayAdapter(this@ServerActivity, android.R.layout.simple_dropdown_item_1line, types)
         sp_header_type?.setAdapter(adapter)
 
-        til_header_type?.hint = when (networks[position]) {
+        til_header_type?.hint = when (network) {
             NetworkType.GRPC.type -> getString(R.string.server_lab_mode_type)
             NetworkType.XHTTP.type -> getString(R.string.server_lab_xhttp_mode)
             else -> getString(R.string.server_lab_head_type)
         }
 
-        val headerTypeStr = when (networks[position]) {
+        val headerTypeStr = when (network) {
             NetworkType.GRPC.type -> config?.mode
             NetworkType.XHTTP.type -> config?.xhttpMode
             else -> config?.headerType
@@ -198,13 +200,13 @@ class ServerActivity : BaseActivity() {
         sp_header_type?.setText(if (types.isNotEmpty()) types[finalTypeIndex] else "", false)
 
         et_request_host?.text = Utils.getEditable(
-            when (networks[position]) {
+            when (network) {
                 NetworkType.GRPC.type -> config?.authority
                 else -> config?.host
             }.orEmpty()
         )
         et_path?.text = Utils.getEditable(
-            when (networks[position]) {
+            when (network) {
                 NetworkType.KCP.type -> config?.seed
                 NetworkType.GRPC.type -> config?.serviceName
                 else -> config?.path
@@ -212,7 +214,7 @@ class ServerActivity : BaseActivity() {
         )
 
         til_request_host?.hint = getString(
-            when (networks[position]) {
+            when (network) {
                 NetworkType.TCP.type -> R.string.server_lab_request_host_http
                 NetworkType.WS.type -> R.string.server_lab_request_host_ws
                 NetworkType.HTTP_UPGRADE.type -> R.string.server_lab_request_host_httpupgrade
@@ -224,7 +226,7 @@ class ServerActivity : BaseActivity() {
         )
 
         til_path?.hint = getString(
-            when (networks[position]) {
+            when (network) {
                 NetworkType.KCP.type -> R.string.server_lab_path_kcp
                 NetworkType.WS.type -> R.string.server_lab_path_ws
                 NetworkType.HTTP_UPGRADE.type -> R.string.server_lab_path_httpupgrade
@@ -236,36 +238,36 @@ class ServerActivity : BaseActivity() {
         )
 
         et_extra?.text = Utils.getEditable(
-            when (networks[position]) {
+            when (network) {
                 NetworkType.XHTTP.type -> config?.xhttpExtra
                 else -> null
             }.orEmpty()
         )
         et_fm?.text = Utils.getEditable(config?.finalMask)
 
-        layout_kcp?.visibility = when (networks[position]) {
+        layout_kcp?.visibility = when (network) {
             NetworkType.KCP.type -> View.VISIBLE
             else -> View.GONE
         }
         et_kcp_mtu?.text = Utils.getEditable(config?.kcpMtu?.toString().orEmpty())
         et_kcp_tti?.text = Utils.getEditable(config?.kcpTti?.toString().orEmpty())
 
-        layout_extra?.visibility = when (networks[position]) {
+        layout_extra?.visibility = when (network) {
             NetworkType.XHTTP.type -> View.VISIBLE
             else -> View.GONE
         }
 
         layout_browser_dialer?.visibility =
-            when (networks[position]) {
+            when (network) {
                 NetworkType.WS.type -> View.VISIBLE
                 NetworkType.XHTTP.type -> View.VISIBLE
                 else -> View.GONE
             }
     }
 
-    private fun updateStreamSecurityUI(position: Int) {
-        val isBlank = streamSecuritys[position].isBlank()
-        val isTLS = streamSecuritys[position] == TLS
+    private fun updateStreamSecurityUI(security: String) {
+        val isBlank = security.isBlank()
+        val isTLS = security.equals(TLS, ignoreCase = true)
 
         when {
             isBlank -> {
@@ -280,7 +282,8 @@ class ServerActivity : BaseActivity() {
                     container_mldsa65_verify,
                     container_ech_config_list,
                     container_verify_peer_cert_by_name,
-                    container_pinned_ca256
+                    container_pinned_ca256,
+                    btn_pinned_ca256_action
                 ).forEach { it?.visibility = View.GONE }
             }
             isTLS -> {
@@ -291,7 +294,8 @@ class ServerActivity : BaseActivity() {
                     container_allow_insecure,
                     container_ech_config_list,
                     container_verify_peer_cert_by_name,
-                    container_pinned_ca256
+                    container_pinned_ca256,
+                    btn_pinned_ca256_action
                 ).forEach { it?.visibility = View.VISIBLE }
                 listOf(
                     container_public_key,
@@ -301,23 +305,23 @@ class ServerActivity : BaseActivity() {
                 ).forEach { it?.visibility = View.GONE }
             }
             else -> {
+                // REALITY dan lainnya
                 listOf(
                     container_sni,
-                    container_fingerprint
+                    container_fingerprint,
+                    container_public_key,
+                    container_short_id,
+                    container_spider_x,
+                    container_mldsa65_verify
                 ).forEach { it?.visibility = View.VISIBLE }
                 listOf(
                     container_alpn,
                     container_allow_insecure,
                     container_ech_config_list,
                     container_verify_peer_cert_by_name,
-                    container_pinned_ca256
+                    container_pinned_ca256,
+                    btn_pinned_ca256_action
                 ).forEach { it?.visibility = View.GONE }
-                listOf(
-                    container_public_key,
-                    container_short_id,
-                    container_spider_x,
-                    container_mldsa65_verify
-                ).forEach { it?.visibility = View.VISIBLE }
             }
         }
     }
@@ -356,7 +360,7 @@ class ServerActivity : BaseActivity() {
         val streamSecurity = Utils.arrayFind(streamSecuritys, config.security.orEmpty())
         if (streamSecurity >= 0) {
             sp_stream_security?.setText(streamSecuritys[streamSecurity], false)
-            updateStreamSecurityUI(streamSecurity)
+            updateStreamSecurityUI(streamSecuritys[streamSecurity])
             
             et_sni?.text = Utils.getEditable(config.sni)
             config.fingerPrint?.let {
@@ -380,12 +384,17 @@ class ServerActivity : BaseActivity() {
                 et_spider_x?.text = Utils.getEditable(config.spiderX.orEmpty())
                 et_mldsa65_verify?.text = Utils.getEditable(config.mldsa65Verify.orEmpty())
             }
+        } else {
+            sp_stream_security?.setText("", false)
+            updateStreamSecurityUI("")
         }
 
         val network = Utils.arrayFind(networks, config.network.orEmpty())
         if (network >= 0) {
             sp_network?.setText(networks[network], false)
-            updateNetworkUI(network, config)
+            updateNetworkUI(networks[network], config)
+        } else {
+            updateNetworkUI("", config)
         }
 
         val browserDialerMode = Utils.arrayFind(browserDialerModes, config.browserDialerMode.orEmpty())
@@ -404,10 +413,10 @@ class ServerActivity : BaseActivity() {
         sp_security?.setText(securitys[0], false)
         
         sp_network?.setText(networks[0], false)
-        updateNetworkUI(0, null)
+        updateNetworkUI(networks[0], null)
 
         sp_stream_security?.setText(streamSecuritys[0], false)
-        updateStreamSecurityUI(0)
+        updateStreamSecurityUI(streamSecuritys[0])
         
         sp_allow_insecure?.setText(allowinsecures[0], false)
         et_sni?.text = null
