@@ -126,7 +126,6 @@ class MainActivity : HelperBaseActivity(),
 
         SubscriptionUpdater.sync()
         mainViewModel.reloadServerList()
-        refreshGroupTabTitles(true)
 
         checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
     }
@@ -498,7 +497,9 @@ class MainActivity : HelperBaseActivity(),
         
         binding.layoutTabWrapper.isVisible = hasAnyGroup
         binding.tabGroup.isVisible = hasAnyGroup
-        (binding.tabGroup.parent as? View)?.isVisible = hasAnyGroup 
+        (binding.tabGroup.parent as? View)?.isVisible = hasAnyGroup
+        
+        refreshGroupTabTitles(true)
     }
 
     fun refreshGroupTabTitles(refreshAll: Boolean = false) {
