@@ -1,11 +1,16 @@
 package com.v2ray.ang.ui
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.ImageView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.v2ray.ang.util.showDeleteConfirmDialog
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
@@ -21,6 +26,8 @@ import com.v2ray.ang.handler.SettingsChangeManager
 import com.v2ray.ang.handler.SettingsManager
 import com.v2ray.ang.handler.SubscriptionUpdater
 import com.v2ray.ang.util.Utils
+import com.v2ray.ang.util.WindowBlurUtils
+import com.v2ray.ang.util.getColorAttr
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.v2ray.ang.util.SoftInputAssist
@@ -32,21 +39,55 @@ class SubEditActivity : BaseActivity() {
     private var save_config: MenuItem? = null
 
     private val editSubId by lazy { intent.getStringExtra("subId").orEmpty() }
-    
+
     private lateinit var softInputAssist: SoftInputAssist
+
+    private var selectedIconDrawable: String? = null
+
+    private val tabIcons: List<String> = listOf(
+        "filter_all_solar",
+        "filter_airplane_solar",
+        "filter_book_solar",
+        "filter_bots_solar",
+        "filter_cat_solar",
+        "filter_channel_solar",
+        "filter_crown_solar",
+        "filter_custom_solar",
+        "filter_favorite_solar",
+        "filter_flower_solar",
+        "filter_game_solar",
+        "filter_groups_solar",
+        "filter_home_solar",
+        "filter_light_solar",
+        "filter_like_solar",
+        "filter_love_solar",
+        "filter_mask_solar",
+        "filter_money_solar",
+        "filter_note_solar",
+        "filter_palette_solar",
+        "filter_party_solar",
+        "filter_private_solar",
+        "filter_setup_solar",
+        "filter_sport_solar",
+        "filter_study_solar",
+        "filter_trade_solar",
+        "filter_travel_solar",
+        "filter_unmuted_solar",
+        "filter_unread_solar",
+        "filter_work_solar",
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
         setContentView(binding.root)
-        
+
         softInputAssist = SoftInputAssist(this)
-        
 
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         setupToolbar(toolbar, showHomeAsUp = true, title = getString(R.string.title_sub_setting))
-        
+
         setupProfileRemarkInputs()
+        setupTabIconField()
 
         SettingsChangeManager.makeSetupGroupTab()
         val subItem = MmkvManager.decodeSubscription(editSubId)
@@ -57,9 +98,78 @@ class SubEditActivity : BaseActivity() {
         }
     }
 
-    /**
-     * binding selected server config
-     */
+    private fun setupTabIconField() {
+        binding.etTabIcon.setOnClickListener { showIconPickerDialog() }
+        binding.tilTabIcon.setEndIconOnClickListener { showIconPickerDialog() }
+    }
+
+    private fun showIconPickerDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_tab_icon_picker, null)
+        val rowNone    = dialogView.findViewById<android.view.View>(R.id.row_none)
+        val checkNone  = dialogView.findViewById<ImageView>(R.id.check_none)
+        val rv         = dialogView.findViewById<RecyclerView>(R.id.rv_icons)
+
+        val adapter = TabIconPickerAdapter(
+            context     = this,
+            icons       = tabIcons,
+            selectedIcon = selectedIconDrawable,
+            onSelect    = { name ->
+                applyIconSelection(name)
+                dialog?.dismiss()
+            }
+        )
+        rv.layoutManager = GridLayoutManager(this, 5)
+        rv.adapter = adapter
+
+        fun refreshNoneCheck() {
+            val noneSelected = selectedIconDrawable == null
+            checkNone.visibility = if (noneSelected) android.view.View.VISIBLE else android.view.View.GONE
+            val tint = if (noneSelected) getColorAttr("colorPrimary") else 0
+            checkNone.imageTintList = ColorStateList.valueOf(tint)
+        }
+        refreshNoneCheck()
+
+        rowNone.setOnClickListener {
+            applyIconSelection(null)
+            dialog?.dismiss()
+        }
+
+        dialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.sub_setting_tab_icon)
+            .setView(dialogView)
+            .setNegativeButton(android.R.string.cancel, null)
+            .create()
+
+        WindowBlurUtils.applyWindowBlur(dialog!!.window)
+        dialog!!.show()
+    }
+
+    private var dialog: androidx.appcompat.app.AlertDialog? = null
+
+    private fun applyIconSelection(iconName: String?) {
+        selectedIconDrawable = iconName
+        if (iconName == null) {
+            binding.etTabIcon.setText(getString(R.string.sub_tab_icon_none))
+            binding.tilTabIcon.setStartIconDrawable(R.drawable.filter_all)
+            binding.tilTabIcon.setStartIconTintList(
+                ColorStateList.valueOf(getColorAttr("colorOnSurfaceVariant"))
+            )
+        } else {
+            val resId = resources.getIdentifier(iconName, "drawable", packageName)
+            val label = iconName
+                .removePrefix("filter_")
+                .removeSuffix("_solar")
+                .replaceFirstChar { it.uppercase() }
+            binding.etTabIcon.setText(label)
+            if (resId != 0) {
+                binding.tilTabIcon.setStartIconDrawable(resId)
+                binding.tilTabIcon.setStartIconTintList(
+                    ColorStateList.valueOf(getColorAttr("colorOnSurfaceVariant"))
+                )
+            }
+        }
+    }
+
     private fun bindingServer(subItem: SubscriptionItem): Boolean {
         binding.etRemarks.setText(Utils.getEditable(subItem.remarks))
         binding.etUrl.setText(Utils.getEditable(subItem.url))
@@ -71,13 +181,10 @@ class SubEditActivity : BaseActivity() {
         binding.allowInsecureUrl.isChecked = subItem.allowInsecureUrl
         binding.etPreProfile.setText(subItem.prevProfile, false)
         binding.etNextProfile.setText(subItem.nextProfile, false)
-        
+        applyIconSelection(subItem.tabIcon)
         return true
     }
 
-    /**
-     * clear or init server config
-     */
     private fun clearServer(): Boolean {
         binding.etRemarks.text = null
         binding.etUrl.text = null
@@ -89,9 +196,12 @@ class SubEditActivity : BaseActivity() {
         binding.allowInsecureUrl.isChecked = false
         binding.etPreProfile.text = null
         binding.etNextProfile.text = null
+        applyIconSelection(null)
         return true
     }
-    
+
+    // ── Profile remark autocomplete ─────────────────────────────────────────
+
     private fun setupProfileRemarkInputs() {
         val suggestions = SettingsManager.getProfileRemarks(
             excludeConfigTypes = setOf(
@@ -100,7 +210,6 @@ class SubEditActivity : BaseActivity() {
                 EConfigType.PROXYCHAIN,
             )
         )
-
         setupProfileRemarkInput(binding.etPreProfile, suggestions)
         setupProfileRemarkInput(binding.etNextProfile, suggestions)
     }
@@ -113,9 +222,8 @@ class SubEditActivity : BaseActivity() {
         input.setAdapter(adapter)
     }
 
-    /**
-     * save server config
-     */
+    // ── Save ────────────────────────────────────────────────────────────────
+
     private fun saveServer(): Boolean {
         val subItem = MmkvManager.decodeSubscription(editSubId) ?: SubscriptionItem()
 
@@ -128,11 +236,9 @@ class SubEditActivity : BaseActivity() {
 
         val intervalInput = binding.etUpdateInterval.text?.toString()?.trim().orEmpty()
         val intervalMinutes = intervalInput.toLongOrNull()
-        
+
         if (subItem.autoUpdate) {
-            // autoUpdate is enabled: interval must be valid
             if (intervalMinutes == null) {
-                // field is empty, reset to default
                 subItem.updateInterval = SubscriptionItem().updateInterval
             } else if (intervalMinutes < AppConfig.SUBSCRIPTION_MIN_INTERVAL_MINUTES) {
                 alertError(
@@ -144,7 +250,6 @@ class SubEditActivity : BaseActivity() {
                 subItem.updateInterval = intervalMinutes
             }
         } else {
-            // autoUpdate is disabled: save only if the value is valid, otherwise keep the existing value
             if (intervalMinutes != null && intervalMinutes >= AppConfig.SUBSCRIPTION_MIN_INTERVAL_MINUTES) {
                 subItem.updateInterval = intervalMinutes
             }
@@ -153,6 +258,7 @@ class SubEditActivity : BaseActivity() {
         subItem.prevProfile = binding.etPreProfile.text?.toString().orEmpty()
         subItem.nextProfile = binding.etNextProfile.text?.toString().orEmpty()
         subItem.allowInsecureUrl = binding.allowInsecureUrl.isChecked
+        subItem.tabIcon = selectedIconDrawable
 
         if (TextUtils.isEmpty(subItem.remarks)) {
             alertError(
@@ -169,15 +275,12 @@ class SubEditActivity : BaseActivity() {
                 )
                 return false
             }
-
             if (!Utils.isValidSubUrl(subItem.url)) {
                 alertError(
                     getString(R.string.toast_insecure_url_protocol),
                     title = getString(R.string.title_alerter_error)
                 )
-                if (!subItem.allowInsecureUrl) {
-                    return false
-                }
+                if (!subItem.allowInsecureUrl) return false
             }
         }
 
@@ -188,72 +291,57 @@ class SubEditActivity : BaseActivity() {
         return true
     }
 
-    /**
-     * delete server config
-     */
+    // ── Delete ──────────────────────────────────────────────────────────────
+
     private fun deleteServer(): Boolean {
         if (editSubId.isNotEmpty()) {
             if (MmkvManager.decodeSettingsBool(AppConfig.PREF_CONFIRM_REMOVE)) {
                 showDeleteConfirmDialog(context = this, messageRes = R.string.del_sub_dialog_comfirm_message) {
                     lifecycleScope.launch(Dispatchers.IO) {
                         SettingsManager.removeSubscriptionWithDefault(editSubId)
-                        launch(Dispatchers.Main) {
-                            finish()
-                        }
+                        launch(Dispatchers.Main) { finish() }
                     }
                 }
             } else {
                 lifecycleScope.launch(Dispatchers.IO) {
                     SettingsManager.removeSubscriptionWithDefault(editSubId)
-                    launch(Dispatchers.Main) {
-                        finish()
-                    }
+                    launch(Dispatchers.Main) { finish() }
                 }
             }
         }
         return true
     }
 
+    // ── Menu ────────────────────────────────────────────────────────────────
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.action_server, menu)
         del_config = menu.findItem(R.id.del_config)
         save_config = menu.findItem(R.id.save_config)
-
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.del_config -> {
-            deleteServer()
-            true
-        }
-
-        R.id.save_config -> {
-            saveServer()
-            true
-        }
-
+        R.id.del_config -> { deleteServer(); true }
+        R.id.save_config -> { saveServer(); true }
         else -> super.onOptionsItemSelected(item)
     }
-    
+
+    // ── Lifecycle ───────────────────────────────────────────────────────────
+
     override fun onResume() {
-        if (::softInputAssist.isInitialized) {
-            softInputAssist.onResume()
-        }
+        if (::softInputAssist.isInitialized) softInputAssist.onResume()
         super.onResume()
     }
 
     override fun onPause() {
-        if (::softInputAssist.isInitialized) {
-            softInputAssist.onPause()
-        }
+        if (::softInputAssist.isInitialized) softInputAssist.onPause()
         super.onPause()
     }
 
     override fun onDestroy() {
-        if (::softInputAssist.isInitialized) {
-            softInputAssist.onDestroy()
-        }
+        dialog?.dismiss()
+        if (::softInputAssist.isInitialized) softInputAssist.onDestroy()
         super.onDestroy()
-    } 
+    }
 }
