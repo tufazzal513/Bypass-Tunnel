@@ -492,10 +492,9 @@ object SettingsManager {
 
     /**
      * Whether to append the Android device ID (HWID) as an HTTP header when updating subscriptions.
-     * Default: true (matches screenshot behaviour).
      */
     fun isSendHwidEnabled(): Boolean {
-        return MmkvManager.decodeSettingsBool(AppConfig.PREF_SEND_HWID, true)
+        return MmkvManager.decodeSettingsBool(AppConfig.PREF_SEND_HWID, false)
     }
 
     /**
