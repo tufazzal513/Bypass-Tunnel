@@ -12,8 +12,8 @@ A V2Ray client for Android, support Xray core and v2fly core.
 
 ## Screenshots / 截圖預覽
 
-A preview of MikuBox themes.  
-*MikuBox 主題預覽*
+A preview of MikuRay themes.  
+*MikuRay 主題預覽*
 
 <details>
   <summary><b>Light Theme / 淺色主題 (Click to view / 点击查看)</b></summary>
