@@ -1409,32 +1409,30 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <com.google.android.material.card.MaterialCardView
+                <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16.0dip"
                     android:layout_marginTop="5.0dip"
                     android:layout_marginEnd="16.0dip"
                     android:layout_marginBottom="8.0dip"
-                    android:clipToPadding="false"
-                    app:cardBackgroundColor="?colorCard"
-                    app:cardCornerRadius="28.0dip"
-                    app:cardElevation="0.0dip"
-                    app:strokeWidth="0.0dip">
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingTop="8.0dip"
-                        android:paddingBottom="8.0dip">
+                        android:layout_marginBottom="4.0dip"
+                        app:cardBackgroundColor="?colorCard"
+                        app:cardElevation="0.0dip"
+                        app:strokeWidth="0.0dip"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CardView.Top"
+                        app:cardPreventCornerOverlap="false"
+                        app:contentPadding="0dp">
 
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingTop="0.0dip"
-                            android:paddingBottom="8.0dip">
+                            android:orientation="horizontal">
 
                             <FrameLayout
                                 android:layout_width="wrap_content"
@@ -1453,7 +1451,7 @@
                                     android:layout_height="25.0dip"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_order_numeric_ascending"
-                                    android:tint="?colorOnPrimary" />
+                                    app:tint="?colorOnPrimary" />
                             </FrameLayout>
 
                             <CheckedTextView
@@ -1467,20 +1465,30 @@
                                 android:gravity="center_vertical"
                                 android:paddingStart="16.0dip"
                                 android:paddingTop="16.0dip"
-                                android:paddingEnd="24.0dip"
+                                android:paddingEnd="16.0dip"
                                 android:paddingBottom="16.0dip"
                                 android:text="@string/group_order_origin"
                                 android:textAppearance="?textAppearanceTitleMedium"
                                 android:textColor="?colorOnSurface"
                                 android:textSize="17.0sp" />
                         </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4.0dip"
+                        app:cardBackgroundColor="?colorCard"
+                        app:cardElevation="0.0dip"
+                        app:strokeWidth="0.0dip"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CardView.Middle"
+                        app:cardPreventCornerOverlap="false"
+                        app:contentPadding="0dp">
 
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingTop="0.0dip"
-                            android:paddingBottom="0.0dip">
+                            android:orientation="horizontal">
 
                             <FrameLayout
                                 android:layout_width="wrap_content"
@@ -1499,7 +1507,7 @@
                                     android:layout_height="25.0dip"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_order_alphabetical_ascending"
-                                    android:tint="?colorOnPrimary" />
+                                    app:tint="?colorOnPrimary" />
                             </FrameLayout>
 
                             <CheckedTextView
@@ -1513,20 +1521,29 @@
                                 android:gravity="center_vertical"
                                 android:paddingStart="16.0dip"
                                 android:paddingTop="16.0dip"
-                                android:paddingEnd="24.0dip"
+                                android:paddingEnd="16.0dip"
                                 android:paddingBottom="16.0dip"
                                 android:text="@string/group_order_by_name"
                                 android:textAppearance="?textAppearanceTitleMedium"
                                 android:textColor="?colorOnSurface"
                                 android:textSize="17.0sp" />
                         </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="?colorCard"
+                        app:cardElevation="0.0dip"
+                        app:strokeWidth="0.0dip"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CardView.Bottom"
+                        app:cardPreventCornerOverlap="false"
+                        app:contentPadding="0dp">
 
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingTop="8.0dip"
-                            android:paddingBottom="0.0dip">
+                            android:orientation="horizontal">
 
                             <FrameLayout
                                 android:layout_width="wrap_content"
@@ -1545,7 +1562,7 @@
                                     android:layout_height="25.0dip"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_sort"
-                                    android:tint="?colorOnPrimary" />
+                                    app:tint="?colorOnPrimary" />
                             </FrameLayout>
 
                             <CheckedTextView
@@ -1559,15 +1576,16 @@
                                 android:gravity="center_vertical"
                                 android:paddingStart="16.0dip"
                                 android:paddingTop="16.0dip"
-                                android:paddingEnd="24.0dip"
+                                android:paddingEnd="16.0dip"
                                 android:paddingBottom="16.0dip"
                                 android:text="@string/group_order_by_delay"
                                 android:textAppearance="?textAppearanceTitleMedium"
                                 android:textColor="?colorOnSurface"
                                 android:textSize="17.0sp" />
                         </LinearLayout>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
