@@ -24,10 +24,12 @@ import com.v2ray.ang.R
 import com.v2ray.ang.contracts.BaseAdapterListener
 import com.v2ray.ang.databinding.ActivitySubSettingBinding
 import com.v2ray.ang.databinding.ItemQrcodeBinding
-import com.v2ray.ang.extension.alertSuccess
-import com.v2ray.ang.extension.alertError
+import com.v2ray.ang.extension.snackbarSuccess
+import com.v2ray.ang.extension.snackbarError
+import com.v2ray.ang.extension.snackbarDefault
 import com.v2ray.ang.extension.toast
 import com.v2ray.ang.extension.toastSuccess
+import com.v2ray.ang.extension.toastError
 import com.v2ray.ang.handler.AngConfigManager
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.helper.SimpleItemTouchHelperCallback
@@ -141,7 +143,7 @@ class SubSettingActivity : BaseActivity(), ShareSubBottomSheet.OnShareSubOptionC
                 }
                 R.id.share_clipboard -> {
                     Utils.setClipboard(this, url)
-                    alertSuccess(
+                    snackbarSuccess(
                         getString(R.string.menu_item_export_proxy_app),
                         title = getString(R.string.title_alerter_success)
                     )
@@ -149,7 +151,7 @@ class SubSettingActivity : BaseActivity(), ShareSubBottomSheet.OnShareSubOptionC
             }
         } catch (e: Exception) {
             LogUtil.e(AppConfig.TAG, "Share subscription failed", e)
-            alertError(
+            snackbarError(
                 getString(R.string.menu_item_export_proxy_app),
                 title = getString(R.string.title_alerter_error)
             )

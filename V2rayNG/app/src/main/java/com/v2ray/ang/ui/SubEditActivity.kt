@@ -19,7 +19,8 @@ import com.v2ray.ang.R
 import com.v2ray.ang.databinding.ActivitySubEditBinding
 import com.v2ray.ang.dto.entities.SubscriptionItem
 import com.v2ray.ang.enums.EConfigType
-import com.v2ray.ang.extension.alertError
+import com.v2ray.ang.extension.snackbarError
+import com.v2ray.ang.extension.snackbarSuccess
 import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.SettingsChangeManager
@@ -207,7 +208,7 @@ class SubEditActivity : BaseActivity() {
             if (intervalMinutes == null) {
                 subItem.updateInterval = SubscriptionItem().updateInterval
             } else if (intervalMinutes < AppConfig.SUBSCRIPTION_MIN_INTERVAL_MINUTES) {
-                alertError(
+                snackbarError(
                     getString(R.string.toast_invalid_update_interval),
                     title = getString(R.string.title_alerter_error)
                 )
@@ -227,7 +228,7 @@ class SubEditActivity : BaseActivity() {
         subItem.tabIcon = selectedIconDrawable
 
         if (TextUtils.isEmpty(subItem.remarks)) {
-            alertError(
+            snackbarError(
                 getString(R.string.sub_setting_remarks),
                 title = getString(R.string.title_alerter_error)
             )
@@ -235,14 +236,14 @@ class SubEditActivity : BaseActivity() {
         }
         if (subItem.url.isNotEmpty()) {
             if (!Utils.isValidUrl(subItem.url)) {
-                alertError(
+                snackbarError(
                     getString(R.string.toast_invalid_url),
                     title = getString(R.string.title_alerter_error)
                 )
                 return false
             }
             if (!Utils.isValidSubUrl(subItem.url)) {
-                alertError(
+                snackbarError(
                     getString(R.string.toast_insecure_url_protocol),
                     title = getString(R.string.title_alerter_error)
                 )

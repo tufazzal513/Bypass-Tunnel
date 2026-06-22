@@ -13,8 +13,9 @@ import com.v2ray.ang.R
 import com.v2ray.ang.databinding.ActivityServerCustomConfigBinding
 import com.v2ray.ang.dto.entities.ProfileItem
 import com.v2ray.ang.enums.EConfigType
-import com.v2ray.ang.extension.toast
-import com.v2ray.ang.extension.alertError
+import com.v2ray.ang.extension.snackbarDefault
+import com.v2ray.ang.extension.snackbarError
+import com.v2ray.ang.extension.snackbarSuccess
 import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.fmt.CustomFmt
 import com.v2ray.ang.handler.AngConfigManager
@@ -83,7 +84,7 @@ class ServerCustomConfigActivity : BaseActivity() {
      */
     private fun saveServer(): Boolean {
         if (TextUtils.isEmpty(binding.etRemarks.text.toString())) {
-            alertError(
+            snackbarError(
                 getString(R.string.server_lab_remarks),
                 title = getString(R.string.title_alerter_error)
             )
@@ -94,7 +95,7 @@ class ServerCustomConfigActivity : BaseActivity() {
             CustomFmt.parse(binding.editor.text.toString())
         } catch (e: Exception) {
             LogUtil.e(AppConfig.TAG, "Failed to parse custom configuration", e)
-            toast("${getString(R.string.toast_malformed_josn)} ${e.cause?.message}")
+            snackbarDefault("${getString(R.string.toast_malformed_josn)} ${e.cause?.message}", title = getString(R.string.title_alerter_info))
             return false
         }
 

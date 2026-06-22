@@ -15,8 +15,9 @@ import com.v2ray.ang.databinding.ActivityServerProxyChainBinding
 import com.v2ray.ang.dto.entities.ProfileItem
 import com.v2ray.ang.enums.EConfigType
 import com.v2ray.ang.extension.isComplexType
-import com.v2ray.ang.extension.toast
-import com.v2ray.ang.extension.alertError
+import com.v2ray.ang.extension.snackbarDefault
+import com.v2ray.ang.extension.snackbarError
+import com.v2ray.ang.extension.snackbarSuccess
 import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.helper.SimpleItemTouchHelperCallback
 import com.v2ray.ang.handler.MmkvManager
@@ -106,7 +107,7 @@ class ServerProxyChainActivity : BaseActivity() {
 
     private fun saveServer(): Boolean {
         if (TextUtils.isEmpty(binding.etRemarks.text.toString())) {
-            alertError(
+            snackbarError(
                 getString(R.string.server_lab_remarks),
                 title = getString(R.string.title_alerter_error)
             )
@@ -115,11 +116,11 @@ class ServerProxyChainActivity : BaseActivity() {
 
         val chainMembers = memberAdapter.getMembers().map { it.trim() }.filter { it.isNotEmpty() }
         if (chainMembers.size != memberAdapter.getMembers().size) {
-            toast(R.string.server_proxy_chain_members_unselected)
+            snackbarDefault(R.string.server_proxy_chain_members_unselected, title = getString(R.string.title_alerter_info))
             return false
         }
         if (chainMembers.size < 2) {
-            toast(R.string.server_proxy_chain_members_insufficient)
+            snackbarDefault(R.string.server_proxy_chain_members_insufficient, title = getString(R.string.title_alerter_info))
             return false
         }
 
@@ -128,7 +129,7 @@ class ServerProxyChainActivity : BaseActivity() {
             profile == null || profile.configType.isComplexType()
         }
         if (invalidMembers.isNotEmpty()) {
-            toast(getString(R.string.server_proxy_chain_members_invalid, invalidMembers.joinToString(", ")))
+            snackbarDefault(getString(R.string.server_proxy_chain_members_invalid, invalidMembers.joinToString(", ")), title = getString(R.string.title_alerter_info))
             return false
         }
 
@@ -163,7 +164,7 @@ class ServerProxyChainActivity : BaseActivity() {
                     finish()
                 }
             } else {
-                toast(R.string.toast_action_not_allowed)
+                snackbarDefault(R.string.toast_action_not_allowed, title = getString(R.string.title_alerter_info))
             }
         }
         return true
@@ -171,7 +172,7 @@ class ServerProxyChainActivity : BaseActivity() {
 
     private fun addMemberRow() {
         if (allRemarks.isEmpty()) {
-            toast(R.string.toast_none_data)
+            snackbarDefault(R.string.toast_none_data, title = getString(R.string.title_alerter_info))
             return
         }
         memberAdapter.addRow()

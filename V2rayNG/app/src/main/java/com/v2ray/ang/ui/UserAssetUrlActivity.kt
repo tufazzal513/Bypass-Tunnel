@@ -10,7 +10,8 @@ import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.databinding.ActivityUserAssetUrlBinding
 import com.v2ray.ang.dto.entities.AssetUrlItem
-import com.v2ray.ang.extension.alertError
+import com.v2ray.ang.extension.snackbarError
+import com.v2ray.ang.extension.snackbarSuccess
 import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.util.LogUtil
@@ -105,7 +106,7 @@ class UserAssetUrlActivity : BaseActivity() {
         // check remarks unique
         val assetList = MmkvManager.decodeAssetUrls()
         if (assetList.any { it.assetUrl.remarks == assetItem.remarks && it.guid != assetId }) {
-            alertError(
+            snackbarError(
                 getString(R.string.msg_remark_is_duplicate),
                 title = getString(R.string.title_alerter_error)
             )
@@ -113,14 +114,14 @@ class UserAssetUrlActivity : BaseActivity() {
         }
 
         if (TextUtils.isEmpty(assetItem.remarks)) {
-            alertError(
+            snackbarError(
                 getString(R.string.sub_setting_remarks),
                 title = getString(R.string.title_alerter_error)
             )
             return false
         }
         if (TextUtils.isEmpty(assetItem.url)) {
-            alertError(
+            snackbarError(
                 getString(R.string.title_url),
                 title = getString(R.string.title_alerter_error)
             )
