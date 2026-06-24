@@ -47,10 +47,12 @@ import com.v2ray.ang.ui.bottomsheet.MoreMenuBottomSheet
 import com.v2ray.ang.ui.bottomsheet.ShareConfigBottomSheet
 import com.v2ray.ang.ui.preference.activity.SettingsActivity
 import com.v2ray.ang.util.BlurBottomStatusController
+import com.v2ray.ang.util.SearchChipGradientController
 import com.v2ray.ang.util.getColorAttr
 import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.QRCodeDecoder
 import com.v2ray.ang.util.Utils
+import com.v2ray.ang.util.WeatherHelper
 import com.v2ray.ang.util.showBlur
 import com.v2ray.ang.util.showDeleteConfirmDialog
 import com.v2ray.ang.util.showSubUpdateDiffDialog
@@ -115,6 +117,8 @@ class MainActivity : HelperBaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        
+        hideLoading()
 
         window.statusBarColor = android.graphics.Color.TRANSPARENT
 
@@ -127,10 +131,156 @@ class MainActivity : HelperBaseActivity(),
         BlurBottomStatusController.applyState(this, binding)
 
         SubscriptionUpdater.sync()
+        syncWeatherBackgroundUpdates()
         mainViewModel.reloadServerList()
         refreshGroupTabTitles(true)
 
         checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
+    }
+
+    private fun weatherLocationReady(): Boolean =
+        WeatherHelper.hasCustomLocation() || WeatherHelper.hasLocationPermission(this)
+
+    private fun syncWeatherBackgroundUpdates() {
+        val weatherEnabled = MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_WEATHER_CHIP, false)
+        val canRunInBackground = WeatherHelper.hasCustomLocation() ||
+            WeatherHelper.hasBackgroundLocationPermission(this)
+        if (weatherEnabled && canRunInBackground) {
+            WeatherHelper.scheduleBackgroundUpdates(this)
+        } else if (!weatherEnabled) {
+            WeatherHelper.cancelBackgroundUpdates(this)
+        }
+    }
+
+    private var isColdStart = true
+
+    override fun onResume() {
+        super.onResume()
+        refreshSearchBarChip()
+    }
+
+    private fun refreshSearchBarChip() {
+        val weatherEnabled = MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_WEATHER_CHIP, false)
+        val totalTrafficEnabled = MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_TOTAL_TRAFFIC_CHIP, false)
+
+        SearchChipGradientController.applyState(this, binding)
+
+        when {
+            weatherEnabled -> {
+                hideTotalTrafficChip()
+                refreshWeatherChip()
+            }
+            totalTrafficEnabled -> {
+                hideWeatherChipViews()
+                refreshTotalTrafficChip()
+            }
+            else -> {
+                binding.layoutWeatherChip.isVisible = false
+            }
+        }
+    }
+
+    private fun hideWeatherChipViews() {
+        binding.ivWeatherIcon.isVisible = false
+        binding.tvWeatherTemp.isVisible = false
+    }
+
+    private fun hideTotalTrafficChip() {
+        binding.ivTotalTrafficIcon.isVisible = false
+        binding.tvTotalTraffic.isVisible = false
+    }
+
+    private fun refreshTotalTrafficChip() {
+        val totalTraffic = MmkvManager.getTotalTrafficString()
+        if (totalTraffic == null) {
+            binding.layoutWeatherChip.isVisible = false
+            return
+        }
+        binding.tvTotalTraffic.text = totalTraffic
+        binding.ivTotalTrafficIcon.isVisible = true
+        binding.tvTotalTraffic.isVisible = true
+        binding.layoutWeatherChip.isVisible = true
+    }
+
+    private fun refreshWeatherChip() {
+        if (!MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_WEATHER_CHIP, false)) {
+            binding.layoutWeatherChip.isVisible = false
+            return
+        }
+        val coldStart = isColdStart.also { isColdStart = false }
+        if (weatherLocationReady()) {
+            if (coldStart) forceRefreshWeatherChip() else loadWeatherChip()
+        } else {
+            checkAndRequestPermission(PermissionType.LOCATION) {
+                if (coldStart) forceRefreshWeatherChip() else loadWeatherChip()
+            }
+        }
+    }
+
+    private fun forceRefreshWeatherChip() {
+        if (!MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_WEATHER_CHIP, false)) return
+
+        if (!weatherLocationReady()) {
+            checkAndRequestPermission(PermissionType.LOCATION) {
+                forceRefreshWeatherChip()
+            }
+            return
+        }
+
+        val cached = WeatherHelper.getCachedWeatherStale()
+        binding.layoutWeatherChip.isVisible = true
+        if (cached != null) {
+            applyWeatherToChip(cached)
+        } else {
+            binding.ivWeatherIcon.setImageResource(WeatherHelper.iconResForEmoji(null))
+            binding.ivWeatherIcon.isVisible = true
+            binding.tvWeatherTemp.text = getString(R.string.weather_loading)
+            binding.tvWeatherTemp.isVisible = true
+        }
+
+        lifecycleScope.launch {
+            val weather = WeatherHelper.fetchCurrentWeather(this@MainActivity, force = true)
+            if (weather == null) {
+                if (cached == null) binding.layoutWeatherChip.isVisible = false
+                return@launch
+            }
+            applyWeatherToChip(weather)
+        }
+    }
+
+    private fun loadWeatherChip() {
+        binding.layoutWeatherChip.isVisible = true
+
+        val fresh = WeatherHelper.getCachedWeather()
+        val stale = fresh ?: WeatherHelper.getCachedWeatherStale()
+
+        if (stale != null) {
+            applyWeatherToChip(stale)
+        } else {
+            binding.ivWeatherIcon.setImageResource(WeatherHelper.iconResForEmoji(null))
+            binding.ivWeatherIcon.isVisible = true
+            binding.tvWeatherTemp.text = getString(R.string.weather_loading)
+            binding.tvWeatherTemp.isVisible = true
+        }
+
+        if (fresh != null) return
+
+        lifecycleScope.launch {
+            val weather = WeatherHelper.fetchCurrentWeather(this@MainActivity)
+            if (weather == null) {
+                if (stale == null) binding.layoutWeatherChip.isVisible = false
+                return@launch
+            }
+            applyWeatherToChip(weather)
+        }
+    }
+
+    private fun applyWeatherToChip(weather: WeatherHelper.WeatherResult) {
+        binding.ivWeatherIcon.setImageResource(WeatherHelper.iconResForEmoji(weather.emoji))
+        binding.tvWeatherTemp.text = weather.getTemperatureString(WeatherHelper.isCelsius())
+        binding.ivWeatherIcon.isVisible = true
+        binding.tvWeatherTemp.isVisible = true
+        binding.layoutWeatherChip.isVisible = true
     }
 
     override fun onContentChanged() {
@@ -287,6 +437,12 @@ class MainActivity : HelperBaseActivity(),
         binding.btnAddSub.setOnClickListener {
             requestActivityLauncher.launch(Intent(this, SubEditActivity::class.java))
         }
+
+        binding.layoutWeatherChip.setOnClickListener {
+            if (MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_WEATHER_CHIP, false)) {
+                forceRefreshWeatherChip()
+            }
+        }
     }
 
     private fun setupInlineSearchView() {
@@ -397,7 +553,15 @@ class MainActivity : HelperBaseActivity(),
     }
 
     private fun setupViewModel() {
-        mainViewModel.updateListAction.observe(this) { refreshTabBadges() }
+        mainViewModel.updateListAction.observe(this) {
+            refreshTabBadges()
+            if (MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_TOTAL_TRAFFIC_CHIP, false) &&
+                !MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_WEATHER_CHIP, false)
+            ) {
+                SearchChipGradientController.applyState(this, binding)
+                refreshTotalTrafficChip()
+            }
+        }
         mainViewModel.updateGroupBadgeAction.observe(this) { refreshTabBadges() }
         mainViewModel.updateTestResultAction.observe(this) { setTestState(it) }
         mainViewModel.updateIpResultAction.observe(this) { ip ->
@@ -921,6 +1085,8 @@ class MainActivity : HelperBaseActivity(),
     }
 
     override fun onDestroy() {
+        hideLoading()
+        
         tabMediator?.detach()
         
         try {

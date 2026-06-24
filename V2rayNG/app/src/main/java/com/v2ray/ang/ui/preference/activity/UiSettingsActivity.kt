@@ -1,6 +1,8 @@
 package com.v2ray.ang.ui.preference.activity
 
 import android.app.Activity
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
@@ -10,6 +12,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -42,6 +45,7 @@ import com.v2ray.ang.ui.preference.CustomBannerPreference
 import com.v2ray.ang.ui.preference.CategoryStyleHelper
 import com.v2ray.ang.util.BannerColorExtractor
 import com.v2ray.ang.util.ThemeManager
+import com.v2ray.ang.util.WeatherHelper
 import com.v2ray.ang.util.showBlur
 import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.launch
@@ -79,6 +83,10 @@ class UiSettingsActivity : BaseActivity() {
 
     class UiSettingsFragment : PreferenceFragmentCompat() {
 
+        companion object {
+            private const val REQUEST_CODE_LOCATION = 9001
+        }
+
         private val appTheme by lazy { findPreference<Preference>(AppConfig.PREF_APP_THEME) }
         private val dynamicColor by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_DYNAMIC_COLOR) }
         private val dynamicColorBanner by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_DYNAMIC_COLOR_BANNER) }
@@ -99,6 +107,12 @@ class UiSettingsActivity : BaseActivity() {
         private val bannerHeightSlider by lazy { findPreference<BannerHeightSliderDialog>(AppConfig.PREF_HOME_BANNER_HEIGHT) }
         private val headerTopRowPaddingSlider by lazy { findPreference<HeaderTopRowPaddingDialog>(AppConfig.PREF_HEADER_TOP_ROW_PADDING) }
         private val groupAllTabIcon by lazy { findPreference<Preference>(AppConfig.PREF_GROUP_ALL_TAB_ICON) }
+        private val showWeatherChip by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_SHOW_WEATHER_CHIP) }
+
+        private val weatherUnit by lazy { findPreference<ListPreference>(AppConfig.PREF_WEATHER_USE_CELSIUS) }
+        private val weatherCustomLocation by lazy { findPreference<EditTextPreference>(AppConfig.PREF_WEATHER_CUSTOM_LOCATION) }
+        private val showTotalTrafficChip by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_SHOW_TOTAL_TRAFFIC_CHIP) }
+        private val searchChipGradient by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_SEARCH_CHIP_GRADIENT) }
 
         private var tabIconPickerDialog: androidx.appcompat.app.AlertDialog? = null
 
@@ -297,6 +311,62 @@ class UiSettingsActivity : BaseActivity() {
                 MmkvManager.encodeSettings(AppConfig.PREF_SHOW_SPLASH, newValue as Boolean)
                 true
             }
+
+            showWeatherChip?.setOnPreferenceChangeListener { _, newValue ->
+                val checked = newValue as Boolean
+                MmkvManager.encodeSettings(AppConfig.PREF_SHOW_WEATHER_CHIP, checked)
+                if (checked) {
+                    val hasForegroundPermission = ContextCompat.checkSelfPermission(
+                        requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                    if (!hasForegroundPermission && !WeatherHelper.hasCustomLocation()) {
+                        requestPermissions(
+                            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                            REQUEST_CODE_LOCATION
+                        )
+                    } else {
+                        WeatherHelper.scheduleBackgroundUpdates(requireContext(), forceReschedule = true)
+                    }
+                } else {
+                    WeatherHelper.cancelBackgroundUpdates(requireContext())
+                }
+                showTotalTrafficChip?.isEnabled = !checked
+                updateWeatherSubPrefsEnabled(checked)
+                searchChipGradient?.isEnabled = checked || (showTotalTrafficChip?.isChecked == true)
+                true
+            }
+
+            weatherUnit?.setOnPreferenceChangeListener { pref, newValue ->
+                val valueStr = newValue.toString()
+                (pref as? ListPreference)?.let { lp ->
+                    val idx = lp.findIndexOfValue(valueStr)
+                    lp.summary = if (idx >= 0) lp.entries[idx] else valueStr
+                }
+                MmkvManager.encodeSettings(AppConfig.PREF_WEATHER_USE_CELSIUS, valueStr)
+                true
+            }
+
+            updateWeatherCustomLocationSummary(weatherCustomLocation?.text.orEmpty())
+            weatherCustomLocation?.setOnPreferenceChangeListener { _, newValue ->
+                val raw = (newValue as? String)?.trim().orEmpty()
+                MmkvManager.encodeSettings(AppConfig.PREF_WEATHER_CUSTOM_LOCATION, raw)
+                WeatherHelper.clearCustomLocationCache()
+                updateWeatherCustomLocationSummary(raw)
+                if (MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_WEATHER_CHIP, false)) {
+                    WeatherHelper.scheduleBackgroundUpdates(requireContext(), forceReschedule = true)
+                }
+                true
+            }
+
+            showTotalTrafficChip?.setOnPreferenceChangeListener { _, newValue ->
+                val checked = newValue as Boolean
+                MmkvManager.encodeSettings(AppConfig.PREF_SHOW_TOTAL_TRAFFIC_CHIP, checked)
+                showWeatherChip?.isEnabled = !checked
+                searchChipGradient?.isEnabled = checked || (showWeatherChip?.isChecked == true)
+                true
+            }
+
+            updateChipPreferenceEnabledState()
 
             updateGroupAllTabIconSummary()
             groupAllTabIcon?.setOnPreferenceClickListener {
@@ -600,6 +670,9 @@ class UiSettingsActivity : BaseActivity() {
                     when (val p = group.getPreference(i)) {
                         is androidx.preference.PreferenceGroup -> traverse(p)
                         is ListPreference -> {
+                            if (p.value == null && !p.entryValues.isNullOrEmpty()) {
+                                p.value = p.entryValues[0].toString()
+                            }
                             p.summary = p.entry ?: ""
                             p.setOnPreferenceChangeListener { pref, newValue ->
                                 val lp = pref as ListPreference
@@ -613,6 +686,21 @@ class UiSettingsActivity : BaseActivity() {
                 }
             }
             preferenceScreen?.let { traverse(it) }
+        }
+
+        override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
+        ) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            when (requestCode) {
+                REQUEST_CODE_LOCATION -> {
+                    if (MmkvManager.decodeSettingsBool(AppConfig.PREF_SHOW_WEATHER_CHIP, false)) {
+                        WeatherHelper.scheduleBackgroundUpdates(requireContext(), forceReschedule = true)
+                    }
+                }
+            }
         }
 
         override fun onStart() {
@@ -675,6 +763,38 @@ class UiSettingsActivity : BaseActivity() {
                 val resId = resources.getIdentifier(iconName, "drawable", requireContext().packageName)
                 if (resId != 0) groupAllTabIcon?.setIcon(resId)
             }
+        }
+
+        private fun updateWeatherSubPrefsEnabled(weatherOn: Boolean) {
+            weatherUnit?.isEnabled = weatherOn
+            weatherCustomLocation?.isEnabled = weatherOn
+        }
+
+        private fun updateWeatherCustomLocationSummary(raw: String) {
+            val pref = weatherCustomLocation ?: return
+            pref.summary = if (raw.isNotBlank()) {
+                raw
+            } else {
+                val lat = MmkvManager.decodeSettingsFloat(AppConfig.PREF_WEATHER_CACHE_LAT, 0f)
+                val lon = MmkvManager.decodeSettingsFloat(AppConfig.PREF_WEATHER_CACHE_LON, 0f)
+                if (lat != 0f || lon != 0f) {
+                    getString(
+                        R.string.pref_weather_custom_location_summary_current_coords,
+                        lat, lon
+                    )
+                } else {
+                    getString(R.string.pref_weather_custom_location_summary_auto)
+                }
+            }
+        }
+
+        private fun updateChipPreferenceEnabledState() {
+            val weatherOn = showWeatherChip?.isChecked == true
+            val trafficOn = showTotalTrafficChip?.isChecked == true
+            showWeatherChip?.isEnabled = !trafficOn
+            showTotalTrafficChip?.isEnabled = !weatherOn
+            searchChipGradient?.isEnabled = weatherOn || trafficOn
+            updateWeatherSubPrefsEnabled(weatherOn)
         }
 
         override fun onDestroyView() {

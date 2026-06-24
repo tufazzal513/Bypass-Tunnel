@@ -121,6 +121,25 @@ object AppConfig {
     const val PREF_SOUND_ON_CONNECT = "pref_sound_on_connect"    
     const val PREF_SHOW_SPLASH = "pref_show_splash_screen"
     const val PREF_KEEP_AWAKE = "pref_keep_awake"
+    const val PREF_SHOW_WEATHER_CHIP = "pref_show_weather_chip"
+    const val PREF_WEATHER_CACHE_TEMP = "pref_weather_cache_temp"
+    const val PREF_WEATHER_CACHE_EMOJI = "pref_weather_cache_emoji"
+    const val PREF_WEATHER_CACHE_TIMESTAMP = "pref_weather_cache_timestamp"
+    const val PREF_WEATHER_CACHE_LAT = "pref_weather_cache_lat"
+    const val PREF_WEATHER_CACHE_LON = "pref_weather_cache_lon"
+    const val PREF_WEATHER_USE_CELSIUS = "pref_weather_use_celsius"
+    const val PREF_WEATHER_CUSTOM_LOCATION = "pref_weather_custom_location"
+    const val PREF_WEATHER_CUSTOM_LOCATION_RAW_CACHED = "pref_weather_custom_location_raw_cached"
+    const val PREF_WEATHER_CUSTOM_LOCATION_LAT = "pref_weather_custom_location_lat"
+    const val PREF_WEATHER_CUSTOM_LOCATION_LON = "pref_weather_custom_location_lon"
+    const val PREF_WEATHER_CUSTOM_LOCATION_NAME = "pref_weather_custom_location_name"
+    const val WEATHER_CACHE_TTL_MS = 30 * 60 * 1000L
+    const val WEATHER_UPDATE_TASK_NAME = "weather_updater"
+    const val WEATHER_UPDATE_INTERVAL_MINUTES = 30L
+    const val WEATHER_LOCATION_TIMEOUT_MS = 10_000L
+    const val WEATHER_LOCATION_STALE_METERS = 5_000f
+    const val PREF_SHOW_TOTAL_TRAFFIC_CHIP = "pref_show_total_traffic_chip"
+    const val PREF_SEARCH_CHIP_GRADIENT = "pref_search_chip_gradient"
 
     // Profile banner, sheet banner, home banner & username
     const val PREF_CUSTOM_PROFILE_NAME = "custom_profile_name"

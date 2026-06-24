@@ -558,8 +558,22 @@
     <string name="del_routing_dialog_comfirm_message">Are you sure you want to delete this routing setting? Once deleted, the data is gone forever and can\'t be recovered.</string>
     <string name="del_file_asset_dialog_comfirm_message">Are you sure you want to delete this asset file? Once deleted, the data is gone forever and can\'t be recovered.</string>
     <string name="del_button_dialog_comfirm">Delete</string>
-    <string name="menu_item_search_main">Looking for something?</string>
+    <string name="menu_item_search_main">Search config</string>
     <string name="title_vpn_sound_settings">Sound</string>
+    <string name="weather_temp_format">%d°C</string>
+    <string name="title_search_bar_chip">Search Bar Chip</string>
+    <string name="pref_show_weather_chip_title">Show weather chip</string>
+    <string name="pref_show_weather_chip_summary">Show current temperature next to the search bar based on your location. Can\'t be active at the same time as the total download usage chip</string>
+    <string name="pref_show_total_traffic_chip_title">Show total download usage chip</string>
+    <string name="pref_show_total_traffic_chip_summary">Show total download usage across all profiles next to the search bar. Can\'t be active at the same time as the weather chip</string>
+    <string name="pref_search_chip_gradient_title">Gradient chip background</string>
+    <string name="pref_search_chip_gradient_summary">Apply a primary-to-tertiary gradient background on the search bar chip while the weather or total traffic chip is active</string>
+
+    <string name="pref_weather_unit_title">Temperature Unit</string>
+    <string name="pref_weather_custom_location_title">Custom Location</string>
+    <string name="pref_weather_custom_location_dialog_message">Enter a place name (e.g. London) or coordinates as \"latitude,longitude\". Leave empty to use your current location.</string>
+    <string name="pref_weather_custom_location_summary_auto">Using your current location</string>
+    <string name="pref_weather_custom_location_summary_current_coords">Using current location (%1$.2f, %2$.2f)</string>
     <string name="title_pref_sound_on_connect">Connection Sound</string>
     <string name="summary_pref_sound_on_connect">Play a sound when connected or disconnected</string>
     <string name="ip_unknown">IP: unknown</string>
@@ -710,4 +724,5 @@ you need."</string>
     <string name="sub_setting_tab_icon_hint">Shown next to the group name in the tab bar</string>
     <string name="sub_tab_icon_none">None</string>
 
+    <string name="weather_loading">Loading…</string>
 </resources>

@@ -64,6 +64,12 @@ android {
                 "proguard-rules.pro"
             )
         }
+        
+        debug {
+            isDebuggable = true
+            isMinifyEnabled = false
+            isShrinkResources = false
+        }
     }
 
     sourceSets {
@@ -133,7 +139,8 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.fragment)
-    implementation(libs.palette)    
+    implementation(libs.palette)
+    implementation(libs.play.services.location)
 
     // UI Libraries
     implementation(libs.material)
@@ -151,6 +158,7 @@ dependencies {
     // Reactive and Utility Libraries
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Language and Processing Libraries
     implementation(libs.language.base)
