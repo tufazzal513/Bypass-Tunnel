@@ -376,6 +376,7 @@
     <string name="title_pref_fragment_packets">Фрагментация пакетов</string>
     <string name="title_pref_fragment_length">Длина фрагмента (мин-макс)</string>
     <string name="title_pref_fragment_interval">Интервал фрагментации (мин-макс)</string>
+    <string name="title_pref_fragment_maxsplit">Максимальное число фрагментов</string>
     <string name="title_pref_fragment_enabled">Включить фрагментацию</string>
 
     <string name="update_check_for_update">Проверить обновления</string>

@@ -370,6 +370,7 @@
     <string name="title_pref_fragment_packets">Paket Fragmen</string>
     <string name="title_pref_fragment_length">Panjang Fragmen (min-max)</string>
     <string name="title_pref_fragment_interval">Jeda Fragmen (min-max)</string>
+    <string name="title_pref_fragment_maxsplit">Maksimal Split Fragmen</string>
     <string name="title_pref_fragment_enabled">Aktifin Fragmen</string>
 
     <string name="update_check_for_update">Cek Update</string>
