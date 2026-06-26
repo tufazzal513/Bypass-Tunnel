@@ -185,8 +185,15 @@ class SubEditActivity : BaseActivity() {
         input: AutoCompleteTextView,
         suggestions: List<String>
     ) {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, suggestions)
+        val noneOption = ""
+        val items = listOf(noneOption) + suggestions
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, items)
         input.setAdapter(adapter)
+        input.setOnItemClickListener { _, _, position, _ ->
+            if (items[position] == noneOption) {
+                input.setText("", false)
+            }
+        }
     }
 
     // ── Save ────────────────────────────────────────────────────────────────
