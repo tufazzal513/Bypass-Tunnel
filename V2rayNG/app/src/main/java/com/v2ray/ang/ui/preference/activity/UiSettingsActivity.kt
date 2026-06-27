@@ -27,6 +27,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.extension.snackbarSuccess
+import com.v2ray.ang.extension.toastSuccess
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.handler.SettingsChangeManager
 import com.v2ray.ang.helper.MmkvPreferenceDataStore
@@ -129,7 +130,7 @@ class UiSettingsActivity : BaseActivity() {
                         saveGifBannerDirectly(uri, AppConfig.PREF_CUSTOM_HOME_BANNER_URI, "home_banner_") {
                             extractAndSaveBannerColor(it)
                             broadcastHomeBannerChanged()
-                            requireContext().snackbarSuccess(getString(R.string.home_banner_updated), title = getString(R.string.title_alerter_success))
+                            requireContext().toastSuccess(getString(R.string.home_banner_updated))
                         }
                     } else {
                         startCropHomeBannerActivity(uri)
@@ -142,7 +143,7 @@ class UiSettingsActivity : BaseActivity() {
                 if (uri != null) {
                     if (isGif(uri)) {
                         saveGifBannerDirectly(uri, AppConfig.PREF_CUSTOM_SHEET_BANNER_URI, "sheet_banner_") {
-                            requireContext().snackbarSuccess(getString(R.string.sheet_banner_updated), title = getString(R.string.title_alerter_success))
+                            requireContext().toastSuccess(getString(R.string.sheet_banner_updated))
                         }
                     } else {
                         startCropSheetBannerActivity(uri)
@@ -167,7 +168,7 @@ class UiSettingsActivity : BaseActivity() {
                         
                         extractAndSaveBannerColor(savedUri)
                         broadcastHomeBannerChanged()
-                        requireContext().snackbarSuccess(getString(R.string.home_banner_updated), title = getString(R.string.title_alerter_success))
+                        requireContext().toastSuccess(getString(R.string.home_banner_updated))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -186,7 +187,7 @@ class UiSettingsActivity : BaseActivity() {
                         val savedUri = saveToCache(cacheUri, "profile_banner_")
                         MmkvManager.encodeSettings(AppConfig.PREF_PROFILE_BANNER_URI, savedUri.toString())
                         broadcastProfileChanged()
-                        requireContext().snackbarSuccess(getString(R.string.custom_banner_profile_set), title = getString(R.string.title_alerter_success))
+                        requireContext().toastSuccess(getString(R.string.custom_banner_profile_set))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -204,7 +205,7 @@ class UiSettingsActivity : BaseActivity() {
                         deleteOldFile(oldUri)
                         val savedUri = saveToCache(cacheUri, "sheet_banner_")
                         MmkvManager.encodeSettings(AppConfig.PREF_CUSTOM_SHEET_BANNER_URI, savedUri.toString())
-                        requireContext().snackbarSuccess(getString(R.string.sheet_banner_updated), title = getString(R.string.title_alerter_success))
+                        requireContext().toastSuccess(getString(R.string.sheet_banner_updated))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -224,7 +225,7 @@ class UiSettingsActivity : BaseActivity() {
                         MmkvManager.encodeSettings(AppConfig.PREF_SELECTED_BANNER_URI, savedUri.toString())
                         updateIndicatorStyleEnabledState()
                         broadcastSelectedBannerChanged()
-                        requireContext().snackbarSuccess(getString(R.string.selected_banner_updated), title = getString(R.string.title_alerter_success))
+                        requireContext().toastSuccess(getString(R.string.selected_banner_updated))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
