@@ -120,8 +120,16 @@
             app:layout="@layout/uwu_mid"
             android:inputType="number"
             android:key="pref_tcp_keepalive_idle"
-            android:summary="30"
+            android:defaultValue="30"
             android:title="@string/title_pref_tcp_keepalive_idle" />
+
+        <EditTextPreference
+            android:icon="@drawable/ic_clock"
+            app:layout="@layout/uwu_mid"
+            android:inputType="number"
+            android:key="pref_ws_heartbeat_period"
+            android:defaultValue="60"
+            android:title="@string/title_pref_ws_heartbeat_period" />
 
         <Preference
             android:icon="@drawable/ic_per_apps_24dp"

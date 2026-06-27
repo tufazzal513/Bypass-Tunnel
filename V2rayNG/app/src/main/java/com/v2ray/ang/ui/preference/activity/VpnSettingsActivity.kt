@@ -64,6 +64,7 @@ class VpnSettingsActivity : BaseActivity() {
         private val navigatePerAppProxy by lazy { findPreference<Preference>(AppConfig.PREF_NAVIGATE_PER_APP_PROXY_SETTINGS) }
         private val keepAwake by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_KEEP_AWAKE) }
         private val tcpKeepaliveIdle by lazy { findPreference<EditTextPreference>(AppConfig.PREF_TCP_KEEPALIVE_IDLE) }
+        private val wsHeartbeatPeriod by lazy { findPreference<EditTextPreference>(AppConfig.PREF_WS_HEARTBEAT_PERIOD) }
 
         override fun onCreatePreferences(bundle: Bundle?, s: String?) {
             preferenceManager.preferenceDataStore = MmkvPreferenceDataStore()
@@ -93,7 +94,13 @@ class VpnSettingsActivity : BaseActivity() {
                     when (val p = group.getPreference(i)) {
                         is androidx.preference.PreferenceGroup -> traverse(p)
                         is EditTextPreference -> {
-                            p.summary = p.text.orEmpty()
+                            val defaults = mapOf(
+                                AppConfig.PREF_TCP_KEEPALIVE_IDLE to "30",
+                                AppConfig.PREF_WS_HEARTBEAT_PERIOD to "60"
+                            )
+                            p.summary = p.text.takeUnless { it.isNullOrEmpty() }
+                                ?: defaults[p.key]
+                                ?: ""
                             p.setOnPreferenceChangeListener { pref, newValue ->
                                 pref.summary = (newValue as? String).orEmpty()
                                 true
