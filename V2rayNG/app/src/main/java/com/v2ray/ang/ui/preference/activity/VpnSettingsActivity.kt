@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -14,11 +15,14 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.AppConfig.VPN
 import com.v2ray.ang.R
+import com.v2ray.ang.extension.snackbarError
 import com.v2ray.ang.handler.MmkvManager
 import com.v2ray.ang.helper.MmkvPreferenceDataStore
+import com.v2ray.ang.root.RootManager
 import com.v2ray.ang.ui.BaseActivity
 import com.v2ray.ang.ui.PerAppProxyActivity
 import com.v2ray.ang.ui.preference.CategoryStyleHelper
+import kotlinx.coroutines.launch
 
 class VpnSettingsActivity : BaseActivity() {
 
@@ -65,6 +69,8 @@ class VpnSettingsActivity : BaseActivity() {
         private val keepAwake by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_KEEP_AWAKE) }
         private val tcpKeepaliveIdle by lazy { findPreference<EditTextPreference>(AppConfig.PREF_TCP_KEEPALIVE_IDLE) }
         private val wsHeartbeatPeriod by lazy { findPreference<EditTextPreference>(AppConfig.PREF_WS_HEARTBEAT_PERIOD) }
+        private val enableRootMode by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_ROOT_MODE_ENABLE) }
+        private val lanSharing by lazy { findPreference<SwitchPreferenceCompat>(AppConfig.PREF_ROOT_LAN_SHARING) }
 
         override fun onCreatePreferences(bundle: Bundle?, s: String?) {
             preferenceManager.preferenceDataStore = MmkvPreferenceDataStore()
@@ -86,6 +92,49 @@ class VpnSettingsActivity : BaseActivity() {
                 startActivity(android.content.Intent(requireContext(), PerAppProxyActivity::class.java))
                 true
             }
+
+            enableRootMode?.setOnPreferenceChangeListener { _, newValue ->
+                if (newValue == true && !RootManager.cachedRoot()) {
+                    lifecycleScope.launch {
+                        if (checkAndRequestRoot()) {
+                            enableRootMode?.isChecked = true
+                        }
+                    }
+                    false
+                } else {
+                    true
+                }
+            }
+
+            lanSharing?.setOnPreferenceChangeListener { _, newValue ->
+                if (newValue == true && !RootManager.cachedRoot()) {
+                    lifecycleScope.launch {
+                        if (checkAndRequestRoot()) {
+                            lanSharing?.isChecked = true
+                        }
+                    }
+                    false
+                } else {
+                    true
+                }
+            }
+        }
+
+        /**
+         * Probes for root access off the main thread (spawns su, can block briefly) and
+         * surfaces a snackbar if it's not available. Used to gate the Root mode and LAN
+         * sharing toggles so they can't be left on without root actually being granted.
+         */
+        private suspend fun checkAndRequestRoot(): Boolean {
+            val hasRoot = RootManager.refresh()
+            if (!isAdded) return false
+            if (!hasRoot) {
+                requireContext().snackbarError(
+                    getString(R.string.toast_root_required),
+                    title = getString(R.string.title_alerter_error)
+                )
+            }
+            return hasRoot
         }
 
         private fun initPreferenceSummaries() {
