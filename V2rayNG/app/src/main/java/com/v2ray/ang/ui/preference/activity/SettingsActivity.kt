@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.NonNull
@@ -72,6 +74,31 @@ class SettingsActivity : BaseActivity(), SearchPreferenceResultListener {
         })
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_settings, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_reset_settings -> {
+                showDeleteConfirmDialog(
+                    context = this,
+                    titleRes = R.string.dialog_reset_settings_title,
+                    messageRes = R.string.dialog_reset_settings_message,
+                    iconRes = R.drawable.ic_restore_24dp,
+                    positiveTextRes = R.string.dialog_reset_settings_confirm,
+                ) {
+                    SettingsManager.resetAllSettings(applicationContext)
+                    toastSuccess(R.string.reset_settings_success)
+                    recreate()
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onSearchResultClicked(@NonNull result: SearchPreferenceResult) {
         val searchFragment = supportFragmentManager.fragments.find { 
             it.javaClass.name.contains("SearchPreferenceFragment") 
@@ -105,7 +132,6 @@ class SettingsActivity : BaseActivity(), SearchPreferenceResultListener {
         private val navigateMuxSettings by lazy { findPreference<Preference>(AppConfig.PREF_NAVIGATE_MUX_SETTINGS) }
         private val navigateFragmentSettings by lazy { findPreference<Preference>(AppConfig.PREF_NAVIGATE_FRAGMENT_SETTINGS) }
         private val navigateAdvancedSettings by lazy { findPreference<Preference>(AppConfig.PREF_NAVIGATE_ADVANCED_SETTINGS) }
-        private val resetAllSettings by lazy { findPreference<Preference>(AppConfig.PREF_RESET_ALL_SETTINGS) }
 
         override fun onCreateRecyclerView(
             inflater: LayoutInflater,
@@ -185,21 +211,6 @@ class SettingsActivity : BaseActivity(), SearchPreferenceResultListener {
 
             navigateAdvancedSettings?.setOnPreferenceClickListener {
                 startActivity(android.content.Intent(requireContext(), AdvancedSettingsActivity::class.java))
-                true
-            }
-
-            resetAllSettings?.setOnPreferenceClickListener {
-                showDeleteConfirmDialog(
-                    context = requireContext(),
-                    titleRes = R.string.dialog_reset_settings_title,
-                    messageRes = R.string.dialog_reset_settings_message,
-                    iconRes = R.drawable.ic_restore_24dp,
-                    positiveTextRes = R.string.dialog_reset_settings_confirm,
-                ) {
-                    SettingsManager.resetAllSettings(requireContext().applicationContext)
-                    requireContext().toastSuccess(R.string.reset_settings_success)
-                    activity?.recreate()
-                }
                 true
             }
         }

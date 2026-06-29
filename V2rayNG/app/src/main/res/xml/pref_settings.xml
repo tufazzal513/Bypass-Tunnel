@@ -20,19 +20,19 @@
         app:textClearHistory="@string/searchpreference_clear_history"
         app:textClearInput="@string/searchpreference_clear"
         app:textMore="@string/searchpreference_more" />
+        
+    <Preference
+        android:icon="@drawable/ic_toggle_switch"
+        android:key="pref_navigate_vpn_settings"
+        android:summary="@string/summary_navigate_vpn_settings"
+        android:title="@string/title_vpn_settings"
+        app:layout="@layout/uwu_grid" />
 
     <Preference
         android:icon="@drawable/ic_baseline_color_lens_24"
         android:key="pref_navigate_ui_settings"
         android:summary="@string/summary_navigate_ui_settings"
         android:title="@string/title_ui_settings"
-        app:layout="@layout/uwu_grid" />
-
-    <Preference
-        android:icon="@drawable/ic_toggle_switch"
-        android:key="pref_navigate_vpn_settings"
-        android:summary="@string/summary_navigate_vpn_settings"
-        android:title="@string/title_vpn_settings"
         app:layout="@layout/uwu_grid" />
 
     <Preference
@@ -61,13 +61,6 @@
         android:key="pref_navigate_advanced_settings"
         android:summary="@string/summary_navigate_advanced_settings"
         android:title="@string/title_advanced"
-        app:layout="@layout/uwu_grid" />
-
-    <Preference
-        android:icon="@drawable/ic_restore_24dp"
-        android:key="pref_reset_all_settings"
-        android:summary="@string/summary_pref_reset_all_settings"
-        android:title="@string/title_pref_reset_all_settings"
         app:layout="@layout/uwu_grid" />
 
 </PreferenceScreen>
