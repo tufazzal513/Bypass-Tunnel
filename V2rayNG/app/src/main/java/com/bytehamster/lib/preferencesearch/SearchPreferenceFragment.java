@@ -135,13 +135,28 @@ public class SearchPreferenceFragment extends Fragment implements SearchPreferen
         ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
             androidx.core.graphics.Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             androidx.core.graphics.Insets cutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout());
-            int topInset = Math.max(systemBars.top, cutout.top);
+            // Only apply the top status-bar inset when this fragment's own search bar
+            // is shown (i.e. it's a true fullscreen overlay). When the search bar is
+            // disabled, the fragment is hosted inline below an existing toolbar/AppBarLayout
+            // that already accounts for the top inset, so adding it again here just creates
+            // an oversized gap between the host's search bar and the results list.
+            int topInset = searchConfiguration.isSearchBarEnabled()
+                ? Math.max(systemBars.top, cutout.top)
+                : 0;
             int bottomInset = Math.max(systemBars.bottom, cutout.bottom);
             v.setPadding(
                 v.getPaddingLeft(),
                 topInset,
                 v.getPaddingRight(),
-                bottomInset
+                v.getPaddingBottom()
+            );
+
+            int baseBottomPadding = (int) (16 * v.getResources().getDisplayMetrics().density);
+            viewHolder.recyclerView.setPadding(
+                viewHolder.recyclerView.getPaddingLeft(),
+                viewHolder.recyclerView.getPaddingTop(),
+                viewHolder.recyclerView.getPaddingRight(),
+                baseBottomPadding + bottomInset
             );
             return insets;
         });
@@ -185,7 +200,11 @@ public class SearchPreferenceFragment extends Fragment implements SearchPreferen
         }
     }
 
-    private void clearHistory() {
+    public boolean hasHistory() {
+        return history != null && !history.isEmpty();
+    }
+
+    public void clearHistory() {
         viewHolder.searchView.setText("");
         history.clear();
         saveHistory();
