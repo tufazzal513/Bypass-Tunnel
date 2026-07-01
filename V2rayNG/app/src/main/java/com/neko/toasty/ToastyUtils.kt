@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.TypedValue
 import android.view.View
+import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -50,13 +51,9 @@ internal object ToastyUtils {
     }
 
     @JvmStatic
-    fun getColorAttr(context: Context, attrName: String, @ColorInt fallbackColor: Int): Int {
-        val resId = context.resources.getIdentifier(attrName, "attr", context.packageName)
-        if (resId == 0) {
-            return fallbackColor
-        }
+    fun getColorAttr(context: Context, @AttrRes attrId: Int, @ColorInt fallbackColor: Int): Int {
         val typedValue = TypedValue()
-        return if (context.theme.resolveAttribute(resId, typedValue, true)) {
+        return if (context.theme.resolveAttribute(attrId, typedValue, true)) {
             typedValue.data
         } else {
             fallbackColor

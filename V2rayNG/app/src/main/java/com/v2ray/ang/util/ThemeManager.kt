@@ -141,16 +141,4 @@ fun Context.getColorAttr(@AttrRes resId: Int): Int {
     }
 }
 
-fun Context.getColorAttr(attrName: String): Int {
-    var packageNameToUse = packageName
-    var finalAttrName = attrName
 
-    if (attrName.startsWith("android:")) {
-        packageNameToUse = "android"
-        finalAttrName = attrName.removePrefix("android:")
-    }
-
-    val resId = resources.getIdentifier(finalAttrName, "attr", packageNameToUse)
-    if (resId == 0) return Color.TRANSPARENT
-    return getColorAttr(resId)
-}

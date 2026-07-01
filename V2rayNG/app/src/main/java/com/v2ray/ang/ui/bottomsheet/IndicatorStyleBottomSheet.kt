@@ -49,7 +49,7 @@ class IndicatorStyleBottomSheet(
             skipCollapsed = true
         }
 
-        val bgColor = context.getColorAttr("colorBg")
+        val bgColor = context.getColorAttr(R.attr.colorBg)
 
         val bottomSheet = dialog.findViewById<android.view.View>(
             com.google.android.material.R.id.design_bottom_sheet

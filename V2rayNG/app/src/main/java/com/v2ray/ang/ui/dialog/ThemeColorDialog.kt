@@ -67,7 +67,7 @@ class ThemeColorDialog : DialogFragment() {
             
             val styleRes = ThemeManager.getThemeStyleRes(key)
             val wrappedContext = ContextThemeWrapper(requireContext(), styleRes)
-            val m3PrimaryColor = wrappedContext.getColorAttr("colorPrimary")
+            val m3PrimaryColor = wrappedContext.getColorAttr(R.attr.colorPrimary)
 
             applyCircleDrawable(circle, m3PrimaryColor, isSelected)
             
@@ -96,7 +96,7 @@ class ThemeColorDialog : DialogFragment() {
                 .setContentBasedSource(rawCustomColor)
                 .build()
             val wrappedCustomContext = DynamicColors.wrapContextIfAvailable(requireContext(), customOptions)
-            val m3CustomPrimary = wrappedCustomContext.getColorAttr("colorPrimary")
+            val m3CustomPrimary = wrappedCustomContext.getColorAttr(R.attr.colorPrimary)
 
             applyCircleDrawable(customCircle, m3CustomPrimary, isCustomSelected)
 

@@ -23,6 +23,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.drawable.DrawableCompat
@@ -145,13 +146,13 @@ private fun showSnackbar(
     title: CharSequence,
     message: CharSequence,
     @DrawableRes iconRes: Int,
-    backgroundColorAttrName: String?,
-    textColorAttrName: String?,
+    @AttrRes backgroundColorAttr: Int?,
+    @AttrRes textColorAttr: Int?,
     duration: Int
 ) {
     if (Looper.myLooper() != Looper.getMainLooper()) {
         Handler(Looper.getMainLooper()).post {
-            showSnackbar(context, title, message, iconRes, backgroundColorAttrName, textColorAttrName, duration)
+            showSnackbar(context, title, message, iconRes, backgroundColorAttr, textColorAttr, duration)
         }
         return
     }
@@ -173,10 +174,10 @@ private fun showSnackbar(
     val contentView = LayoutInflater.from(parent.context)
         .inflate(R.layout.layout_snackbar_custom, snackbarLayout, false)
 
-    val resolvedTextColor = if (textColorAttrName != null) {
-        parent.context.getColorAttr(textColorAttrName)
+    val resolvedTextColor = if (textColorAttr != null) {
+        parent.context.getColorAttr(textColorAttr)
     } else {
-        parent.context.getColorAttr("colorOnSurfaceInverse")
+        parent.context.getColorAttr(R.attr.colorOnSurfaceInverse)
     }
 
     contentView.findViewById<ImageView>(R.id.iv_snackbar_icon)?.apply {
@@ -257,10 +258,10 @@ private fun showSnackbar(
     }
 
     val cornerRadiusPx = 28f * parent.context.resources.displayMetrics.density
-    val backgroundColor = if (backgroundColorAttrName != null) {
-        parent.context.getColorAttr(backgroundColorAttrName)
+    val backgroundColor = if (backgroundColorAttr != null) {
+        parent.context.getColorAttr(backgroundColorAttr)
     } else {
-        parent.context.getColorAttr("colorSurfaceInverse")
+        parent.context.getColorAttr(R.attr.colorSurfaceInverse)
     }
 
     snackbarLayout.backgroundTintList = null
@@ -287,8 +288,8 @@ fun Context.snackbarDefault(message: CharSequence, title: CharSequence = "") {
 fun Context.snackbarSuccess(message: Int, title: CharSequence = "") {
     showSnackbar(
         this, title, getString(message), R.drawable.ic_check_circle,
-        "colorPrimary",
-        "colorOnPrimary",
+        R.attr.colorPrimary,
+        R.attr.colorOnPrimary,
         Snackbar.LENGTH_LONG
     )
 }
@@ -296,8 +297,8 @@ fun Context.snackbarSuccess(message: Int, title: CharSequence = "") {
 fun Context.snackbarSuccess(message: CharSequence, title: CharSequence = "") {
     showSnackbar(
         this, title, message, R.drawable.ic_check_circle,
-        "colorPrimary",
-        "colorOnPrimary",
+        R.attr.colorPrimary,
+        R.attr.colorOnPrimary,
         Snackbar.LENGTH_LONG
     )
 }
@@ -306,8 +307,8 @@ fun Context.snackbarError(message: Int, title: CharSequence = "") {
     vibrateOnError()
     showSnackbar(
         this, title, getString(message), R.drawable.ic_warning,
-        "colorError",
-        "colorOnError",
+        R.attr.colorError,
+        R.attr.colorOnError,
         Snackbar.LENGTH_LONG
     )
 }
@@ -316,8 +317,8 @@ fun Context.snackbarError(message: CharSequence, title: CharSequence = "") {
     vibrateOnError()
     showSnackbar(
         this, title, message, R.drawable.ic_warning,
-        "colorError",
-        "colorOnError",
+        R.attr.colorError,
+        R.attr.colorOnError,
         Snackbar.LENGTH_LONG
     )
 }

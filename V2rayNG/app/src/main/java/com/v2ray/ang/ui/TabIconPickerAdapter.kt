@@ -85,14 +85,14 @@ class TabIconPickerAdapter(
 
         val (bgColor, iconTint, checkTint) = if (selected) {
             Triple(
-                context.getColorAttr("colorPrimary"),
-                context.getColorAttr("colorOnPrimary"),
-                context.getColorAttr("colorOnPrimary"),
+                context.getColorAttr(R.attr.colorPrimary),
+                context.getColorAttr(R.attr.colorOnPrimary),
+                context.getColorAttr(R.attr.colorOnPrimary),
             )
         } else {
             Triple(
                 0,
-                context.getColorAttr("colorOnSurfaceVariant"),
+                context.getColorAttr(R.attr.colorOnSurfaceVariant),
                 0,
             )
         }

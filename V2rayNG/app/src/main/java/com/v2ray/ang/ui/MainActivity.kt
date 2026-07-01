@@ -633,19 +633,19 @@ class MainActivity : HelperBaseActivity(),
         val label = view.findViewById<TextView>(R.id.tab_label) ?: return
         val badge = view.findViewById<TextView>(R.id.tab_badge) ?: return
 
-        val tintColor = if (selected) getColorAttr("colorOnPrimary") else getColorAttr("colorOnSurfaceVariant")
+        val tintColor = if (selected) getColorAttr(R.attr.colorOnPrimary) else getColorAttr(R.attr.colorOnSurfaceVariant)
         label.setTextColor(tintColor)
         icon?.imageTintList = android.content.res.ColorStateList.valueOf(tintColor)
 
         if (selected) {
-            badge.setTextColor(getColorAttr("colorPrimary"))
+            badge.setTextColor(getColorAttr(R.attr.colorPrimary))
             badge.backgroundTintList = android.content.res.ColorStateList.valueOf(
-                getColorAttr("colorOnPrimary")
+                getColorAttr(R.attr.colorOnPrimary)
             )
         } else {
-            badge.setTextColor(getColorAttr("colorOnPrimary"))
+            badge.setTextColor(getColorAttr(R.attr.colorOnPrimary))
             badge.backgroundTintList = android.content.res.ColorStateList.valueOf(
-                getColorAttr("colorPrimary")
+                getColorAttr(R.attr.colorPrimary)
             )
         }
     }
