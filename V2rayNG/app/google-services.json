@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:331610153388:android:58da1f9d902f09d24fda09",
+        "mobilesdk_app_id": "1:331610153388:android:c29d1ef8c78dd0c84fda09",
         "android_client_info": {
-          "package_name": "com.github.hatsunemikuuwu.mikuray"
+          "package_name": "com.miku.ray"
         }
       },
       "oauth_client": [],
