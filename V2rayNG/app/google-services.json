@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "331610153388",
+    "firebase_url": "https://ts-vpn-513-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "ts-vpn-513",
+    "storage_bucket": "ts-vpn-513.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331610153388:android:58da1f9d902f09d24fda09",
+        "android_client_info": {
+          "package_name": "com.github.hatsunemikuuwu.mikuray"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjqu9evxcIxX7Q-qHz-daY1l5HCwGqEz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
