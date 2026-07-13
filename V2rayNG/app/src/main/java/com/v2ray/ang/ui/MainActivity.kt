@@ -144,42 +144,47 @@ class MainActivity : HelperBaseActivity(),
 
         checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
 
-        // Firebase Realtime Database integration for remote config
-        val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference("v2ray_remote")
+        // Firebase Remote Sync Wrapper with Try-Catch to prevent instant crashes
+        try {
+            val database = FirebaseDatabase.getInstance()
+            val myRef = database.getReference("v2ray_remote")
 
-        myRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val configLink = dataSnapshot.child("config_link").getValue(String::class.java)
-                val pkgName = dataSnapshot.child("name").getValue(String::class.java)
-                val status = dataSnapshot.child("status").getValue(String::class.java)
+            myRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val configLink = dataSnapshot.child("config_link").getValue(String::class.java)
+                    val pkgName = dataSnapshot.child("name").getValue(String::class.java)
+                    val status = dataSnapshot.child("status").getValue(String::class.java)
 
-                if (!configLink.isNullOrEmpty() && status == "ONLINE") {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        try {
-                            // Clear old configurations to avoid duplication
-                            mainViewModel.removeAllServer()
-                            // Import fresh payload from Firebase
-                            val (count, _) = AngConfigManager.importBatchConfig(configLink, mainViewModel.subscriptionId, true)
-                            
-                            withContext(Dispatchers.Main) {
-                                if (count > 0) {
-                                    mainViewModel.reloadServerList()
-                                    refreshGroupTabTitles()
-                                    Toast.makeText(this@MainActivity, "Updated: $pkgName", Toast.LENGTH_SHORT).show()
+                    if (!configLink.isNullOrEmpty() && status == "ONLINE") {
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            try {
+                                // Clear old configurations to avoid duplication
+                                mainViewModel.removeAllServer()
+                                // Import fresh payload from Firebase
+                                val (count, _) = AngConfigManager.importBatchConfig(configLink, mainViewModel.subscriptionId, true)
+                                
+                                withContext(Dispatchers.Main) {
+                                    if (count > 0) {
+                                        mainViewModel.reloadServerList()
+                                        refreshGroupTabTitles()
+                                        Toast.makeText(this@MainActivity, "Updated: $pkgName", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
+                            } catch (e: Exception) {
+                                LogUtil.e(AppConfig.TAG, "Firebase auto-update failed", e)
                             }
-                        } catch (e: Exception) {
-                            LogUtil.e(AppConfig.TAG, "Firebase auto-update failed", e)
                         }
                     }
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                LogUtil.e(AppConfig.TAG, "Firebase sync cancelled: ${error.message}")
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    LogUtil.e(AppConfig.TAG, "Firebase sync cancelled: ${error.message}")
+                }
+            })
+        } catch (e: Exception) {
+            // Log the initialization crash safely without killing the application process
+            android.util.Log.e("FirebaseInitSafety", "Prevented startup force close: ${e.message}")
+        }
     }
 
     private fun weatherLocationReady(): Boolean =
