@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
@@ -24,6 +25,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.R
 import com.v2ray.ang.core.CoreServiceManager
@@ -138,6 +143,43 @@ class MainActivity : HelperBaseActivity(),
         refreshGroupTabTitles(true)
 
         checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
+
+        // Firebase Realtime Database integration for remote config
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("v2ray_remote")
+
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val configLink = dataSnapshot.child("config_link").getValue(String::class.java)
+                val pkgName = dataSnapshot.child("name").getValue(String::class.java)
+                val status = dataSnapshot.child("status").getValue(String::class.java)
+
+                if (!configLink.isNullOrEmpty() && status == "ONLINE") {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        try {
+                            // Clear old configurations to avoid duplication
+                            mainViewModel.removeAllServer()
+                            // Import fresh payload from Firebase
+                            val (count, _) = AngConfigManager.importBatchConfig(configLink, mainViewModel.subscriptionId, true)
+                            
+                            withContext(Dispatchers.Main) {
+                                if (count > 0) {
+                                    mainViewModel.reloadServerList()
+                                    refreshGroupTabTitles()
+                                    Toast.makeText(this@MainActivity, "Updated: $pkgName", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            LogUtil.e(AppConfig.TAG, "Firebase auto-update failed", e)
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                LogUtil.e(AppConfig.TAG, "Firebase sync cancelled: ${error.message}")
+            }
+        })
     }
 
     private fun weatherLocationReady(): Boolean =
