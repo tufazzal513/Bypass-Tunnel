@@ -1,9 +1,12 @@
 package com.v2ray.ang.ui
 
-import android.content.ClipboardManager
 import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.net.VpnService
 import android.os.Build
@@ -12,9 +15,12 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.widget.TextView
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
+import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
@@ -125,16 +131,20 @@ class MainActivity : HelperBaseActivity(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        
-        // Global Thread Uncaught Exception Handler to catch async/background crashes
+        // App-এর গ্লোবাল থ্রেড ক্র্যাশ হ্যান্ডলার সেটআপ (সবার আগে রান হবে)
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             runOnUiThread {
-                showCrashDialog(throwable, "Background Thread Error")
+                showSafeCrashScreen(throwable)
             }
         }
 
-        // Try-Catch to secure the entire UI Lifecycle initialization
+        try {
+            super.onCreate(savedInstanceState)
+        } catch (e: Throwable) {
+            showSafeCrashScreen(e)
+            return
+        }
+
         try {
             setContentView(binding.root)
             
@@ -157,34 +167,38 @@ class MainActivity : HelperBaseActivity(),
 
             checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
 
-            // Firebase Remote Sync Wrapper
+            // Firebase Remote Sync Wrapper with try-catch safety
             try {
                 val database = FirebaseDatabase.getInstance()
                 val myRef = database.getReference("v2ray_remote")
 
                 myRef.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val configLink = dataSnapshot.child("config_link").getValue(String::class.java)
-                        val pkgName = dataSnapshot.child("name").getValue(String::class.java)
-                        val status = dataSnapshot.child("status").getValue(String::class.java)
+                        try {
+                            val configLink = dataSnapshot.child("config_link").getValue(String::class.java)
+                            val pkgName = dataSnapshot.child("name").getValue(String::class.java)
+                            val status = dataSnapshot.child("status").getValue(String::class.java)
 
-                        if (!configLink.isNullOrEmpty() && status == "ONLINE") {
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                try {
-                                    mainViewModel.removeAllServer()
-                                    val (count, _) = AngConfigManager.importBatchConfig(configLink, mainViewModel.subscriptionId, true)
-                                    
-                                    withContext(Dispatchers.Main) {
-                                        if (count > 0) {
-                                            mainViewModel.reloadServerList()
-                                            refreshGroupTabTitles()
-                                            Toast.makeText(this@MainActivity, "Updated: $pkgName", Toast.LENGTH_SHORT).show()
+                            if (!configLink.isNullOrEmpty() && status == "ONLINE") {
+                                lifecycleScope.launch(Dispatchers.IO) {
+                                    try {
+                                        mainViewModel.removeAllServer()
+                                        val (count, _) = AngConfigManager.importBatchConfig(configLink, mainViewModel.subscriptionId, true)
+                                        
+                                        withContext(Dispatchers.Main) {
+                                            if (count > 0) {
+                                                mainViewModel.reloadServerList()
+                                                refreshGroupTabTitles()
+                                                Toast.makeText(this@MainActivity, "Updated: $pkgName", Toast.LENGTH_SHORT).show()
+                                            }
                                         }
+                                    } catch (e: Exception) {
+                                        LogUtil.e(AppConfig.TAG, "Firebase auto-update failed", e)
                                     }
-                                } catch (e: Exception) {
-                                    LogUtil.e(AppConfig.TAG, "Firebase auto-update failed", e)
                                 }
                             }
+                        } catch (e: Throwable) {
+                            showSafeCrashScreen(e)
                         }
                     }
 
@@ -194,43 +208,84 @@ class MainActivity : HelperBaseActivity(),
                 })
             } catch (e: Exception) {
                 android.util.Log.e("FirebaseInitSafety", "Prevented startup force close: ${e.message}")
-                showCrashDialog(e, "Firebase Initialization Error")
+                showSafeCrashScreen(e)
             }
 
         } catch (e: Throwable) {
-            // Catches any XML inflation or binding level startup crashes instantly
-            showCrashDialog(e, "App Lifecycle Critical Error")
+            // UI ইনফ্লেশন বা অনাকাক্সিক্ষত যেকোনো ক্র্যাশ হ্যান্ডেল করবে
+            showSafeCrashScreen(e)
         }
     }
 
-    // Helper Dialog to display fully copyable Error Log on screen
-    private fun showCrashDialog(throwable: Throwable, errorTitle: String) {
-        val stackTrace = android.util.Log.getStackTraceString(throwable)
-        
-        val scrollView = ScrollView(this)
-        val textView = TextView(this).apply {
-            text = "Error StackTrace:\n\n$stackTrace"
-            setPadding(32, 32, 32, 32)
-            setTextIsSelectable(true)
-            textSize = 13f
-        }
-        scrollView.addView(textView)
+    // ১০০% নিরাপদ ও ক্র্যাশ-প্রুফ কোড-ভিত্তিক ক্র্যাশ স্ক্রিন (কোনো XML রিসোর্স লাগবে না)
+    private fun showSafeCrashScreen(throwable: Throwable) {
+        try {
+            val stackTrace = android.util.Log.getStackTraceString(throwable)
+            android.util.Log.e("MainActivityCrash", "Startup/Background crash caught", throwable)
 
-        MaterialAlertDialogBuilder(this)
-            .setTitle(errorTitle)
-            .setMessage("App prevented a force close. Copy this error log and share it with the model:")
-            .setView(scrollView)
-            .setCancelable(false)
-            .setPositiveButton("Copy Error") { _, _ ->
-                val clipboard = getSystemService(android.content.ClipboardManager::class.java)
-                val clip = ClipData.newPlainText("App Debug Log", stackTrace)
-                clipboard?.setPrimaryClip(clip)
-                Toast.makeText(this, "Copied to clipboard!", Toast.LENGTH_SHORT).show()
+            val container = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                setBackgroundColor(Color.parseColor("#121212"))
+                setPadding(48, 48, 48, 48)
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
             }
-            .setNegativeButton("Continue Anyway") { dialog, _ ->
-                dialog.dismiss()
+
+            val titleView = TextView(this).apply {
+                text = "⚠️ App Crashed!"
+                setTextColor(Color.RED)
+                textSize = 22f
+                setTypeface(null, Typeface.BOLD)
+                setPadding(0, 0, 0, 24)
             }
-            .showBlur()
+            container.addView(titleView)
+
+            val descView = TextView(this).apply {
+                text = "অ্যাপে একটি সমস্যা হয়েছে। নিচের কোডটি কপি করে আমাকে চ্যাটে দিন:"
+                setTextColor(Color.WHITE)
+                textSize = 14f
+                setPadding(0, 0, 0, 32)
+            }
+            container.addView(descView)
+
+            val copyButton = Button(this).apply {
+                text = "Copy Error Log"
+                setBackgroundColor(Color.parseColor("#E91E63"))
+                setTextColor(Color.WHITE)
+                setOnClickListener {
+                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("App Crash Log", stackTrace)
+                    clipboard.setPrimaryClip(clip)
+                    Toast.makeText(this@MainActivity, "Copied!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            container.addView(copyButton)
+
+            val scrollView = ScrollView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    0,
+                    1f
+                ).apply {
+                    setMargins(0, 32, 0, 0)
+                }
+            }
+
+            val errorTextView = TextView(this).apply {
+                text = stackTrace
+                setTextColor(Color.parseColor("#FF8A80"))
+                textSize = 11f
+                setTextIsSelectable(true)
+            }
+            scrollView.addView(errorTextView)
+            container.addView(scrollView)
+
+            setContentView(container)
+        } catch (e: Exception) {
+            android.util.Log.e("CrashCatcher", "Ultimate double crash!", e)
+        }
     }
 
     private fun weatherLocationReady(): Boolean =
