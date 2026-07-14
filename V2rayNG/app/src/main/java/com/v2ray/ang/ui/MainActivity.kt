@@ -131,21 +131,14 @@ class MainActivity : HelperBaseActivity(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // App-এর গ্লোবাল থ্রেড ক্র্যাশ হ্যান্ডলার সেটআপ (সবার আগে রান হবে)
+        // ১. গ্লোবাল আনকচড ক্র্যাশ হ্যান্ডলার সেটআপ (সব থ্রেডের জন্য ব্যাকগ্রাউন্ড সেফটি)
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
-            runOnUiThread {
-                showSafeCrashScreen(throwable)
-            }
+            saveCrashToClipboardAndExit(throwable)
         }
 
         try {
             super.onCreate(savedInstanceState)
-        } catch (e: Throwable) {
-            showSafeCrashScreen(e)
-            return
-        }
-
-        try {
+            
             setContentView(binding.root)
             
             hideLoading()
@@ -167,7 +160,7 @@ class MainActivity : HelperBaseActivity(),
 
             checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
 
-            // Firebase Remote Sync Wrapper with try-catch safety
+            // Firebase Remote Sync Wrapper with Throwable try-catch safety
             try {
                 val database = FirebaseDatabase.getInstance()
                 val myRef = database.getReference("v2ray_remote")
@@ -198,7 +191,7 @@ class MainActivity : HelperBaseActivity(),
                                 }
                             }
                         } catch (e: Throwable) {
-                            showSafeCrashScreen(e)
+                            saveCrashToClipboardAndExit(e)
                         }
                     }
 
@@ -206,85 +199,41 @@ class MainActivity : HelperBaseActivity(),
                         LogUtil.e(AppConfig.TAG, "Firebase sync cancelled: ${error.message}")
                     }
                 })
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 android.util.Log.e("FirebaseInitSafety", "Prevented startup force close: ${e.message}")
-                showSafeCrashScreen(e)
+                saveCrashToClipboardAndExit(e)
             }
 
         } catch (e: Throwable) {
-            // UI ইনফ্লেশন বা অনাকাক্সিক্ষত যেকোনো ক্র্যাশ হ্যান্ডেল করবে
-            showSafeCrashScreen(e)
+            // UI ইনফ্লেশন বা অনাকাক্সিক্ষত যেকোনো লাইফসাইকেল ক্র্যাশ এখানে ক্যাচ হবে
+            saveCrashToClipboardAndExit(e)
         }
     }
 
-    // ১০০% নিরাপদ ও ক্র্যাশ-প্রুফ কোড-ভিত্তিক ক্র্যাশ স্ক্রিন (কোনো XML রিসোর্স লাগবে না)
-    private fun showSafeCrashScreen(throwable: Throwable) {
+    // বুলেটপ্রুফ মেথড: যা ক্র্যাশ হওয়া মাত্রই কোড ক্লিপবোর্ডে কপি করে টোস্ট দিয়ে অ্যাপ কিল করে দেবে
+    private fun saveCrashToClipboardAndExit(throwable: Throwable) {
         try {
             val stackTrace = android.util.Log.getStackTraceString(throwable)
-            android.util.Log.e("MainActivityCrash", "Startup/Background crash caught", throwable)
+            android.util.Log.e("MainActivityCrash", "CRITICAL CRASH CAUGHT", throwable)
 
-            val container = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                setBackgroundColor(Color.parseColor("#121212"))
-                setPadding(48, 48, 48, 48)
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-            }
+            // অ্যাক্টিভিটি ডেড হলেও ব্যাকগ্রাউন্ড থেকে সেফলি ক্লিপবোর্ডে ডাটা পুশ করার জন্য applicationContext ব্যবহার করা হয়েছে
+            val clipboard = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("App Crash Log", stackTrace)
+            clipboard.setPrimaryClip(clip)
 
-            val titleView = TextView(this).apply {
-                text = "⚠️ App Crashed!"
-                setTextColor(Color.RED)
-                textSize = 22f
-                setTypeface(null, Typeface.BOLD)
-                setPadding(0, 0, 0, 24)
-            }
-            container.addView(titleView)
-
-            val descView = TextView(this).apply {
-                text = "অ্যাপে একটি সমস্যা হয়েছে। নিচের কোডটি কপি করে আমাকে চ্যাটে দিন:"
-                setTextColor(Color.WHITE)
-                textSize = 14f
-                setPadding(0, 0, 0, 32)
-            }
-            container.addView(descView)
-
-            val copyButton = Button(this).apply {
-                text = "Copy Error Log"
-                setBackgroundColor(Color.parseColor("#E91E63"))
-                setTextColor(Color.WHITE)
-                setOnClickListener {
-                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText("App Crash Log", stackTrace)
-                    clipboard.setPrimaryClip(clip)
-                    Toast.makeText(this@MainActivity, "Copied!", Toast.LENGTH_SHORT).show()
-                }
-            }
-            container.addView(copyButton)
-
-            val scrollView = ScrollView(this).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    0,
-                    1f
-                ).apply {
-                    setMargins(0, 32, 0, 0)
-                }
-            }
-
-            val errorTextView = TextView(this).apply {
-                text = stackTrace
-                setTextColor(Color.parseColor("#FF8A80"))
-                textSize = 11f
-                setTextIsSelectable(true)
-            }
-            scrollView.addView(errorTextView)
-            container.addView(scrollView)
-
-            setContentView(container)
+            // স্ক্রিনের ওপর নির্ভর না করে গ্লোবাল অ্যান্ড্রোয়েড টোস্ট মেসেজ জেনারেট
+            Toast.makeText(
+                applicationContext, 
+                "❌ App Crashed! Error log automatically copied to clipboard. Paste it in chat.", 
+                Toast.LENGTH_LONG
+            ).show()
         } catch (e: Exception) {
-            android.util.Log.e("CrashCatcher", "Ultimate double crash!", e)
+            // মেথড সেফটি এনশিওর করার জন্য ফ্যালব্যাক ক্যাচ
+        } finally {
+            // অ্যান্ড্রয়েডের "App keeps stopping" এর বিরক্তিকর পপআপ ছাড়াই ইনস্ট্যান্ট ক্লিন এক্সিট
+            finishAffinity()
+            android.os.Process.killProcess(android.os.Process.myPid())
+            System.exit(1)
         }
     }
 
