@@ -1,5 +1,7 @@
 package com.v2ray.ang.ui
 
+import android.content.ClipboardManager
+import android.content.ClipData
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -12,6 +14,7 @@ import android.widget.TextView
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import android.widget.ScrollView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
@@ -123,68 +126,111 @@ class MainActivity : HelperBaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
         
-        hideLoading()
+        // Global Thread Uncaught Exception Handler to catch async/background crashes
+        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
+            runOnUiThread {
+                showCrashDialog(throwable, "Background Thread Error")
+            }
+        }
 
-        window.statusBarColor = android.graphics.Color.TRANSPARENT
-
-        setupViewPager()
-        setupListeners()
-        setupInlineSearchView()
-        setupGroupTab()
-        setupViewModel()
-        setupBannerHome()
-        BlurBottomStatusController.applyState(this, binding)
-
-        SubscriptionUpdater.sync()
-        syncWeatherBackgroundUpdates()
-        mainViewModel.reloadServerList()
-        refreshGroupTabTitles(true)
-
-        checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
-
-        // Firebase Remote Sync Wrapper with Try-Catch to prevent instant crashes
+        // Try-Catch to secure the entire UI Lifecycle initialization
         try {
-            val database = FirebaseDatabase.getInstance()
-            val myRef = database.getReference("v2ray_remote")
+            setContentView(binding.root)
+            
+            hideLoading()
 
-            myRef.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val configLink = dataSnapshot.child("config_link").getValue(String::class.java)
-                    val pkgName = dataSnapshot.child("name").getValue(String::class.java)
-                    val status = dataSnapshot.child("status").getValue(String::class.java)
+            window.statusBarColor = android.graphics.Color.TRANSPARENT
 
-                    if (!configLink.isNullOrEmpty() && status == "ONLINE") {
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            try {
-                                // Clear old configurations to avoid duplication
-                                mainViewModel.removeAllServer()
-                                // Import fresh payload from Firebase
-                                val (count, _) = AngConfigManager.importBatchConfig(configLink, mainViewModel.subscriptionId, true)
-                                
-                                withContext(Dispatchers.Main) {
-                                    if (count > 0) {
-                                        mainViewModel.reloadServerList()
-                                        refreshGroupTabTitles()
-                                        Toast.makeText(this@MainActivity, "Updated: $pkgName", Toast.LENGTH_SHORT).show()
+            setupViewPager()
+            setupListeners()
+            setupInlineSearchView()
+            setupGroupTab()
+            setupViewModel()
+            setupBannerHome()
+            BlurBottomStatusController.applyState(this, binding)
+
+            SubscriptionUpdater.sync()
+            syncWeatherBackgroundUpdates()
+            mainViewModel.reloadServerList()
+            refreshGroupTabTitles(true)
+
+            checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
+
+            // Firebase Remote Sync Wrapper
+            try {
+                val database = FirebaseDatabase.getInstance()
+                val myRef = database.getReference("v2ray_remote")
+
+                myRef.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val configLink = dataSnapshot.child("config_link").getValue(String::class.java)
+                        val pkgName = dataSnapshot.child("name").getValue(String::class.java)
+                        val status = dataSnapshot.child("status").getValue(String::class.java)
+
+                        if (!configLink.isNullOrEmpty() && status == "ONLINE") {
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                try {
+                                    mainViewModel.removeAllServer()
+                                    val (count, _) = AngConfigManager.importBatchConfig(configLink, mainViewModel.subscriptionId, true)
+                                    
+                                    withContext(Dispatchers.Main) {
+                                        if (count > 0) {
+                                            mainViewModel.reloadServerList()
+                                            refreshGroupTabTitles()
+                                            Toast.makeText(this@MainActivity, "Updated: $pkgName", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
+                                } catch (e: Exception) {
+                                    LogUtil.e(AppConfig.TAG, "Firebase auto-update failed", e)
                                 }
-                            } catch (e: Exception) {
-                                LogUtil.e(AppConfig.TAG, "Firebase auto-update failed", e)
                             }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    LogUtil.e(AppConfig.TAG, "Firebase sync cancelled: ${error.message}")
-                }
-            })
-        } catch (e: Exception) {
-            // Log the initialization crash safely without killing the application process
-            android.util.Log.e("FirebaseInitSafety", "Prevented startup force close: ${e.message}")
+                    override fun onCancelled(error: DatabaseError) {
+                        LogUtil.e(AppConfig.TAG, "Firebase sync cancelled: ${error.message}")
+                    }
+                })
+            } catch (e: Exception) {
+                android.util.Log.e("FirebaseInitSafety", "Prevented startup force close: ${e.message}")
+                showCrashDialog(e, "Firebase Initialization Error")
+            }
+
+        } catch (e: Throwable) {
+            // Catches any XML inflation or binding level startup crashes instantly
+            showCrashDialog(e, "App Lifecycle Critical Error")
         }
+    }
+
+    // Helper Dialog to display fully copyable Error Log on screen
+    private fun showCrashDialog(throwable: Throwable, errorTitle: String) {
+        val stackTrace = android.util.Log.getStackTraceString(throwable)
+        
+        val scrollView = ScrollView(this)
+        val textView = TextView(this).apply {
+            text = "Error StackTrace:\n\n$stackTrace"
+            setPadding(32, 32, 32, 32)
+            setTextIsSelectable(true)
+            textSize = 13f
+        }
+        scrollView.addView(textView)
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(errorTitle)
+            .setMessage("App prevented a force close. Copy this error log and share it with the model:")
+            .setView(scrollView)
+            .setCancelable(false)
+            .setPositiveButton("Copy Error") { _, _ ->
+                val clipboard = getSystemService(android.content.ClipboardManager::class.java)
+                val clip = ClipData.newPlainText("App Debug Log", stackTrace)
+                clipboard?.setPrimaryClip(clip)
+                Toast.makeText(this, "Copied to clipboard!", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Continue Anyway") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .showBlur()
     }
 
     private fun weatherLocationReady(): Boolean =
